@@ -81,15 +81,42 @@
 </h2>
 <p>You can install the development version of scMitoTracing like so:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"chenweng1991/scMitoTracing"</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">EZsinglecell2</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
+<div class="section level3">
+<h3 id="variant-parsing-and-analysis">Variant parsing and analysis<a class="anchor" aria-label="anchor" href="#variant-parsing-and-analysis"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scMitoTracing</span><span class="op">)</span>
-<span class="co">## basic example code</span></code></pre></div>
+<span class="va">WD</span><span class="op">&lt;-</span><span class="st">"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"</span>
+<span class="va">DN1CD34_1.depth</span><span class="op">&lt;-</span><span class="fu"><a href="reference/DepthSummary.html">DepthSummary</a></span><span class="op">(</span><span class="va">WD</span>,Processed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="va">DN1CD34_1.VariantsGTSummary</span><span class="op">&lt;-</span><span class="fu"><a href="reference/CW_mgatk.read.html">CW_mgatk.read</a></span><span class="op">(</span><span class="va">WD</span>,Processed <span class="op">=</span><span class="cn">T</span><span class="op">)</span>
+<span class="va">DN1CD34_1.Variants.feature.lst</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Vfilter_v3.html">Vfilter_v3</a></span><span class="op">(</span>InputSummary<span class="op">=</span><span class="va">DN1CD34_1.VariantsGTSummary</span>,depth<span class="op">=</span><span class="va">DN1CD34_1.depth</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
+</h3>
+<p>Plot for depth</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/plot_depth.html">plot_depth</a></span><span class="op">(</span><span class="va">DN1CD34_1.depth</span><span class="op">$</span><span class="va">Total</span>,<span class="st">"Total"</span><span class="op">)</span>
+<span class="fu"><a href="reference/plot_depth.html">plot_depth</a></span><span class="op">(</span><span class="va">DN1CD34_1.depth</span><span class="op">$</span><span class="va">VerySensitive</span>,<span class="st">"VerySensitive"</span><span class="op">)</span></code></pre></div>
+<p>Plot for variant signature</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repr.plot.width<span class="op">=</span><span class="fl">16</span>, repr.plot.height<span class="op">=</span><span class="fl">6</span><span class="op">)</span>
+<span class="va">ps</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>
+<span class="kw">for</span><span class="op">(</span><span class="va">name</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">DN1CD34_1.Variants.feature.lst</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
+<span class="va">p</span><span class="op">&lt;-</span><span class="fu"><a href="reference/MutationProfile.bulk.html">MutationProfile.bulk</a></span><span class="op">(</span><span class="va">DN1CD34_1.Variants.feature.lst</span><span class="op">[[</span><span class="va">name</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">Variants</span><span class="op">)</span><span class="op">+</span><span class="fu">ggtitle</span><span class="op">(</span><span class="va">name</span><span class="op">)</span><span class="op">+</span><span class="fu">theme</span><span class="op">(</span>title <span class="op">=</span><span class="fu">element_text</span><span class="op">(</span>size<span class="op">=</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span>
+<span class="va">ps</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">ps</span>,<span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="fu">grid.arrange</span><span class="op">(</span>grobs<span class="op">=</span><span class="va">ps</span><span class="op">)</span></code></pre></div>
+<p>Plot rssential variant metrics</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">plot_variant</span><span class="op">(</span><span class="va">DN1CD34_1.VariantsGTSummary</span>,<span class="va">DN1CD34_1.Variants.feature.lst</span>,depth<span class="op">=</span><span class="va">DN1CD34_1.depth</span>,cat<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Total"</span>,<span class="st">"VerySensitive"</span>,<span class="st">"Sensitive"</span>,<span class="st">"Specific"</span><span class="op">)</span>,p4xlim <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></code></pre></div>
+</div>
 </div>
 </div>
   </div>

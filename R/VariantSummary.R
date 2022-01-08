@@ -44,8 +44,7 @@ return(depth)
 #' @param RawGenotypes Well-named "RawGenotypes.Sensitive.StrandBalance" file in function CW_mgatk.read
 #' @param filterN Boolean variable, if true filter out the variant with "N"
 #' @return Genotypes.summary a dataframe that summarize several metrics for each genotype
-#' @examples
-#' Usually used inside of function CW_mgatk.read
+#' @examples Usually used inside of function CW_mgatk.read
 #' @export
 #' @import dplyr
 GTSummary<-function(RawGenotypes,filterN=T){ ## At this moment, the context with N is probably prone to error due to mapping, in the future should work on realignment
@@ -77,8 +76,7 @@ return(Genotypes.summary)
 #' @param path The XX/final folder, the output from mitoV
 #' @param Processed Boolean variable (Default F), if true directly readRDS("VariantsGTSummary.RDS") or, generate and saveout "VariantsGTSummary.RDS"
 #' @return this returns depth which is a list of 4 df (Total/VerySensitive/Sensitive/Specific), each is a genotype summary
-#' @examples
-#' WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
+#' @examples WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
 #' DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
 #' @export
 CW_mgatk.read<-function(path,Processed=F){
