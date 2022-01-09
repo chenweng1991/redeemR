@@ -1,6 +1,33 @@
 ## code to prepare `DATASET` dataset goes here
 # Simple reverse complement function
 library(data.table)
+library(stringi)
+library(dplyr)
+library(gsubfn)
+##Prepare Mito sequence context
+mitoref<-read.table("/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/Run210706L2/COMBINE_CALLV/CW_mgatk_test/final/chrM_refAllele.txt")
+mitobasebias<-table(toupper(mitoref$V2)) %>% as.data.frame()
+# Important! Make Context dictionary
+# library("insect",lib="/home/cweng/R/x86_64-pc-linux-gnu-library/4.1-focal")
+
+
+rc<-function(input){
+o<-stri_reverse(gsubfn(".", list("A" = "T", "T" = "A","C"="G", "G"="C"), input))
+return(o)
+}
+
+Contexts<-c()
+for(i in 2:(nrow(mitoref)-1)){
+    Context<-paste(mitoref$V2[i-1],mitoref$V2[i],mitoref$V2[i+1],sep="")
+    Contexts<-c(Contexts,toupper(Context))
+}
+ContextsDic<-c("GGA",Contexts,"TGG")
+names(ContextsDic)<-as.character(1:nrow(mitoref))
+head(ContextsDic)
+idx<-which(substr(ContextsDic,2,2) %in% c("G","A"))
+ContextsDic[idx]<-stri_reverse(rc(ContextsDic[idx]))
+
+# This is actually just complement. It's ok.
 reverse_complement <- function(s){
   chartr("ATGC","TACG",s)
 }
@@ -36,4 +63,4 @@ ref_all_long$three_plot <- ifelse(ref_all_long$strand == "L", ref_all_long$three
 ref_all_long$group_change <- ifelse(ref_all_long$strand == "L", ref_all_long$change, ref_all_long$change_rc)
 
 
-usethis::use_data(ref_all_long, overwrite = TRUE)
+usethis::use_data(ref_all_long,ContextsDic, overwrite = TRUE)

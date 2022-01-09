@@ -49,6 +49,7 @@ return(depth)
 #' @import dplyr
 GTSummary<-function(RawGenotypes,filterN=T){ ## At this moment, the context with N is probably prone to error due to mapping, in the future should work on realignment
 # Make Depth dictionary
+data(ContextsDic)
 Depth<-unique(RawGenotypes[,c("Cell","Pos","Depth")])
 Depthdic<-Depth$Depth
 names(Depthdic)<-paste(Depth$Cell, Depth$Pos,sep="")
