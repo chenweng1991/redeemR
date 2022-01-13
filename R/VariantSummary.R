@@ -3,18 +3,34 @@
 #' This function allows you to summarize the depth
 #' @param path The XX/final folder, the output from mitoV
 #' @param Processed Boolean variable(Default T), if true directly readRDS("depth.RDS") or, generate and saveout "depth.RDS"
+#' @param CellSubset A vector of ATAC cell names for subsetting, default is NA
+#' @param cellSubSetName a string to name this Subset, should explain with the CellSubset
 #' @return this returns depth which is a list of 4 list(Total/VerySensitive/Sensitive/Specific), each contains 2 df, summarize mito coverage by Pos/Cell
 #' @examples
 #' WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
 #' DN1CD34_1.depth<-DepthSummary(WD,Processed = T)
 #' @export
 #' @import dplyr
-DepthSummary<-function(path,Processed=T){
+DepthSummary<-function(path,Processed=T,CellSubset=NA,cellSubSetName=NA){
 setwd(path)
 if(Processed){
-    depth<-readRDS("depth.RDS")
+    if(is.na(cellSubSetName)){
+      depth<-readRDS("depth.RDS")
+    }else{
+      depth<-readRDS(paste(cellSubSetName,"depth.RDS",sep="."))
+    }
 }else{
     QualifiedTotalCts<-read.table("QualifiedTotalCts")
+    if(!is.na(cellSubSetName)){
+      print("Will subset cells...")
+      print(paste(length(unique(QualifiedTotalCts$V1)),"Cells in QualifiedTotalCts"))
+      print(paste(length(CellSubset),"Cells in the provided subset"))
+      print(paste(length(which(CellSubset %in% unique(QualifiedTotalCts$V1))),"Subset cells overlap in QualifiedTotalCts"))
+      QualifiedTotalCts<-subset(QualifiedTotalCts,V1 %in% CellSubset)
+    }else{
+      print("Use all cells")
+      print(paste(length(unique(QualifiedTotalCts$V1)),"Cells in QualifiedTotalCts"))
+    }
     Pos.MeanCov<-QualifiedTotalCts %>% group_by(V2) %>% dplyr::summarise(meanCov=mean(V3))
     Cell.MeanCov<-QualifiedTotalCts %>% group_by(V1) %>% dplyr::summarise(meanCov=mean(V3))
     depth_Total<-list(Pos.MeanCov,Cell.MeanCov)
@@ -32,7 +48,11 @@ if(Processed){
     depth_Specific<-list(Pos.MeanCov,Cell.MeanCov)
 
     depth<-list(Total=depth_Total,VerySensitive=depth_VerySensitive,Sensitive=depth_Sensitive,Specific=depth_Specific)
-    saveRDS(depth,"depth.RDS")
+    if(is.na(cellSubSetName)){
+      saveRDS(depth,"depth.RDS")
+    }else{
+      saveRDS(depth,paste(cellSubSetName,"depth.RDS",sep="."))
+    }
 return(depth)
 }
 }
@@ -120,8 +140,7 @@ return(VariantsGTSummary)
 #' @param QualifyCellCut Default 10, Minimum depth for a qualified cell
 #' @return this returns feature.list
 #' @examples
-#' plot_variant(DN1CD34_1.VariantsGTSummary,DN1CD34_1.Variants.feature.lst,depth=DN1CD34_1.depth,cat=
-#' c("Total","VerySensitive","Sensitive","Specific"),p4xlim = 30)
+#' DN1CD34_1.Variants.feature.lst<-Vfilter_v3(InputSummary=DN1CD34_1.VariantsGTSummary,depth=DN1CD34_1.depth)
 #' @export
 #' @import dplyr
 Vfilter_v3<-function(InputSummary,depth,Rmvhomo=F,Min_Cells=2, Max_Count_perCell=2,QualifyCellCut=10){

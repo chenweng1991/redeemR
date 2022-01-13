@@ -33,6 +33,5 @@ this returns feature.list
 This function allows you to filter variants
 }
 \examples{
-plot_variant(DN1CD34_1.VariantsGTSummary,DN1CD34_1.Variants.feature.lst,depth=DN1CD34_1.depth,cat=
-c("Total","VerySensitive","Sensitive","Specific"),p4xlim = 30)
+DN1CD34_1.Variants.feature.lst<-Vfilter_v3(InputSummary=DN1CD34_1.VariantsGTSummary,depth=DN1CD34_1.depth)
 }
