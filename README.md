@@ -4,7 +4,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of scMitoTracing is to ...
+The goal of scMitoTracing is to analyze the deep mito variants and lineage tracing
+Package testing Jupyter notebook is here lab/solexa_weissman/cweng/Packages/scMitoTracing/scMitoTracingRunningTest.ipynb
 
 ## Installation
 
