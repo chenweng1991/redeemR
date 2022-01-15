@@ -11,16 +11,8 @@
 #' DN1CD34_1.depth<-DepthSummary(WD,Processed = T)
 #' @export
 #' @import dplyr
-DepthSummary<-function(path,Processed=T,CellSubset=NA,cellSubSetName=NA){
-setwd(path)
-if(Processed){
-    if(is.na(cellSubSetName)){
-      depth<-readRDS("depth.RDS")
-    }else{
-      depth<-readRDS(paste(cellSubSetName,"depth.RDS",sep="."))
-    }
-}else{
-    QualifiedTotalCts<-read.table("QualifiedTotalCts")
+DepthSummary<-function(path,CellSubset=NA,cellSubSetName=NA){
+    QualifiedTotalCts<-read.table(paste(path,"/QualifiedTotalCts",sep=""))
     if(!is.na(cellSubSetName)){
       print("Will subset cells...")
       print(paste(length(unique(QualifiedTotalCts$V1)),"Cells in QualifiedTotalCts"))
@@ -48,14 +40,9 @@ if(Processed){
     depth_Specific<-list(Pos.MeanCov,Cell.MeanCov)
 
     depth<-list(Total=depth_Total,VerySensitive=depth_VerySensitive,Sensitive=depth_Sensitive,Specific=depth_Specific)
-    if(is.na(cellSubSetName)){
-      saveRDS(depth,"depth.RDS")
-    }else{
-      saveRDS(depth,paste(cellSubSetName,"depth.RDS",sep="."))
-    }
 return(depth)
 }
-}
+
 
 
 #' Function to generate GTS summary

@@ -19,16 +19,67 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/AddDatatoplot_clustering-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/AddDatatoplot_clustering.html</loc>
+  </url>
+  <url>
+    <loc>/reference/AddDist-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/AddDist.html</loc>
+  </url>
+  <url>
+    <loc>/reference/AddTree-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/AddTree.html</loc>
+  </url>
+  <url>
     <loc>/reference/CW_mgatk.read.html</loc>
+  </url>
+  <url>
+    <loc>/reference/CountVperCell.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Create_mitoTracing.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Datatoplots-class.html</loc>
   </url>
   <url>
     <loc>/reference/DepthSummary.html</loc>
   </url>
   <url>
+    <loc>/reference/DistObjects-class.html</loc>
+  </url>
+  <url>
     <loc>/reference/GTSummary.html</loc>
   </url>
   <url>
+    <loc>/reference/Make_matrix-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Make_matrix.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Make_tree-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Make_tree.html</loc>
+  </url>
+  <url>
     <loc>/reference/MutationProfile.bulk.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SeuratLSIClustering-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SeuratLSIClustering.html</loc>
+  </url>
+  <url>
+    <loc>/reference/TREE-class.html</loc>
   </url>
   <url>
     <loc>/reference/Vfilter_v3.html</loc>
@@ -37,6 +88,15 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/mitoTracing-class.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_depth.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_variant.html</loc>
+  </url>
+  <url>
+    <loc>/reference/show-mitoTracing-method.html</loc>
   </url>
 </urlset>

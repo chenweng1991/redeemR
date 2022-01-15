@@ -57,13 +57,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">DepthSummary</span><span class="op">(</span><span class="va">path</span>, Processed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">DepthSummary</span><span class="op">(</span><span class="va">path</span>, CellSubset <span class="op">=</span> <span class="cn">NA</span>, cellSubSetName <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>path</dt>
 <dd><p>The XX/final folder, the output from mitoV</p></dd>
+<dt>CellSubset</dt>
+<dd><p>A vector of ATAC cell names for subsetting, default is NA</p></dd>
+<dt>cellSubSetName</dt>
+<dd><p>a string to name this Subset, should explain with the CellSubset</p></dd>
 <dt>Processed</dt>
 <dd><p>Boolean variable(Default T), if true directly readRDS("depth.RDS") or, generate and saveout "depth.RDS"</p></dd>
 </dl></div>
@@ -76,6 +80,7 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">WD</span><span class="op">&lt;-</span><span class="st">"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"</span></span>
 <span class="r-in"><span class="va">DN1CD34_1.depth</span><span class="op">&lt;-</span><span class="fu">DepthSummary</span><span class="op">(</span><span class="va">WD</span>,Processed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in DepthSummary(WD, Processed = T):</span> unused argument (Processed = T)</span>
 </code></pre></div>
     </div>
   </div>
@@ -90,7 +95,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer></div>

@@ -4,16 +4,16 @@
 \alias{DepthSummary}
 \title{Function to summarize the depth (Total that passed Q30)}
 \usage{
-DepthSummary(path, Processed = T, CellSubset = NA, cellSubSetName = NA)
+DepthSummary(path, CellSubset = NA, cellSubSetName = NA)
 }
 \arguments{
 \item{path}{The XX/final folder, the output from mitoV}
 
-\item{Processed}{Boolean variable(Default T), if true directly readRDS("depth.RDS") or, generate and saveout "depth.RDS"}
-
 \item{CellSubset}{A vector of ATAC cell names for subsetting, default is NA}
 
 \item{cellSubSetName}{a string to name this Subset, should explain with the CellSubset}
+
+\item{Processed}{Boolean variable(Default T), if true directly readRDS("depth.RDS") or, generate and saveout "depth.RDS"}
 }
 \value{
 this returns depth which is a list of 4 list(Total/VerySensitive/Sensitive/Specific), each contains 2 df, summarize mito coverage by Pos/Cell
