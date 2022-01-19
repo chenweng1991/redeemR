@@ -1,0 +1,6 @@
+library(biovizBase)
+library(GenomeInfoDb)
+library(EnsDb.Hsapiens.v86)
+library(BuenColors)
+library(hdf5r)
+library(devtools)

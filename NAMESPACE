@@ -3,6 +3,7 @@
 export(AddDatatoplot_clustering)
 export(AddDist)
 export(AddTree)
+export(BinaryDist)
 export(CW_mgatk.read)
 export(Create_mitoTracing)
 export(DepthSummary)
