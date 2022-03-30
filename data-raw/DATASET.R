@@ -64,3 +64,9 @@ ref_all_long$group_change <- ifelse(ref_all_long$strand == "L", ref_all_long$cha
 
 
 usethis::use_data(ref_all_long,ContextsDic, overwrite = TRUE)
+
+
+# CellPCT
+# CellPCT$muRate<-CellPCT[,c("PCT.D4BM","PCT.D4HPC","PCT.D4HSC","PCT.D9BM","PCT.D9HPC","PCT.D9HSC","PCT.D1BM","PCT.D1HPC")] %>% apply(.,1,median)
+CellPCT<-readRDS("/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/RDS/DN1_DN4_DN9.CellPCT")
+usethis::use_data(CellPCT,overwrite = TRUE)

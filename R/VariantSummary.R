@@ -167,3 +167,26 @@ feature.list<-c(feature.list,list(out))
     names(feature.list)<-Names
     return(feature.list)
 }
+
+
+#' Function to compute the reject rate(The filtering rate in concensus variant calling)
+#'
+#' This function allows you to computae the filtering rate for each single cell
+#' @param WD The path to the work space usually  XXX/mitoV/final
+#' @return a dataframe that store the percentage of variant in a given threahold again total
+#' @examples
+#' DN9_BMMC_RejectRate<-ComputeRejectRate("/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/Donor9/DN9_BMMC/MTenrichCombine/mitoV/final/")
+#' @export
+ComputeRejectRate<-function(WD){
+Total<-read.table(paste(WD,"/RawGenotypes.Total.StrandBalance",sep=""))
+VerySensitive<-read.table(paste(WD,"/RawGenotypes.VerySensitive.StrandBalance",sep=""))
+Sensitive<-read.table(paste(WD,"/RawGenotypes.Sensitive.StrandBalance",sep=""))
+Specific<-read.table(paste(WD,"/RawGenotypes.Specific.StrandBalance",sep=""))
+res<-Total %>% group_by(V2) %>% dplyr::summarise(Total=n())
+res<-VerySensitive %>% group_by(V2) %>% dplyr::summarise(VerySensitive=n()) %>% merge(res,.,by="V2")
+res<-Sensitive %>% group_by(V2) %>% dplyr::summarise(Sensitive=n()) %>% merge(res,.,by="V2")
+res<-Specific %>% group_by(V2) %>% dplyr::summarise(Specific=n()) %>% merge(res,.,by="V2")
+res<-res %>% mutate(VerySensitive=VerySensitive/Total) %>% mutate(Sensitive=Sensitive/Total) %>% mutate(Specific=Specific/Total)
+colnames(res)[1]<-"Cell"
+return(res)
+}

@@ -10,7 +10,7 @@ This will generate a basic phylogenetic tree}
 \arguments{
 \item{object}{mitoTracin class}
 
-\item{d}{"jaccard" or "Dice" or "jaccard3W"}
+\item{d}{"jaccard" or "Dice" or "jaccard3W" or  "w_jaccard"  "w_cosine"  "LSIdist"}
 
 \item{algorithm}{the algorithm used to build the tree, choose from "nj" and "upgma"}
 }

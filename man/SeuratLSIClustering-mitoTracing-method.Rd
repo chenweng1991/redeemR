@@ -5,7 +5,13 @@
 \title{SeuratLSIClustering
 This will use the mito variants for Seurat clustering (LSI based)}
 \usage{
-\S4method{SeuratLSIClustering}{mitoTracing}(object, binary = T, res = 0.3)
+\S4method{SeuratLSIClustering}{mitoTracing}(
+  object,
+  binary = T,
+  res = 0.6,
+  lsidim = 2:50,
+  rmvariants = c("Variants310TC", "Variants3109TC", "Variants5764CT")
+)
 }
 \arguments{
 \item{binary}{Default is tree, to make use of the binary matrix}

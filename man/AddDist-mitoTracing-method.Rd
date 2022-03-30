@@ -5,10 +5,39 @@
 \title{AddDist
 This add Jaccard, Dice, Jaccard3W distance and stored in DistObjects}
 \usage{
-\S4method{AddDist}{mitoTracing}(object)
+\S4method{AddDist}{mitoTracing}(
+  object,
+  jaccard = T,
+  dice = T,
+  jaccard3w = T,
+  w_jaccard = T,
+  w_cosine = T,
+  weightDF = NULL,
+  NN = 1,
+  LSIdist = T,
+  dim = 2:50
+)
 }
 \arguments{
 \item{object}{mitoTracin class}
+
+\item{jaccard}{default=T}
+
+\item{dice}{default=T}
+
+\item{jaccard3w}{default=T}
+
+\item{w_jaccard}{default=T}
+
+\item{w_cosine}{default=T}
+
+\item{NN}{To replace NA, which means a variant shown in the object is not shown in the weight vector, with a number, default is 1 for jaccard system.}
+
+\item{LSIdist}{default=T}
+
+\item{dim}{the dimensions to use to calculate LSI distance default is 2:50}
+
+\item{weight}{A two column dataframe, "Variant"(The variant name should match cell-variant matrix column, e.g, Variants310TC), "weight" (numeric)}
 }
 \value{
 mitoTracing class

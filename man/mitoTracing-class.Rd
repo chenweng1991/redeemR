@@ -23,6 +23,8 @@ Major mitoTracing class that store clonal-resolved multi-omics
 
 \item{\code{Cts.Mtx.bi}}{A sparse matrix cell-mitoVariants, The variant count has been binarized into 0 and 1}
 
+\item{\code{Ctx.Mtx.depth}}{A sparse matrix cell-mitoVariants(total counts for each position), store the variant count}
+
 \item{\code{para}}{A character showing the parameter of this object}
 
 \item{\code{Seurat}}{Seurat object storing the clonal clustering results}
