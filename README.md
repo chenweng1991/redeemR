@@ -113,5 +113,15 @@ CD34_BMMC_mitoTracing.VerySensitive<-Make_matrix(CD34_BMMC_mitoTracing.VerySensi
 CD34_BMMC_mitoTracing.VerySensitive<-SeuratLSIClustering(CD34_BMMC_mitoTracing.VerySensitive)
 CD34_BMMC_mitoTracing.VerySensitive<-AddDatatoplot_clustering(CD34_BMMC_mitoTracing.VerySensitive)
 ```
+### Clonal clustering and distance metrics (Updated 3/30/22)
+``` r
+## Make a weight matrix (For different variants) based on recurrencey. It is required for weighted distance calculation
+data(CellPCT)
+V.weight<-data.frame(weight=1-CellPCT$muRate)
+V.weight$Variants<-paste("Variants",gsub("_","",CellPCT$Variant),sep="")
+
+BMMC_mitoTracing<-SeuratLSIClustering(BMMC_mitoTracing,lsidim=2:50,rmvariants=c("Variants310TC","Variants3109TC","Variants5764CT"))
+BMMC_mitoTracing<-AddDist(BMMC_mitoTracing,weightDF=V.weight,LSIdist=T,dim=2:50)
+```
 
 
