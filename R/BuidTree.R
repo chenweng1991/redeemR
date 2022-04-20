@@ -653,3 +653,41 @@ Cells4Nodes<-lapply(Tips4Nodes.List,function(x){tr$tip.label[x]})
 names(Cells4Nodes)<-InterestNode    
 return(Cells4Nodes)    
 }
+
+#' Define a function to make nn list, which can be further used to make adjacency matrix 
+#' This scan row by row, looking for k.param nearest neighbours
+#' @param d Distance matrix, can be a dist object or matrix 
+#' @param k.param Default is 15
+#' @export
+#' @return return an nn list, which has two components: nn$idx and nn$dist
+MakeNN<-function(d,k.param=15){
+d<-as.matrix(d)
+n.cells<-dim(d)[1]
+object<-d
+knn.mat <- matrix(data = 0, ncol = k.param, nrow = n.cells)
+knd.mat <- knn.mat 
+for (i in 1:n.cells) { 
+  knn.mat[i, ] <- order(object[i, ])[1:k.param] 
+  knd.mat[i, ] <- object[i, knn.mat[i, ]] 
+} 
+nn.idx <- knn.mat[, 1:k.param]
+nn.dist<- knd.mat[, 1:k.param]
+nn<-list(idx=nn.idx,dist=nn.dist)
+return(nn)
+}
+
+
+#' Define a function convert nn list to adjacency matrix that can be further used for igraph 
+#' 
+#' @param nn  nn list, which has two components: nn$idx and nn$dist
+#' @export
+#' @return return an nn.matrix. This is adjacency matrix can be input to igraph graph<-graph_from_adjacency_matrix(nn.matrix,diag = F,mode = "undirected")
+NN2M<-function(nn){
+k.param<-ncol(nn$idx) 
+j <- as.numeric(x = t(x = nn$idx))
+i <- ((1:length(x = j)) - 1) %/% k.param + 1
+nn.matrix <- sparseMatrix(i = i, j = j, x = 1, dims = c(nrow(nn$idx), nrow(nn$idx)))
+rownames(x = nn.matrix) <- rownames(x = nn$idx)
+colnames(x = nn.matrix) <- rownames(x = nn$idx)
+return(nn.matrix)
+}
