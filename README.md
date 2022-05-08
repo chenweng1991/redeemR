@@ -124,4 +124,72 @@ BMMC_mitoTracing<-SeuratLSIClustering(BMMC_mitoTracing,lsidim=2:50,rmvariants=c(
 BMMC_mitoTracing<-AddDist(BMMC_mitoTracing,weightDF=V.weight,LSIdist=T,dim=2:50)
 ```
 
+### Subset a mitotracing object (Updated 5/8/22)
+``` r
+# Example from HSC_multiome_Het.ipynb
+DN4_stemcell_mitoTracing.seed.verysensitive<-Subset_MitoTracing(DN4_stemcell_mitoTracing.verysensitive,Cells=topcell)
+DN4_stemcell_mitoTracing.seed.verysensitive<SeuratLSIClustering(DN4_stemcell_mitoTracing.seed.verysensitive,res=2,lsidim=3:50,rmvariants=c("Variants310TC","Variants3109TC","Variants5764CT"))
+DN4_stemcell_mitoTracing.seed.verysensitive<-AddDist(DN4_stemcell_mitoTracing.seed.verysensitive,weightDF=V.weight,LSIdist=T,dim=3:50)
+```
+
+### Make tree (Updated 5/8/22)
+```r
+DN4_stemcell_mitoTracing.seed.verysensitive<-Make_tree(DN4_stemcell_mitoTracing.seed.verysensitive,d = "w_jaccard",algorithm = "nj",onlyreturntree = F)
+```
+
+### Add depth, assign variant to tree (Updated 5/8/22)  
+``` r
+## Load depth
+## Prepare the depth, given the order created: "BMMC":-1 ,"HSPC": -2, "HSC": -3
+#DN4_WD_BMMC="/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/Donor4/DN4_BMMC/MTenrichCombine/mitoV/final/"
+DN4_WD_HSPC="/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/Donor4/DN4_HPC/MTenrichCombine/mitoV/final/"
+DN4_WD_HSC="/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/Donor4/DN4_HSC/MTenrichCombine/mitoV/final/"
+q_HSPC<-read.table(paste(DN4_WD_HSPC,"QualifiedTotalCts",sep=""))
+q_HSC<-read.table(paste(DN4_WD_HSC,"QualifiedTotalCts",sep=""))
+q_HSPC$V1<-paste(q_HSPC$V1,"2",sep="_")
+q_HSC$V1<-paste(q_HSC$V1,"3",sep="_")
+quality<-rbind(q_HSPC,q_HSC)
+DN4_stemcell.seed.depth<-subset(quality,V1 %in% DN4_stemcell_mitoTracing.seed.verysensitive@CellMeta$Cell)
+
+## add depth
+DN4_stemcell_mitoTracing.seed.verysensitive<-Add_DepthMatrix(DN4_stemcell_mitoTracing.seed.verysensitive,quality)
+
+## maximum-liklihood-based variant assignment
+DN4_stemcell_mitoTracing.seed.verysensitive<-Add_AssignVariant(DN4_stemcell_mitoTracing.seed.verysensitive,n.cores = 8)
+```
+
+### Make Allnodes(Node|Parent|Freq|CladeSize), visulize the branchlength by number of assigned variants (Updated 5/8/22)
+``` r
+Allnodes=MakeAllNodes(mitoTracing,prob.cut=0.1)
+TreeData<-DN4_stemcell_mitoTracing.seed.verysensitive@TREE@phylo
+TreeData$edge.length<-Allnodes[match(DN4_stemcell_mitoTracing.seed.verysensitive@TREE@phylo$edge[,2],Allnodes$Node),] %>% .$Freq
+options(repr.plot.width=3, repr.plot.height=24,repr.plot.res=120)
+as.treedata(TreeData) %>% ggtree(.)+theme_tree2()
+```
+
+### Cut the tree in to clones(Updated 5/8/22)  
+A useful tool from phanforn[https://rdrr.io/cran/phangorn/man/Ancestors.html] 
+
+``` r
+DN4_stemcell_mitoTracing.seed.verysensitive<-Add_tree_cut(DN4_stemcell_mitoTracing.seed.verysensitive,MinCell = 30,N = 1, prob.cut = 0.3)
+
+#Visulize
+DN4_stemcell_mitoTracing.seed.verysensitive@CellMeta$Clone_merge<-as.factor(DN4_stemcell_mitoTracing.seed.verysensitive@CellMeta$Clone_merge)
+library(RColorBrewer)
+n=length(unique(DN4_stemcell_mitoTracing.seed.verysensitive@CellMeta$Clone_merge))
+qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+options(repr.plot.width=6, repr.plot.height=6,repr.plot.res=100)
+p<-ggtree(DN4_stemcell_mitoTracing.seed.verysensitive@TREE@treedata,layout="circular", branch.length='none') 
+p+geom_fruit( 
+         data=DN4_stemcell_mitoTracing.seed.verysensitive@CellMeta, 
+         geom=geom_tile, 
+         mapping=aes(y=Cell,x=2,fill=Clone_merge), 
+         pwidth=0.001, 
+         width=3, 
+         offset=0.05
+     )+scale_fill_manual(values=col_vector)
+```
+
+
 
