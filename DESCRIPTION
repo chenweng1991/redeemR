@@ -1,4 +1,4 @@
-Package: scMitoTracing
+Package: redeemR
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
@@ -10,10 +10,31 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Suggests: 
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr
-Depends: 
-    R (>= 2.10)
-LazyData: true
+Imports: 
+    ape,
+    doMC,
+    doParallel,
+    dplyr,
+    foreach,
+    ggExtra,
+    ggnewscale,
+    ggplot2,
+    ggtree,
+    ggtreeExtra,
+    gridExtra,
+    igraph,
+    Matrix,
+    phangorn,
+    phytools,
+    pryr,
+    qvalue,
+    RColorBrewer,
+    reshape2,
+    SCAVENGE (>= 1.0.1),
+    Seurat,
+    stats,
+    tibble,
+    tidytree,
+    treeio
+Remotes: 
+    github::sankaranlab/SCAVENGE
