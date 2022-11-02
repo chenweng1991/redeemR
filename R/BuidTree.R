@@ -384,17 +384,20 @@ setMethod(f="Add_DepthMatrix",
 #' @param mitoTracing  Need to have mitoTracing@Ctx.Mtx.depth (By Add_DepthMatrix),  mitoTracing@Cts.Mtx  mitoTracing@Cts.Mtx.bi, mitoTracing@TREE
 #' @export
 #' @return mitoTracing with @AssignedVarian list of two p is a probability matrix of variants vs edges (Rowsum is 1) and Variant.assign.report, a dataframe (Variant|Edge.Assign|prob) 
-#' @import foreach doParallel
+#' @import foreach doParallel pryr doMC
 setMethod(f="Add_AssignVariant",
           signature="mitoTracing",
           definition=function(mitoTracing=DN1_HSC_mitoTracing.VerySensitive,n.cores=4){
 require(foreach)
-require(doParallel)
+# require(doParallel)
+require(doMC)
+require(pryr)
 tree<-mitoTracing@TREE@phylo
 mtr<-mitoTracing@Cts.Mtx %>%  as.matrix() %>% t  # Each row is a variant, each column is a cell
 mtr.bi<-mitoTracing@Cts.Mtx.bi %>%  as.matrix() %>% t  # Each row is a variant, each column is a cell
 depth<-mitoTracing@Ctx.Mtx.depth  %>% as.matrix() %>% t  # Each row is a variant, each column is a cell
 mtr.bi.t<-t(mtr.bi) # each row is a cell
+mtr.bi<-mtr.bi[,tree$tip.label]
 ## Prepare df_profile_mtx.t 
 df<-reconstruct_genotype_summary(tree)
 df_profile_mtx<-df2ProfileMtx(df)
@@ -410,10 +413,13 @@ Zero.logV<-log(Zero.p)  # A matrix of log(probability of zero given w/ mutation 
 NonZero.logV<-log(1-Zero.p) # A matrix of log(probability of 1 or >=1 given w/ mutation in the cell)  Variant vs cell
 Zero.logP<-log(0.95) # A matrix of log(probability of zero given no mutation in the cell)  Variant vs cell
 NonZero.logP<-log(1-0.95) # A matrix of log(probability of 1 or >=1 given no mutation in the cell)  Variant vs cell
+print("(use doMC)Will gc in each loop; Befrore going into the loop, the memory use is:")
+print(mem_used())
 ## Compute the loglik
-my.cluster <- parallel::makeCluster(n.cores)
-print(my.cluster)
-doParallel::registerDoParallel(cl = my.cluster)
+# my.cluster <- parallel::makeCluster(n.cores,type="FORK")
+# print(my.cluster)
+# doParallel::registerDoParallel(cl = my.cluster)
+registerDoMC(n.cores)
 Loglik<-foreach (i =1:nrow(mtr.bi),.combine='rbind') %dopar%  # To loop through all variants
 {
     ## Make indicator matries for 1-1 (Inside the clade, and is mutation) and 0-0 (outside of clade, and is not mutation) 
@@ -438,12 +444,17 @@ Loglik<-foreach (i =1:nrow(mtr.bi),.combine='rbind') %dopar%  # To loop through 
     Loglik.i<-colSums(Loglik_11+Loglik_10+Loglik_01+Loglik_00)
     ## Make the LogLik matrix Variant(row) verses nodes(columns)
     ## cleanup
-    rm(x,x_11,x_00,x_01,x_10,Loglik_10,Loglik_01,Loglik_00,Loglik_11)
-    gc()
+    # rm(x,x_11,x_00,x_01,x_10,Loglik_10,Loglik_01,Loglik_00,Loglik_11)
+    # gc()
+    # # sink("Memory.record",append=TRUE)
+    # cat(paste("i=",i,"\n",sep=""))
+    # cat(paste(round(as.numeric(mem_used())/1000000000,2),"GB"))
     return(Loglik.i)
 }
+print("The foreach loop is completed, the memory use is")
+mem_used()
 row.names(Loglik)<-row.names(mtr.bi)
-parallel::stopCluster(cl = my.cluster)
+# parallel::stopCluster(cl = my.cluster)
 ## Compute the probability
 n=dim(mtr.bi)[1]
 edge_ml=apply(Loglik,1,which.max) %>% as.numeric

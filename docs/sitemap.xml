@@ -19,6 +19,9 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/ATAC_Wrapper.html</loc>
+  </url>
+  <url>
     <loc>/reference/AddDatatoplot_clustering-mitoTracing-method.html</loc>
   </url>
   <url>
@@ -31,19 +34,52 @@
     <loc>/reference/AddDist.html</loc>
   </url>
   <url>
+    <loc>/reference/AddHemSignature.html</loc>
+  </url>
+  <url>
     <loc>/reference/AddTree-mitoTracing-method.html</loc>
   </url>
   <url>
     <loc>/reference/AddTree.html</loc>
   </url>
   <url>
+    <loc>/reference/Add_AssignVariant-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Add_AssignVariant.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Add_DepthMatrix-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Add_DepthMatrix.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Add_tree_cut-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Add_tree_cut.html</loc>
+  </url>
+  <url>
+    <loc>/reference/BinaryDist.html</loc>
+  </url>
+  <url>
     <loc>/reference/CW_mgatk.read.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Clone_FinderMarker.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ComputeRejectRate.html</loc>
   </url>
   <url>
     <loc>/reference/CountVperCell.html</loc>
   </url>
   <url>
     <loc>/reference/Create_mitoTracing.html</loc>
+  </url>
+  <url>
+    <loc>/reference/DE.gettripple.html</loc>
   </url>
   <url>
     <loc>/reference/Datatoplots-class.html</loc>
@@ -55,7 +91,34 @@
     <loc>/reference/DistObjects-class.html</loc>
   </url>
   <url>
+    <loc>/reference/DoDE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/FromDist2Graph.html</loc>
+  </url>
+  <url>
+    <loc>/reference/GEM_Wrapper.html</loc>
+  </url>
+  <url>
     <loc>/reference/GTSummary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/LineageBiasPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/MakeAllNodes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/MakeDF4Regress.html</loc>
+  </url>
+  <url>
+    <loc>/reference/MakeNN.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Make_AnnTable.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Make_Cells4Nodes.html</loc>
   </url>
   <url>
     <loc>/reference/Make_matrix-mitoTracing-method.html</loc>
@@ -70,7 +133,43 @@
     <loc>/reference/Make_tree.html</loc>
   </url>
   <url>
+    <loc>/reference/MergeMtx.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Motifenrich.binom.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Multi_Wrapper.html</loc>
+  </url>
+  <url>
     <loc>/reference/MutationProfile.bulk.html</loc>
+  </url>
+  <url>
+    <loc>/reference/NN2M.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ProgenyMapping.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ProgenyMapping_np.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Reclustering.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Reclustering_hm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Run_Lin_regression.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Run_Lin_regression_poi.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Runplot_scale_2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Runplot_scale_3.html</loc>
   </url>
   <url>
     <loc>/reference/SeuratLSIClustering-mitoTracing-method.html</loc>
@@ -79,10 +178,34 @@
     <loc>/reference/SeuratLSIClustering.html</loc>
   </url>
   <url>
+    <loc>/reference/Subset_MitoTracing.html</loc>
+  </url>
+  <url>
     <loc>/reference/TREE-class.html</loc>
   </url>
   <url>
+    <loc>/reference/Tomerge_v2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Translate_RNA2ATAC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Translate_simple_ATAC2RNA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Translate_simple_RNA2ATAC.html</loc>
+  </url>
+  <url>
     <loc>/reference/Vfilter_v3.html</loc>
+  </url>
+  <url>
+    <loc>/reference/add_derived_profile_info.html</loc>
+  </url>
+  <url>
+    <loc>/reference/df2ProfileMtx.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_ancestral_nodes.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
@@ -94,9 +217,27 @@
     <loc>/reference/plot_depth.html</loc>
   </url>
   <url>
+    <loc>/reference/plot_npSummary.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_variant.html</loc>
   </url>
   <url>
+    <loc>/reference/quick_w_cosine.html</loc>
+  </url>
+  <url>
+    <loc>/reference/quick_w_jaccard.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reconstruct_genotype_summary.html</loc>
+  </url>
+  <url>
     <loc>/reference/show-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/split_profile.html</loc>
+  </url>
+  <url>
+    <loc>/reference/str2vector.html</loc>
   </url>
 </urlset>

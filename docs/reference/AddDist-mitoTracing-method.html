@@ -63,13 +63,42 @@ This add Jaccard, Dice, Jaccard3W distance and stored in DistObjects</p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for mitoTracing</span>
-<span class="fu"><a href="AddDist.html">AddDist</a></span><span class="op">(</span><span class="va">object</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="AddDist.html">AddDist</a></span><span class="op">(</span>
+  <span class="va">object</span>,
+  jaccard <span class="op">=</span> <span class="cn">T</span>,
+  dice <span class="op">=</span> <span class="cn">T</span>,
+  jaccard3w <span class="op">=</span> <span class="cn">T</span>,
+  w_jaccard <span class="op">=</span> <span class="cn">T</span>,
+  w_cosine <span class="op">=</span> <span class="cn">T</span>,
+  weightDF <span class="op">=</span> <span class="cn">NULL</span>,
+  NN <span class="op">=</span> <span class="fl">1</span>,
+  LSIdist <span class="op">=</span> <span class="cn">T</span>,
+  dim <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">50</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>mitoTracin class</p></dd>
+<dt>jaccard</dt>
+<dd><p>default=T</p></dd>
+<dt>dice</dt>
+<dd><p>default=T</p></dd>
+<dt>jaccard3w</dt>
+<dd><p>default=T</p></dd>
+<dt>w_jaccard</dt>
+<dd><p>default=T</p></dd>
+<dt>w_cosine</dt>
+<dd><p>default=T</p></dd>
+<dt>NN</dt>
+<dd><p>To replace NA, which means a variant shown in the object is not shown in the weight vector, with a number, default is 1 for jaccard system.</p></dd>
+<dt>LSIdist</dt>
+<dd><p>default=T</p></dd>
+<dt>dim</dt>
+<dd><p>the dimensions to use to calculate LSI distance default is 2:50</p></dd>
+<dt>weight</dt>
+<dd><p>A two column dataframe, "Variant"(The variant name should match cell-variant matrix column, e.g, Variants310TC), "weight" (numeric)</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -88,7 +117,7 @@ This add Jaccard, Dice, Jaccard3W distance and stored in DistObjects</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer></div>

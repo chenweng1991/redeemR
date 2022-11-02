@@ -63,7 +63,13 @@ This will use the mito variants for Seurat clustering (LSI based)</p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for mitoTracing</span>
-<span class="fu"><a href="SeuratLSIClustering.html">SeuratLSIClustering</a></span><span class="op">(</span><span class="va">object</span>, binary <span class="op">=</span> <span class="cn">T</span>, res <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="SeuratLSIClustering.html">SeuratLSIClustering</a></span><span class="op">(</span>
+  <span class="va">object</span>,
+  binary <span class="op">=</span> <span class="cn">T</span>,
+  res <span class="op">=</span> <span class="fl">0.6</span>,
+  lsidim <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">50</span>,
+  rmvariants <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Variants310TC"</span>, <span class="st">"Variants3109TC"</span>, <span class="st">"Variants5764CT"</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -92,7 +98,7 @@ This will use the mito variants for Seurat clustering (LSI based)</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer></div>

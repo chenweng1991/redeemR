@@ -75,7 +75,7 @@
 </h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>The goal of scMitoTracing is to …</p>
+<p>The goal of scMitoTracing is to analyze the deep mito variants and lineage tracing Package testing Jupyter notebook is here lab/solexa_weissman/cweng/Packages/scMitoTracing/scMitoTracingRunningTest.ipynb</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -93,7 +93,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scMitoTracing</span><span class="op">)</span>
 <span class="va">WD</span><span class="op">&lt;-</span><span class="st">"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"</span>
-<span class="va">DN1CD34_1.depth</span><span class="op">&lt;-</span><span class="fu"><a href="reference/DepthSummary.html">DepthSummary</a></span><span class="op">(</span><span class="va">WD</span>,Processed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="va">DN1CD34_1.depth</span><span class="op">&lt;-</span><span class="fu"><a href="reference/DepthSummary.html">DepthSummary</a></span><span class="op">(</span><span class="va">WD</span><span class="op">)</span>
 <span class="va">DN1CD34_1.VariantsGTSummary</span><span class="op">&lt;-</span><span class="fu"><a href="reference/CW_mgatk.read.html">CW_mgatk.read</a></span><span class="op">(</span><span class="va">WD</span>,Processed <span class="op">=</span><span class="cn">T</span><span class="op">)</span>
 <span class="va">DN1CD34_1.Variants.feature.lst</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Vfilter_v3.html">Vfilter_v3</a></span><span class="op">(</span>InputSummary<span class="op">=</span><span class="va">DN1CD34_1.VariantsGTSummary</span>,depth<span class="op">=</span><span class="va">DN1CD34_1.depth</span><span class="op">)</span></code></pre></div>
 </div>
@@ -124,7 +124,149 @@
 <div class="section level3">
 <h3 id="depthsummary-from-a-subset-of-cells">DepthSummary from a subset of cells<a class="anchor" aria-label="anchor" href="#depthsummary-from-a-subset-of-cells"></a>
 </h3>
-<p><code>r library(scMitoTracing) library(EZsinglecell2) WD&lt;-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final" ## Read in the CD34 Seurat object Donor01_CD34_1_Multiome_wrapper&lt;-readRDS("/lab/solexa_weissman/cweng/Projects/RDS/Donor01_CD34_1_Multiome_wrapper.RDS") ## Translate the RNA names into ATAC/Mito names Donor01_CD34_1_Multiome.meta&lt;-Translate_RNA2ATAC(Donor01_CD34_1_Multiome_wrapper$seurat@meta.data) ## Select HSC cells and parse the HSC mito depth information HSCcells&lt;-subset(Donor01_CD34_1_Multiome.meta,CellType=="HSC")$ATACName DN1CD34_1.depth&lt;-DepthSummary(WD,Processed = F,CellSubset = HSCcells,cellSubSetName = "HSC")</code>r</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scMitoTracing</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">EZsinglecell2</span><span class="op">)</span>
+<span class="va">WD</span><span class="op">&lt;-</span><span class="st">"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"</span>
+<span class="co">## Read in the CD34 Seurat object</span>
+<span class="va">Donor01_CD34_1_Multiome_wrapper</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"/lab/solexa_weissman/cweng/Projects/RDS/Donor01_CD34_1_Multiome_wrapper.RDS"</span><span class="op">)</span>
+<span class="co">## Translate the RNA names into ATAC/Mito names</span>
+<span class="va">Donor01_CD34_1_Multiome.meta</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Translate_RNA2ATAC.html">Translate_RNA2ATAC</a></span><span class="op">(</span><span class="va">Donor01_CD34_1_Multiome_wrapper</span><span class="op">$</span><span class="va">seurat</span><span class="op">@</span><span class="va">meta.data</span><span class="op">)</span>
+<span class="co">## Select HSC cells and parse the HSC mito depth information</span>
+<span class="va">HSCcells</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">Donor01_CD34_1_Multiome.meta</span>,<span class="va">CellType</span><span class="op">==</span><span class="st">"HSC"</span><span class="op">)</span><span class="op">$</span><span class="va">ATACName</span>
+<span class="va">DN1CD34_1.depth</span><span class="op">&lt;-</span><span class="fu"><a href="reference/DepthSummary.html">DepthSummary</a></span><span class="op">(</span><span class="va">WD</span>,Processed <span class="op">=</span> <span class="cn">F</span>,CellSubset <span class="op">=</span> <span class="va">HSCcells</span>,cellSubSetName <span class="op">=</span> <span class="st">"HSC"</span><span class="op">)</span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="making-tree">Making tree<a class="anchor" aria-label="anchor" href="#making-tree"></a>
+</h2>
+<div class="section level3">
+<h3 id="below-is-an-example-that-combine-both-cd34-and-bmmc-data-into-one-mitotracing-object">Below is an example that combine both CD34 and BMMC data into one mitoTracing object<a class="anchor" aria-label="anchor" href="#below-is-an-example-that-combine-both-cd34-and-bmmc-data-into-one-mitotracing-object"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">EZsinglecell2</span><span class="op">)</span>
+<span class="co">## CD34 This is the same as above</span>
+<span class="va">WD</span><span class="op">&lt;-</span><span class="st">"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"</span>
+<span class="co">#DN1CD34_1.depth&lt;-DepthSummary(WD)</span>
+<span class="va">DN1CD34_1.depth</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">WD</span>,<span class="st">"/DN1CD34_1.depth.RDS"</span>,sep<span class="op">=</span><span class="st">""</span><span class="op">)</span><span class="op">)</span>
+<span class="va">DN1CD34_1.VariantsGTSummary</span><span class="op">&lt;-</span><span class="fu"><a href="reference/CW_mgatk.read.html">CW_mgatk.read</a></span><span class="op">(</span><span class="va">WD</span>,Processed <span class="op">=</span><span class="cn">T</span><span class="op">)</span>
+<span class="va">DN1CD34_1.Variants.feature.lst</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Vfilter_v3.html">Vfilter_v3</a></span><span class="op">(</span>InputSummary<span class="op">=</span><span class="va">DN1CD34_1.VariantsGTSummary</span>,depth<span class="op">=</span><span class="va">DN1CD34_1.depth</span><span class="op">)</span>
+
+<span class="co">## BMMC1</span>
+<span class="va">WD</span><span class="op">&lt;-</span><span class="st">"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/Run210706L2/COMBINE_CALLV/CW_mgatk_Full/final"</span>
+<span class="co"># DN1BMMC1.depth&lt;-DepthSummary(WD)</span>
+<span class="co">#saveRDS(DN1BMMC1.depth,paste(WD,"/DN1BMMC1.depth.RDS",sep=""))</span>
+<span class="va">DN1BMMC1.depth</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">WD</span>,<span class="st">"/DN1BMMC1.depth.RDS"</span>,sep<span class="op">=</span><span class="st">""</span><span class="op">)</span><span class="op">)</span>
+<span class="va">DN1BMMC1.VariantsGTSummary</span><span class="op">&lt;-</span><span class="fu"><a href="reference/CW_mgatk.read.html">CW_mgatk.read</a></span><span class="op">(</span><span class="va">WD</span>,Processed <span class="op">=</span><span class="cn">T</span><span class="op">)</span>
+<span class="va">DN1BMMC1.Variants.feature.lst</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Vfilter_v3.html">Vfilter_v3</a></span><span class="op">(</span>InputSummary<span class="op">=</span><span class="va">DN1BMMC1.VariantsGTSummary</span>,depth<span class="op">=</span><span class="va">DN1BMMC1.depth</span><span class="op">)</span>
+
+<span class="co">## Make meta</span>
+<span class="va">bmmc.filtered</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"/lab/solexa_weissman/cweng/Projects/RDS/mutiome.donor01_bmmc01.RNA.filtered.RDS"</span><span class="op">)</span> 
+<span class="va">Donor01_CD34_1_Multiome_wrapper</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"/lab/solexa_weissman/cweng/Projects/RDS/Donor01_CD34_1_Multiome_wrapper.RDS"</span><span class="op">)</span>
+<span class="va">DN1BMMC1.meta</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Translate_RNA2ATAC.html">Translate_RNA2ATAC</a></span><span class="op">(</span>meta<span class="op">=</span><span class="va">bmmc.filtered</span><span class="op">@</span><span class="va">meta.data</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nCount_RNA"</span>,<span class="st">"nFeature_RNA"</span>,<span class="st">"CellType"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+<span class="va">DN1CD34_1.meta</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Translate_RNA2ATAC.html">Translate_RNA2ATAC</a></span><span class="op">(</span>meta<span class="op">=</span><span class="va">Donor01_CD34_1_Multiome_wrapper</span><span class="op">$</span><span class="va">seurat</span><span class="op">@</span><span class="va">meta.data</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nCount_RNA"</span>,<span class="st">"nFeature_RNA"</span>,<span class="st">"CellType"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+
+<span class="co">## Make CD34_BMMC_mitoTracing.VerySensitive</span>
+<span class="va">CD34_BMMC_mitoTracing.VerySensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Create_mitoTracing.html">Create_mitoTracing</a></span><span class="op">(</span>GTsummary_list<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">DN1CD34_1.VariantsGTSummary</span>,<span class="va">DN1BMMC1.VariantsGTSummary</span><span class="op">)</span>,
+                depth_list<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">DN1CD34_1.depth</span>,<span class="va">DN1BMMC1.depth</span><span class="op">)</span>,
+                feature.list_list<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">DN1CD34_1.Variants.feature.lst</span>,<span class="va">DN1BMMC1.Variants.feature.lst</span><span class="op">)</span>,
+                meta_list<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">DN1CD34_1.meta</span>,<span class="va">DN1BMMC1.meta</span><span class="op">)</span>,
+                thr<span class="op">=</span><span class="st">"VerySensitive"</span>,
+                labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD34"</span>,<span class="st">"BMMC"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co">## Show basics of the CD34_BMMC_mitoTracing.VerySensitive</span>
+<span class="va">CD34_BMMC_mitoTracing.VerySensitive</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="make-variant-matrix-and-clonal-clustering">Make variant matrix and clonal clustering<a class="anchor" aria-label="anchor" href="#make-variant-matrix-and-clonal-clustering"></a>
+</h3>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">CD34_BMMC_mitoTracing.VerySensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Make_matrix.html">Make_matrix</a></span><span class="op">(</span><span class="va">CD34_BMMC_mitoTracing.VerySensitive</span><span class="op">)</span>
+<span class="va">CD34_BMMC_mitoTracing.VerySensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/SeuratLSIClustering.html">SeuratLSIClustering</a></span><span class="op">(</span><span class="va">CD34_BMMC_mitoTracing.VerySensitive</span><span class="op">)</span>
+<span class="va">CD34_BMMC_mitoTracing.VerySensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/AddDatatoplot_clustering.html">AddDatatoplot_clustering</a></span><span class="op">(</span><span class="va">CD34_BMMC_mitoTracing.VerySensitive</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="clonal-clustering-and-distance-metrics-updated-33022">Clonal clustering and distance metrics (Updated 3/30/22)<a class="anchor" aria-label="anchor" href="#clonal-clustering-and-distance-metrics-updated-33022"></a>
+</h3>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## Make a weight matrix (For different variants) based on recurrencey. It is required for weighted distance calculation</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">CellPCT</span><span class="op">)</span>
+<span class="va">V.weight</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>weight<span class="op">=</span><span class="fl">1</span><span class="op">-</span><span class="va">CellPCT</span><span class="op">$</span><span class="va">muRate</span><span class="op">)</span>
+<span class="va">V.weight</span><span class="op">$</span><span class="va">Variants</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Variants"</span>,<span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"_"</span>,<span class="st">""</span>,<span class="va">CellPCT</span><span class="op">$</span><span class="va">Variant</span><span class="op">)</span>,sep<span class="op">=</span><span class="st">""</span><span class="op">)</span>
+
+<span class="va">BMMC_mitoTracing</span><span class="op">&lt;-</span><span class="fu"><a href="reference/SeuratLSIClustering.html">SeuratLSIClustering</a></span><span class="op">(</span><span class="va">BMMC_mitoTracing</span>,lsidim<span class="op">=</span><span class="fl">2</span><span class="op">:</span><span class="fl">50</span>,rmvariants<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Variants310TC"</span>,<span class="st">"Variants3109TC"</span>,<span class="st">"Variants5764CT"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">BMMC_mitoTracing</span><span class="op">&lt;-</span><span class="fu"><a href="reference/AddDist.html">AddDist</a></span><span class="op">(</span><span class="va">BMMC_mitoTracing</span>,weightDF<span class="op">=</span><span class="va">V.weight</span>,LSIdist<span class="op">=</span><span class="cn">T</span>,dim<span class="op">=</span><span class="fl">2</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="subset-a-mitotracing-object-updated-5822">Subset a mitotracing object (Updated 5/8/22)<a class="anchor" aria-label="anchor" href="#subset-a-mitotracing-object-updated-5822"></a>
+</h3>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Example from HSC_multiome_Het.ipynb</span>
+<span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Subset_MitoTracing.html">Subset_MitoTracing</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.verysensitive</span>,Cells<span class="op">=</span><span class="va">topcell</span><span class="op">)</span>
+<span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">&lt;</span><span class="fu"><a href="reference/SeuratLSIClustering.html">SeuratLSIClustering</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span>,res<span class="op">=</span><span class="fl">2</span>,lsidim<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">50</span>,rmvariants<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Variants310TC"</span>,<span class="st">"Variants3109TC"</span>,<span class="st">"Variants5764CT"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/AddDist.html">AddDist</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span>,weightDF<span class="op">=</span><span class="va">V.weight</span>,LSIdist<span class="op">=</span><span class="cn">T</span>,dim<span class="op">=</span><span class="fl">3</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="make-tree-updated-5822">Make tree (Updated 5/8/22)<a class="anchor" aria-label="anchor" href="#make-tree-updated-5822"></a>
+</h3>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Make_tree.html">Make_tree</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span>,d <span class="op">=</span> <span class="st">"w_jaccard"</span>,algorithm <span class="op">=</span> <span class="st">"nj"</span>,onlyreturntree <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="add-depth-assign-variant-to-tree-updated-5822">Add depth, assign variant to tree (Updated 5/8/22)<a class="anchor" aria-label="anchor" href="#add-depth-assign-variant-to-tree-updated-5822"></a>
+</h3>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## Load depth</span>
+<span class="co">## Prepare the depth, given the order created: "BMMC":-1 ,"HSPC": -2, "HSC": -3</span>
+<span class="co">#DN4_WD_BMMC="/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/Donor4/DN4_BMMC/MTenrichCombine/mitoV/final/"</span>
+<span class="va">DN4_WD_HSPC</span><span class="op">=</span><span class="st">"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/Donor4/DN4_HPC/MTenrichCombine/mitoV/final/"</span>
+<span class="va">DN4_WD_HSC</span><span class="op">=</span><span class="st">"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/Donor4/DN4_HSC/MTenrichCombine/mitoV/final/"</span>
+<span class="va">q_HSPC</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">DN4_WD_HSPC</span>,<span class="st">"QualifiedTotalCts"</span>,sep<span class="op">=</span><span class="st">""</span><span class="op">)</span><span class="op">)</span>
+<span class="va">q_HSC</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">DN4_WD_HSC</span>,<span class="st">"QualifiedTotalCts"</span>,sep<span class="op">=</span><span class="st">""</span><span class="op">)</span><span class="op">)</span>
+<span class="va">q_HSPC</span><span class="op">$</span><span class="va">V1</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">q_HSPC</span><span class="op">$</span><span class="va">V1</span>,<span class="st">"2"</span>,sep<span class="op">=</span><span class="st">"_"</span><span class="op">)</span>
+<span class="va">q_HSC</span><span class="op">$</span><span class="va">V1</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">q_HSC</span><span class="op">$</span><span class="va">V1</span>,<span class="st">"3"</span>,sep<span class="op">=</span><span class="st">"_"</span><span class="op">)</span>
+<span class="va">quality</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">q_HSPC</span>,<span class="va">q_HSC</span><span class="op">)</span>
+<span class="va">DN4_stemcell.seed.depth</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">quality</span>,<span class="va">V1</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">@</span><span class="va">CellMeta</span><span class="op">$</span><span class="va">Cell</span><span class="op">)</span>
+
+<span class="co">## add depth</span>
+<span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Add_DepthMatrix.html">Add_DepthMatrix</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span>,<span class="va">quality</span><span class="op">)</span>
+
+<span class="co">## maximum-liklihood-based variant assignment</span>
+<span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Add_AssignVariant.html">Add_AssignVariant</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span>,n.cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="make-allnodesnodeparentfreqcladesize-visulize-the-branchlength-by-number-of-assigned-variants-updated-5822">Make Allnodes(Node|Parent|Freq|CladeSize), visulize the branchlength by number of assigned variants (Updated 5/8/22)<a class="anchor" aria-label="anchor" href="#make-allnodesnodeparentfreqcladesize-visulize-the-branchlength-by-number-of-assigned-variants-updated-5822"></a>
+</h3>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">Allnodes</span><span class="op">=</span><span class="fu"><a href="reference/MakeAllNodes.html">MakeAllNodes</a></span><span class="op">(</span><span class="va">mitoTracing</span>,prob.cut<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span>
+<span class="va">TreeData</span><span class="op">&lt;-</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">@</span><span class="va">TREE</span><span class="op">@</span><span class="va">phylo</span>
+<span class="va">TreeData</span><span class="op">$</span><span class="va">edge.length</span><span class="op">&lt;-</span><span class="va">Allnodes</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">@</span><span class="va">TREE</span><span class="op">@</span><span class="va">phylo</span><span class="op">$</span><span class="va">edge</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>,<span class="va">Allnodes</span><span class="op">$</span><span class="va">Node</span><span class="op">)</span>,<span class="op">]</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">$</span><span class="va">Freq</span>
+<span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repr.plot.width<span class="op">=</span><span class="fl">3</span>, repr.plot.height<span class="op">=</span><span class="fl">24</span>,repr.plot.res<span class="op">=</span><span class="fl">120</span><span class="op">)</span>
+<span class="fu">as.treedata</span><span class="op">(</span><span class="va">TreeData</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">ggtree</span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">+</span><span class="fu">theme_tree2</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="cut-the-tree-in-to-clonesupdated-5822">Cut the tree in to clones(Updated 5/8/22)<a class="anchor" aria-label="anchor" href="#cut-the-tree-in-to-clonesupdated-5822"></a>
+</h3>
+<p>A useful tool from phanforn[<a href="https://rdrr.io/cran/phangorn/man/Ancestors.html" class="external-link uri">https://rdrr.io/cran/phangorn/man/Ancestors.html</a>]</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">&lt;-</span><span class="fu"><a href="reference/Add_tree_cut.html">Add_tree_cut</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span>,MinCell <span class="op">=</span> <span class="fl">30</span>,N <span class="op">=</span> <span class="fl">1</span>, prob.cut <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>
+
+<span class="co">#Visulize</span>
+<span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">@</span><span class="va">CellMeta</span><span class="op">$</span><span class="va">Clone_merge</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">@</span><span class="va">CellMeta</span><span class="op">$</span><span class="va">Clone_merge</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">RColorBrewer</span><span class="op">)</span>
+<span class="va">n</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">@</span><span class="va">CellMeta</span><span class="op">$</span><span class="va">Clone_merge</span><span class="op">)</span><span class="op">)</span>
+<span class="va">qual_col_pals</span> <span class="op">=</span> <span class="va">brewer.pal.info</span><span class="op">[</span><span class="va">brewer.pal.info</span><span class="op">$</span><span class="va">category</span> <span class="op">==</span> <span class="st">'qual'</span>,<span class="op">]</span>
+<span class="va">col_vector</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mapply.html" class="external-link">mapply</a></span><span class="op">(</span><span class="va">brewer.pal</span>, <span class="va">qual_col_pals</span><span class="op">$</span><span class="va">maxcolors</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">qual_col_pals</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repr.plot.width<span class="op">=</span><span class="fl">6</span>, repr.plot.height<span class="op">=</span><span class="fl">6</span>,repr.plot.res<span class="op">=</span><span class="fl">100</span><span class="op">)</span>
+<span class="va">p</span><span class="op">&lt;-</span><span class="fu">ggtree</span><span class="op">(</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">@</span><span class="va">TREE</span><span class="op">@</span><span class="va">treedata</span>,layout<span class="op">=</span><span class="st">"circular"</span>, branch.length<span class="op">=</span><span class="st">'none'</span><span class="op">)</span> 
+<span class="va">p</span><span class="op">+</span><span class="fu">geom_fruit</span><span class="op">(</span> 
+         data<span class="op">=</span><span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span><span class="op">@</span><span class="va">CellMeta</span>, 
+         geom<span class="op">=</span><span class="va">geom_tile</span>, 
+         mapping<span class="op">=</span><span class="fu">aes</span><span class="op">(</span>y<span class="op">=</span><span class="va">Cell</span>,x<span class="op">=</span><span class="fl">2</span>,fill<span class="op">=</span><span class="va">Clone_merge</span><span class="op">)</span>, 
+         pwidth<span class="op">=</span><span class="fl">0.001</span>, 
+         width<span class="op">=</span><span class="fl">3</span>, 
+         offset<span class="op">=</span><span class="fl">0.05</span>
+     <span class="op">)</span><span class="op">+</span><span class="fu">scale_fill_manual</span><span class="op">(</span>values<span class="op">=</span><span class="va">col_vector</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 </div>
@@ -167,7 +309,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>

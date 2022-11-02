@@ -1,0 +1,3 @@
+## Copy functions from packge EZsinglecell2 that was updated on 11/2/2022
+cp /lab/solexa_weissman/cweng/Packages/EZsinglecell2/R/Clustering_functions.R ./
+cp /lab/solexa_weissman/cweng/Packages/EZsinglecell2/R/General_functions.R ./
