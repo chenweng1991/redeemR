@@ -1,5 +1,6 @@
+![GitHub R package version](https://img.shields.io/github/r-package/v/chenweng1991/redeemR?label=ReDeeM)
 ![GitHub last commit](https://img.shields.io/github/last-commit/chenweng1991/redeemR)
-
+![GitHub](https://img.shields.io/github/license/chenweng1991/redeemR)
 
 # redeemR
 
