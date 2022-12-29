@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/LICENSE-text.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -25,10 +28,16 @@
     <loc>/reference/AddDatatoplot_clustering-mitoTracing-method.html</loc>
   </url>
   <url>
+    <loc>/reference/AddDatatoplot_clustering-redeemR-method.html</loc>
+  </url>
+  <url>
     <loc>/reference/AddDatatoplot_clustering.html</loc>
   </url>
   <url>
     <loc>/reference/AddDist-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/AddDist-redeemR-method.html</loc>
   </url>
   <url>
     <loc>/reference/AddDist.html</loc>
@@ -40,10 +49,16 @@
     <loc>/reference/AddTree-mitoTracing-method.html</loc>
   </url>
   <url>
+    <loc>/reference/AddTree-redeemR-method.html</loc>
+  </url>
+  <url>
     <loc>/reference/AddTree.html</loc>
   </url>
   <url>
     <loc>/reference/Add_AssignVariant-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Add_AssignVariant-redeemR-method.html</loc>
   </url>
   <url>
     <loc>/reference/Add_AssignVariant.html</loc>
@@ -52,10 +67,16 @@
     <loc>/reference/Add_DepthMatrix-mitoTracing-method.html</loc>
   </url>
   <url>
+    <loc>/reference/Add_DepthMatrix-redeemR-method.html</loc>
+  </url>
+  <url>
     <loc>/reference/Add_DepthMatrix.html</loc>
   </url>
   <url>
     <loc>/reference/Add_tree_cut-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Add_tree_cut-redeemR-method.html</loc>
   </url>
   <url>
     <loc>/reference/Add_tree_cut.html</loc>
@@ -77,6 +98,9 @@
   </url>
   <url>
     <loc>/reference/Create_mitoTracing.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Create_redeemR.html</loc>
   </url>
   <url>
     <loc>/reference/DE.gettripple.html</loc>
@@ -124,10 +148,16 @@
     <loc>/reference/Make_matrix-mitoTracing-method.html</loc>
   </url>
   <url>
+    <loc>/reference/Make_matrix-redeemR-method.html</loc>
+  </url>
+  <url>
     <loc>/reference/Make_matrix.html</loc>
   </url>
   <url>
     <loc>/reference/Make_tree-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Make_tree-redeemR-method.html</loc>
   </url>
   <url>
     <loc>/reference/Make_tree.html</loc>
@@ -175,10 +205,16 @@
     <loc>/reference/SeuratLSIClustering-mitoTracing-method.html</loc>
   </url>
   <url>
+    <loc>/reference/SeuratLSIClustering-redeemR-method.html</loc>
+  </url>
+  <url>
     <loc>/reference/SeuratLSIClustering.html</loc>
   </url>
   <url>
     <loc>/reference/Subset_MitoTracing.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Subset_redeemR.html</loc>
   </url>
   <url>
     <loc>/reference/TREE-class.html</loc>
@@ -232,7 +268,13 @@
     <loc>/reference/reconstruct_genotype_summary.html</loc>
   </url>
   <url>
+    <loc>/reference/redeemR-class.html</loc>
+  </url>
+  <url>
     <loc>/reference/show-mitoTracing-method.html</loc>
+  </url>
+  <url>
+    <loc>/reference/show-redeemR-method.html</loc>
   </url>
   <url>
     <loc>/reference/split_profile.html</loc>

@@ -8,7 +8,7 @@ This add Jaccard, Dice, Jaccard3W distance and stored in DistObjects}
 AddDist(object, ...)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 }
 \description{
 AddDist

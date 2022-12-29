@@ -9,7 +9,7 @@ MergeMtx(mtx.list, postfix)
 \arguments{
 \item{mtx.list}{A list of sparse matrix to be merged}
 
-\item{postfix}{a vector of postfix (Usually are numbers that added at the end of cell names). Better be consistent with a merged MitoTracing object orders}
+\item{postfix}{a vector of postfix (Usually are numbers that added at the end of cell names). Better be consistent with a merged redeemR object orders}
 }
 \value{
 new sparse matrix

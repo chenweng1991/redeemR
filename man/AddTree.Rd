@@ -3,16 +3,16 @@
 \name{AddTree}
 \alias{AddTree}
 \title{Add_Tree
-Optional, if a phylogentic tree object phylo is already available, can be directly added to the mitoTracing}
+Optional, if a phylogentic tree object phylo is already available, can be directly added to the redeemR}
 \usage{
 AddTree(object, phylo, ...)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 
 \item{phylo}{phyogenetic tree object}
 }
 \description{
 Add_Tree
-Optional, if a phylogentic tree object phylo is already available, can be directly added to the mitoTracing
+Optional, if a phylogentic tree object phylo is already available, can be directly added to the redeemR
 }

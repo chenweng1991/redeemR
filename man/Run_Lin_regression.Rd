@@ -14,7 +14,9 @@ Run_Lin_regression(
 \arguments{
 \item{LinOut}{produced by MakeDF4Regress}
 
-\item{n.cores}{=8}
+\item{regress_factor}{default is c("OutLevel.scale","OutLevel_NPadj.scale","Lym","Mye","MK","ME")}
+
+\item{n.cores}{default is 8}
 }
 \description{
 Firstly used in HSC_multiome_Het_2.ipynb

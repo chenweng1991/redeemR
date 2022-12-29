@@ -8,7 +8,7 @@ This prepare the clonal clustering data to plot}
 AddDatatoplot_clustering(object, ...)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 }
 \description{
 AddDatatoplot_clustering

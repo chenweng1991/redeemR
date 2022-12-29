@@ -9,21 +9,21 @@ Clone_FinderMarker(
   topClones,
   bottomClones,
   HSC_Multiome_wrapper = Donor04_HSC_Multiome_wrapper,
-  HSC_mitoTracing,
+  HSC_redeemR,
   assay = "SCT",
   test = "wilcox"
 )
 }
 \arguments{
-\item{topClones}{a vector of clone ID eg. c("1","3","7"),this must be in HSC_mitoTracing@CellMeta$Clone_merge}
+\item{topClones}{a vector of clone ID eg. c("1","3","7"),this must be in HSC_redeemR@CellMeta$Clone_merge}
 
-\item{bottomClones}{a vector of clone ID eg. c("2","5"), this must be in HSC_mitoTracing@CellMeta$Clone_merge}
+\item{bottomClones}{a vector of clone ID eg. c("2","5"), this must be in HSC_redeemR@CellMeta$Clone_merge}
 
-\item{HSC_mitoTracing}{mitoTracing object for HSC}
+\item{HSC_redeemR}{redeemR object for HSC}
 
 \item{test}{the statistic method to use for DE, a wrapper function from Seurat FindAllMarkers}
 
-\item{ob}{Seurat object (Multiomics), the postfix needs to be compatible with HSC_mitoTracing, the cells will be matched by cell names}
+\item{ob}{Seurat object (Multiomics), the postfix needs to be compatible with HSC_redeemR, the cells will be matched by cell names}
 }
 \description{
 Define a function to perform Find marker for top vs bottom clones

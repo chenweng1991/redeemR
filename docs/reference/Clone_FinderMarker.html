@@ -20,7 +20,7 @@ This function was developed based on DN4T2.basics.ipynb"><!-- mathjax --><script
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">redeemR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
       </span>
     </div>
 
@@ -28,16 +28,6 @@ This function was developed based on DN4T2.basics.ipynb"><!-- mathjax --><script
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/package_intro.html">package_intro</a>
-    </li>
-  </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -63,7 +53,7 @@ This function was developed based on DN4T2.basics.ipynb</p>
 <span>  <span class="va">topClones</span>,</span>
 <span>  <span class="va">bottomClones</span>,</span>
 <span>  HSC_Multiome_wrapper <span class="op">=</span> <span class="va">Donor04_HSC_Multiome_wrapper</span>,</span>
-<span>  <span class="va">HSC_mitoTracing</span>,</span>
+<span>  <span class="va">HSC_redeemR</span>,</span>
 <span>  assay <span class="op">=</span> <span class="st">"SCT"</span>,</span>
 <span>  test <span class="op">=</span> <span class="st">"wilcox"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -72,15 +62,15 @@ This function was developed based on DN4T2.basics.ipynb</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>topClones</dt>
-<dd><p>a vector of clone ID eg. c("1","3","7"),this must be in HSC_mitoTracing@CellMeta$Clone_merge</p></dd>
+<dd><p>a vector of clone ID eg. c("1","3","7"),this must be in HSC_redeemR@CellMeta$Clone_merge</p></dd>
 
 
 <dt>bottomClones</dt>
-<dd><p>a vector of clone ID eg. c("2","5"), this must be in HSC_mitoTracing@CellMeta$Clone_merge</p></dd>
+<dd><p>a vector of clone ID eg. c("2","5"), this must be in HSC_redeemR@CellMeta$Clone_merge</p></dd>
 
 
-<dt>HSC_mitoTracing</dt>
-<dd><p>mitoTracing object for HSC</p></dd>
+<dt>HSC_redeemR</dt>
+<dd><p>redeemR object for HSC</p></dd>
 
 
 <dt>test</dt>
@@ -88,7 +78,7 @@ This function was developed based on DN4T2.basics.ipynb</p>
 
 
 <dt>ob</dt>
-<dd><p>Seurat object (Multiomics), the postfix needs to be compatible with HSC_mitoTracing, the cells will be matched by cell names</p></dd>
+<dd><p>Seurat object (Multiomics), the postfix needs to be compatible with HSC_redeemR, the cells will be matched by cell names</p></dd>
 
 </dl></div>
 
@@ -100,7 +90,7 @@ This function was developed based on DN4T2.basics.ipynb</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by First Last.</p>
+  <p></p><p>Developed by Chen Weng.</p>
 </div>
 
 <div class="pkgdown">

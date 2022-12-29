@@ -6,16 +6,16 @@
 This function was developed based on DN4T2.basics.ipynb}
 \usage{
 ProgenyMapping(
-  HSC_mitoTracing = DN4_PhenoHSC_mitoTracing.verysensitive,
-  Full_mitoTracing = DN4_BMMC_HSPC_HSC_mitoTracing.verysensitive,
+  HSC_redeemR = DN4_PhenoHSC_redeemR.verysensitive,
+  Full_redeemR = DN4_BMMC_HSPC_HSC_redeemR.verysensitive,
   distCut = 0.95,
   d = "w_jaccard"
 )
 }
 \arguments{
-\item{HSC_mitoTracing}{The HSC_mitoTracing is the mitoTracing object for defined HSC}
+\item{HSC_redeemR}{The HSC_redeemR is the redeemR object for defined HSC}
 
-\item{Full_mitoTracing}{The FULL_mitoTracing is the mitoTracing object for the full BMMC_HSPC_HSC}
+\item{Full_redeemR}{The FULL_redeemR is the redeemR object for the full BMMC_HSPC_HSC}
 
 \item{distCut}{Default is 0.95, the distance, below which I define as the related progeny}
 }

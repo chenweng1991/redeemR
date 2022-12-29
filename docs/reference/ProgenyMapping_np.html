@@ -23,7 +23,7 @@ FromDist2Graph is needed to convert fistance matrix into MNN graph"><!-- mathjax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">redeemR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
       </span>
     </div>
 
@@ -31,16 +31,6 @@ FromDist2Graph is needed to convert fistance matrix into MNN graph"><!-- mathjax
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/package_intro.html">package_intro</a>
-    </li>
-  </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -65,8 +55,8 @@ FromDist2Graph is needed to convert fistance matrix into MNN graph</p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ProgenyMapping_np</span><span class="op">(</span></span>
-<span>  HSC_mitoTracing <span class="op">=</span> <span class="va">DN4_stemcell_mitoTracing.seed.verysensitive</span>,</span>
-<span>  Full_mitoTracing <span class="op">=</span> <span class="va">DN4_BMMC_HSPC_HSC_mitoTracing.verysensitive</span>,</span>
+<span>  HSC_redeemR <span class="op">=</span> <span class="va">DN4_stemcell_redeemR.seed.verysensitive</span>,</span>
+<span>  Full_redeemR <span class="op">=</span> <span class="va">DN4_BMMC_HSPC_HSC_redeemR.verysensitive</span>,</span>
 <span>  CloneCol <span class="op">=</span> <span class="st">"Clone_merge"</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>  gm <span class="op">=</span> <span class="fl">0.5</span>,</span>
@@ -80,13 +70,13 @@ FromDist2Graph is needed to convert fistance matrix into MNN graph</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>HSC_mitoTracing</dt>
-<dd><p>The HSC_mitoTracing is the mitoTracing object for defined HSC,  have already gone through Add_DepthMatrix--Add_AssignVariant--Add_tree_cut, otherwise, need
+    <dl><dt>HSC_redeemR</dt>
+<dd><p>The HSC_redeemR is the redeemR object for defined HSC,  have already gone through Add_DepthMatrix--Add_AssignVariant--Add_tree_cut, otherwise, need
 othereise, need a column in CellMeta that indicates the clone ID</p></dd>
 
 
-<dt>Full_mitoTracing</dt>
-<dd><p>The FULL_mitoTracing is the mitoTracing object for the full BMMC_HSPC_HSC</p></dd>
+<dt>Full_redeemR</dt>
+<dd><p>The FULL_redeemR is the redeemR object for the full BMMC_HSPC_HSC</p></dd>
 
 
 <dt>CloneCol</dt>
@@ -124,7 +114,7 @@ othereise, need a column in CellMeta that indicates the clone ID</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by First Last.</p>
+  <p></p><p>Developed by Chen Weng.</p>
 </div>
 
 <div class="pkgdown">

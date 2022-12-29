@@ -8,7 +8,7 @@ Optional, add a matrix with same dimension with the Cts.Mtx and Cts.Mtx.bi, whic
 Add_DepthMatrix(object, QualifiedTotalCts, ...)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 
 \item{QualifiedTotalCts}{a big source data, usually at XXX/mitoV/final}
 }

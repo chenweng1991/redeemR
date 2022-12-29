@@ -7,8 +7,8 @@ Define a function to compute network propagation based probability
 FromDist2Graph is needed to convert fistance matrix into MNN graph}
 \usage{
 ProgenyMapping_np(
-  HSC_mitoTracing = DN4_stemcell_mitoTracing.seed.verysensitive,
-  Full_mitoTracing = DN4_BMMC_HSPC_HSC_mitoTracing.verysensitive,
+  HSC_redeemR = DN4_stemcell_redeemR.seed.verysensitive,
+  Full_redeemR = DN4_BMMC_HSPC_HSC_redeemR.verysensitive,
   CloneCol = "Clone_merge",
   k = 30,
   gm = 0.5,
@@ -20,10 +20,10 @@ ProgenyMapping_np(
 )
 }
 \arguments{
-\item{HSC_mitoTracing}{The HSC_mitoTracing is the mitoTracing object for defined HSC,  have already gone through Add_DepthMatrix--Add_AssignVariant--Add_tree_cut, otherwise, need
+\item{HSC_redeemR}{The HSC_redeemR is the redeemR object for defined HSC,  have already gone through Add_DepthMatrix--Add_AssignVariant--Add_tree_cut, otherwise, need
 othereise, need a column in CellMeta that indicates the clone ID}
 
-\item{Full_mitoTracing}{The FULL_mitoTracing is the mitoTracing object for the full BMMC_HSPC_HSC}
+\item{Full_redeemR}{The FULL_redeemR is the redeemR object for the full BMMC_HSPC_HSC}
 
 \item{CloneCol}{"Clone_merge"}
 

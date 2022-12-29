@@ -8,7 +8,7 @@ This will use the mito variants for Seurat clustering (LSI based)}
 SeuratLSIClustering(object, ...)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 }
 \description{
 SeuratLSIClustering

@@ -23,7 +23,7 @@ This function was developed based on HSC_multiome_Het_2.ipynb"><!-- mathjax --><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">redeemR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0</span>
       </span>
     </div>
 
@@ -31,16 +31,6 @@ This function was developed based on HSC_multiome_Het_2.ipynb"><!-- mathjax --><
       <ul class="nav navbar-nav"><li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/package_intro.html">package_intro</a>
-    </li>
-  </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -66,7 +56,7 @@ This function was developed based on HSC_multiome_Het_2.ipynb</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">MakeDF4Regress</span><span class="op">(</span></span>
 <span>  multiome_wrapper <span class="op">=</span> <span class="va">Donor04_HSC_Multiome_wrapper</span>,</span>
-<span>  mitoTracing <span class="op">=</span> <span class="va">DN4_stemcell_mitoTracing.seed.sensitive</span>,</span>
+<span>  redeemR <span class="op">=</span> <span class="va">DN4_stemcell_redeemR.seed.sensitive</span>,</span>
 <span>  progeny_np <span class="op">=</span> <span class="va">DN4_HSC_LSI_progeny_np</span>,</span>
 <span>  assay <span class="op">=</span> <span class="st">"SCT"</span>,</span>
 <span>  useNPimputation <span class="op">=</span> <span class="cn">T</span>,</span>
@@ -77,11 +67,11 @@ This function was developed based on HSC_multiome_Het_2.ipynb</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>multiome_wrapper</dt>
-<dd><p>This outject should includes all and more than HSCs cells in mitoTracing</p></dd>
+<dd><p>This outject should includes all and more than HSCs cells in redeemR</p></dd>
 
 
-<dt>mitoTracing</dt>
-<dd><p>scMitoTracing object for HSC</p></dd>
+<dt>redeemR</dt>
+<dd><p>scredeemR object for HSC</p></dd>
 
 
 <dt>progeny_np</dt>
@@ -93,7 +83,7 @@ This function was developed based on HSC_multiome_Het_2.ipynb</p>
 
 
 <dt>useNPimputation</dt>
-<dd><p>default is T, use all cells called by network propagation, inaddition to the top cells in mitoTracing</p></dd>
+<dd><p>default is T, use all cells called by network propagation, inaddition to the top cells in redeemR</p></dd>
 
 
 <dt>maxcloneUMI</dt>
@@ -115,7 +105,7 @@ This function was developed based on HSC_multiome_Het_2.ipynb</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by First Last.</p>
+  <p></p><p>Developed by Chen Weng.</p>
 </div>
 
 <div class="pkgdown">

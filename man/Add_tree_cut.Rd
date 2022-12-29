@@ -5,10 +5,10 @@
 \title{Add_tree_cut
 a function to cut tree using assigned variant as branch-length on edge}
 \usage{
-Add_tree_cut(mitoTracing, MinCell, N, ...)
+Add_tree_cut(redeemR, MinCell, N, ...)
 }
 \arguments{
-\item{mitoTracing}{Need to have had the tree built}
+\item{redeemR}{Need to have had the tree built}
 
 \item{MinCell}{The minimum number of cells in each clone, otherwise merge with sibling}
 

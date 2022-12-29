@@ -2,10 +2,10 @@
 % Please edit documentation in R/BuidTree.R
 \name{Make_AnnTable}
 \alias{Make_AnnTable}
-\title{Make_AnnTable, Make a big dataframe, each row is a cell, each column includes info such as clonal UMAP, Clonal ID, ATAC/RNA/WNN UMAP, PCA, gene expression of chosen gene, etc.  Require a MitoTracing object and a multiome wrapper that better matches the cells in the MitoTracing}
+\title{Make_AnnTable, Make a big dataframe, each row is a cell, each column includes info such as clonal UMAP, Clonal ID, ATAC/RNA/WNN UMAP, PCA, gene expression of chosen gene, etc.  Require a redeemR object and a multiome wrapper that better matches the cells in the redeemR}
 \usage{
 Make_AnnTable(
-  Mitotracing = DN4_HSC_mitoTracing.Sensitive,
+  redeemR = DN4_HSC_redeemR.Sensitive,
   Multiome = Donor04_HSC_Multiome_wrapper,
   clonal_features = c("nCount_mitoV", "seurat_clusters"),
   clonal_features_rename = c("nCount_mitoV", "clone_clusters"),
@@ -28,15 +28,15 @@ Make_AnnTable(
 )
 }
 \arguments{
-\item{Mitotracing}{eg. DN4_HSC_mitoTracing.Sensitive}
+\item{redeemR}{eg. DN4_HSC_redeemR.Sensitive}
 
-\item{Multiome}{eg. Donor04_HSC_Multiome_wrapper,  Multiome_wrapper object that matches with the MitoTracing, a reclustering using Multi_Wrapper() is recommended}
+\item{Multiome}{eg. Donor04_HSC_Multiome_wrapper,  Multiome_wrapper object that matches with the redeemR, a reclustering using Multi_Wrapper() is recommended}
 
-\item{clonal_features}{eg. c("nCount_mitoV","seurat_clusters"), The column names take from Mitotracing@Seurat@meta.data, importantly the clonal clusterings}
+\item{clonal_features}{eg. c("nCount_mitoV","seurat_clusters"), The column names take from redeemR@Seurat@meta.data, importantly the clonal clusterings}
 
 \item{clonal_features_rename}{eg. c("nCount_mitoV","clone_clusters") Rename the clonal_features}
 
-\item{CellMeta_features}{eg. c("meanCov","nCount_RNA","nFeature_RNA","nCount_ATAC","nFeature_ATAC","CellType") The column names take from  Mitotracing@CellMeta, may useful cell features}
+\item{CellMeta_features}{eg. c("meanCov","nCount_RNA","nFeature_RNA","nCount_ATAC","nFeature_ATAC","CellType") The column names take from  redeemR@CellMeta, may useful cell features}
 
 \item{CellMeta_features_rename}{eg. c("Mito_meanCov","nCount_RNA","nFeature_RNA","nCount_ATAC","nFeature_ATAC","CellType") Rename the CellMeta}
 
@@ -68,5 +68,5 @@ Make_AnnTable(
 AnnTable
 }
 \description{
-Make_AnnTable, Make a big dataframe, each row is a cell, each column includes info such as clonal UMAP, Clonal ID, ATAC/RNA/WNN UMAP, PCA, gene expression of chosen gene, etc.  Require a MitoTracing object and a multiome wrapper that better matches the cells in the MitoTracing
+Make_AnnTable, Make a big dataframe, each row is a cell, each column includes info such as clonal UMAP, Clonal ID, ATAC/RNA/WNN UMAP, PCA, gene expression of chosen gene, etc.  Require a redeemR object and a multiome wrapper that better matches the cells in the redeemR
 }

@@ -5,10 +5,10 @@
 \title{Add_AssignVariant
 a function to assign variants to edges based on maximum likihood}
 \usage{
-Add_AssignVariant(mitoTracing, n.cores, ...)
+Add_AssignVariant(redeemR, n.cores, ...)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 
 \item{QualifiedTotalCts}{a big source data, usually at XXX/mitoV/final}
 }

@@ -8,7 +8,7 @@ This function was developed based on HSC_multiome_Het_2.ipynb}
 \usage{
 MakeDF4Regress(
   multiome_wrapper = Donor04_HSC_Multiome_wrapper,
-  mitoTracing = DN4_stemcell_mitoTracing.seed.sensitive,
+  redeemR = DN4_stemcell_redeemR.seed.sensitive,
   progeny_np = DN4_HSC_LSI_progeny_np,
   assay = "SCT",
   useNPimputation = T,
@@ -16,15 +16,15 @@ MakeDF4Regress(
 )
 }
 \arguments{
-\item{multiome_wrapper}{This outject should includes all and more than HSCs cells in mitoTracing}
+\item{multiome_wrapper}{This outject should includes all and more than HSCs cells in redeemR}
 
-\item{mitoTracing}{scMitoTracing object for HSC}
+\item{redeemR}{scredeemR object for HSC}
 
 \item{progeny_np}{run via ProgenyMapping_np}
 
 \item{assay}{SCT for expression, ATAC for ATAC}
 
-\item{useNPimputation}{default is T, use all cells called by network propagation, inaddition to the top cells in mitoTracing}
+\item{useNPimputation}{default is T, use all cells called by network propagation, inaddition to the top cells in redeemR}
 
 \item{maxcloneUMI}{default is 10, Only include genes, in the max clone the expression greater than 10}
 }

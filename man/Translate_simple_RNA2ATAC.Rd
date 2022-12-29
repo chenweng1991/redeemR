@@ -19,8 +19,8 @@ Translate_simple_RNA2ATAC(
 
 \item{from}{A vector of the postfix,  usually is c(1,2,3,...), it depends on how many samples are aggregated in Cellranger RNA part}
 
-\item{to}{A vector of the postfix, those cooresponds to the postfix added in scMitoTracing, in general, if it matches, then simply c(1,2,3,...),
-but in case not match, here provides a way to transform into scMitoTracing order}
+\item{to}{A vector of the postfix, those cooresponds to the postfix added in redeemR, in general, if it matches, then simply c(1,2,3,...),
+but in case not match, here provides a way to transform into redeemR order}
 }
 \value{
 ATAC name

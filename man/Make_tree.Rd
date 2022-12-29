@@ -8,7 +8,7 @@ This will generate a basic phylogenetic tree}
 Make_tree(object, d = "jaccard", algorithm = "upgma", onlyreturntree = F, ...)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 
 \item{d}{"jaccard" or "Dice" or "jaccard3W"}
 

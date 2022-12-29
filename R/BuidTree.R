@@ -51,7 +51,7 @@ TREE<-setClass(
 )
 
 
-#' Major mitoTracing class that store clonal-resolved multi-omics
+#' Major redeem class that store clonal-resolved multi-omics
 #'
 #' @slot GTsummary.filtered  The Mitochondrial genotype data frame
 #' @slot CellMeta Store meta data for each cell type
@@ -67,8 +67,8 @@ TREE<-setClass(
 #' @slot TREE The customized class that wraps phylogenetic tree
 #' @import Seurat
 #' @export
-mitoTracing<-setClass(
-    "mitoTracing",
+redeemR<-setClass(
+    "redeemR",
     slots=c(GTsummary.filtered="data.frame",
             CellMeta="data.frame",
             V.fitered.list="list",
@@ -91,66 +91,66 @@ mitoTracing<-setClass(
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #' Make_matrix
-#' This will make the matixies of Cell VS mitochondrial variants and return mitoTracing
+#' This will make the matixies of Cell VS mitochondrial variants and return redeemR
 #' Results stored in Cts.Mtx and Cts.Mtx.bi
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @export
 setGeneric(name="Make_matrix", def=function(object)standardGeneric("Make_matrix"))
 
 #' SeuratLSIClustering
 #' This will use the mito variants for Seurat clustering (LSI based)
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @export
 setGeneric(name="SeuratLSIClustering", def=function(object,...)standardGeneric("SeuratLSIClustering"))
 
 #' AddDatatoplot_clustering
 #' This prepare the clonal clustering data to plot
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @export
 setGeneric(name="AddDatatoplot_clustering", def=function(object,...)standardGeneric("AddDatatoplot_clustering"))
 
 #' AddDist
 #' This add Jaccard, Dice, Jaccard3W distance and stored in DistObjects
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @export
 setGeneric(name="AddDist", def=function(object,...) standardGeneric("AddDist"))
 
 #' Make_tree
 #' This will generate a basic phylogenetic tree
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @param d "jaccard" or "Dice" or "jaccard3W"
 #' @param algorithm the algorithm used to build the tree, choose from "nj" and "upgma"
 #' @export
 setGeneric(name="Make_tree", def=function(object,d="jaccard", algorithm="upgma",onlyreturntree=F,...) standardGeneric("Make_tree"))
 
 #' Add_Tree
-#' Optional, if a phylogentic tree object phylo is already available, can be directly added to the mitoTracing
-#' @param object mitoTracin class
+#' Optional, if a phylogentic tree object phylo is already available, can be directly added to the redeemR
+#' @param object redeemR class
 #' @param phylo phyogenetic tree object
 #' @export
 setGeneric(name="AddTree", def=function(object,phylo,...) standardGeneric("AddTree"))
 
 #' Add_DepthMatrix
 #' Optional, add a matrix with same dimension with the Cts.Mtx and Cts.Mtx.bi, which display the depths
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @param QualifiedTotalCts a big source data, usually at XXX/mitoV/final
 #' @export
 setGeneric(name="Add_DepthMatrix", def=function(object,QualifiedTotalCts,...) standardGeneric("Add_DepthMatrix"))
 
 #' Add_AssignVariant
 #' a function to assign variants to edges based on maximum likihood
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @param QualifiedTotalCts a big source data, usually at XXX/mitoV/final
 #' @export
-setGeneric(name="Add_AssignVariant", def=function(mitoTracing,n.cores,...) standardGeneric("Add_AssignVariant"))
+setGeneric(name="Add_AssignVariant", def=function(redeemR,n.cores,...) standardGeneric("Add_AssignVariant"))
 
 #' Add_tree_cut
 #' a function to cut tree using assigned variant as branch-length on edge
-#' @param mitoTracing  Need to have had the tree built
+#' @param redeemR  Need to have had the tree built
 #' @param MinCell The minimum number of cells in each clone, otherwise merge with sibling
 #' @param N  branch length to cut the tree
 #' @export
-setGeneric(name="Add_tree_cut", def=function(mitoTracing,MinCell,N,...) standardGeneric("Add_tree_cut"))
+setGeneric(name="Add_tree_cut", def=function(redeemR,MinCell,N,...) standardGeneric("Add_tree_cut"))
 
 
 
@@ -159,12 +159,12 @@ setGeneric(name="Add_tree_cut", def=function(mitoTracing,MinCell,N,...) standard
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #' show
-#' This will show the basics of mitoTracin class
-#' @param object mitoTracin class
+#' This will show the basics of redeemR class
+#' @param object redeemR class
 #' @return print out basics
 #' @export
 setMethod(f="show",
-          signature="mitoTracing",
+          signature="redeemR",
           definition=function(object){
               print(object@para)
               print(paste("Total Cell number:",nrow(object@CellMeta)))
@@ -174,13 +174,13 @@ setMethod(f="show",
           })
 
 #' Make_matrix
-#' This will make the matixies of Cell VS mitochondrial variants and return mitoTracing
+#' This will make the matixies of Cell VS mitochondrial variants and return redeemR
 #' Results stored in Cts.Mtx and Cts.Mtx.bi
 #' @param object mitoTracin class
 #' @return mitoTracin class
 #' @export
 setMethod(f="Make_matrix",
-          signature="mitoTracing",
+          signature="redeemR",
           definition=function(object){
                 require(dplyr)
                 require(Matrix.utils)
@@ -202,7 +202,7 @@ setMethod(f="Make_matrix",
 #' @return mitoTracin class
 #' @export
 setMethod(f="Make_tree",
-          signature="mitoTracing",
+          signature="redeemR",
           definition=function(object,d,algorithm,onlyreturntree=F){
           dist<-slot(object@DistObjects,d)
           if(algorithm=="nj"){
@@ -224,13 +224,13 @@ setMethod(f="Make_tree",
 
 #' SeuratLSIClustering
 #' This will use the mito variants for Seurat clustering (LSI based)
-#' @param  mitoTracing class
+#' @param  redeemR class
 #' @param binary  Default is tree, to make use of the binary matrix
 #' @param res     Default os 0.3, the resolution of the clustering
-#' @return mitoTracing class
+#' @return redeemR class
 #' @export
 setMethod(f="SeuratLSIClustering",
-          signature="mitoTracing",
+          signature="redeemR",
           definition=function(object,binary=T,res=0.6,lsidim=2:50,rmvariants=c("Variants310TC","Variants3109TC","Variants5764CT")){
           require(Signac)
           if(binary){
@@ -259,10 +259,10 @@ setMethod(f="SeuratLSIClustering",
 #' AddDatatoplot_clustering
 #' This prepare the clonal clustering data to plot
 #' @param object mitoTracin class
-#' @return mitoTracing class
+#' @return redeemR class
 #' @export
 setMethod(f="AddDatatoplot_clustering",
-          signature="mitoTracing",
+          signature="redeemR",
           definition=function(object){
           row.names(object@CellMeta)<-object@CellMeta$Cell
           datatoplot<-Tomerge_v2(object@Seurat@meta.data,object@Seurat@reductions$umap@cell.embeddings) %>% Tomerge_v2(.,object@Seurat@reductions$lsi@cell.embeddings[,1:6]) %>% Tomerge_v2(.,object@CellMeta)
@@ -283,10 +283,10 @@ setMethod(f="AddDatatoplot_clustering",
 #' @param NN To replace NA, which means a variant shown in the object is not shown in the weight vector, with a number, default is 1 for jaccard system. 
 #' @param LSIdist default=T
 #' @param dim the dimensions to use to calculate LSI distance default is 2:50
-#' @return mitoTracing class
+#' @return redeemR class
 #' @export
 setMethod(f="AddDist",
-          signature="mitoTracing",
+          signature="redeemR",
           definition=function(object,jaccard=T,dice=T,jaccard3w=T,w_jaccard=T,w_cosine=T,weightDF=NULL,NN=1,LSIdist=T,dim=2:50){
           d.Jaccard<-NA
           d.Dice<-NA    
@@ -336,14 +336,14 @@ setMethod(f="AddDist",
 
 
 #' Add_Tree
-#' Optional, if a phylogentic tree object phylo is already available, can be directly added to the mitoTracing class in slot TREE
+#' Optional, if a phylogentic tree object phylo is already available, can be directly added to the redeemR class in slot TREE
 #' @param object mitoTracin class
 #' @param phylo phyogenetic tree object
 #' @param object mitoTracin class
-#' @return mitoTracing class
+#' @return redeemR class
 #' @export
 setMethod(f="AddTree",
-          signature="mitoTracing",
+          signature="redeemR",
           definition=function(object,phylo,record=""){
           TREEobject<-new("TREE",phylo=phylo,treedata=as.treedata(phylo),records=record)
           object@TREE<-TREEobject
@@ -356,11 +356,11 @@ setMethod(f="AddTree",
 #' Optional, add a matrix with same dimension with the Cts.Mtx and Cts.Mtx.bi, which display the depths
 #' @param object mitoTracin class
 #' @param QualifiedTotalCts a big source data, usually at XXX/mitoV/final,  If needed, edit V1, the cell name, which may have additional postfix due to combine
-#' @return mitoTracing class
+#' @return redeemR class
 #' @export
 #' @import reshape2
 setMethod(f="Add_DepthMatrix",
-          signature="mitoTracing",
+          signature="redeemR",
           definition=function(object,QualifiedTotalCts){
           require(reshape2)
           colnames(QualifiedTotalCts)<-c("Cell","Pos","Total","VerySensitive","Sensitive","Specific")
@@ -381,21 +381,21 @@ setMethod(f="Add_DepthMatrix",
 
 #' a function to assign variants to edges based on maximum likihood
 #' 
-#' @param mitoTracing  Need to have mitoTracing@Ctx.Mtx.depth (By Add_DepthMatrix),  mitoTracing@Cts.Mtx  mitoTracing@Cts.Mtx.bi, mitoTracing@TREE
+#' @param redeemR  Need to have redeemR@Ctx.Mtx.depth (By Add_DepthMatrix),  redeemR@Cts.Mtx  redeemR@Cts.Mtx.bi, redeemR@TREE
 #' @export
-#' @return mitoTracing with @AssignedVarian list of two p is a probability matrix of variants vs edges (Rowsum is 1) and Variant.assign.report, a dataframe (Variant|Edge.Assign|prob) 
+#' @return redeemR with @AssignedVarian list of two p is a probability matrix of variants vs edges (Rowsum is 1) and Variant.assign.report, a dataframe (Variant|Edge.Assign|prob) 
 #' @import foreach doParallel pryr doMC
 setMethod(f="Add_AssignVariant",
-          signature="mitoTracing",
-          definition=function(mitoTracing=DN1_HSC_mitoTracing.VerySensitive,n.cores=4){
+          signature="redeemR",
+          definition=function(redeemR=DN1_HSC_redeemR.VerySensitive,n.cores=4){
 require(foreach)
 # require(doParallel)
 require(doMC)
 require(pryr)
-tree<-mitoTracing@TREE@phylo
-mtr<-mitoTracing@Cts.Mtx %>%  as.matrix() %>% t  # Each row is a variant, each column is a cell
-mtr.bi<-mitoTracing@Cts.Mtx.bi %>%  as.matrix() %>% t  # Each row is a variant, each column is a cell
-depth<-mitoTracing@Ctx.Mtx.depth  %>% as.matrix() %>% t  # Each row is a variant, each column is a cell
+tree<-redeemR@TREE@phylo
+mtr<-redeemR@Cts.Mtx %>%  as.matrix() %>% t  # Each row is a variant, each column is a cell
+mtr.bi<-redeemR@Cts.Mtx.bi %>%  as.matrix() %>% t  # Each row is a variant, each column is a cell
+depth<-redeemR@Ctx.Mtx.depth  %>% as.matrix() %>% t  # Each row is a variant, each column is a cell
 mtr.bi.t<-t(mtr.bi) # each row is a cell
 mtr.bi<-mtr.bi[,tree$tip.label]
 ## Prepare df_profile_mtx.t 
@@ -462,13 +462,13 @@ p=exp(Loglik-Loglik[(as.numeric(edge_ml)-1)*n+1:n])
 p=p/rowSums(p)
 # Make the report
 Variant.assign.report<-data.frame(Edge.Assign=tree$edge[,1][apply(p,1,which.max)],prob=apply(p,1,max)) %>% .[order(.$prob,decreasing=T),]
-mitoTracing@AssignedVariant<-list(p=p,Variant.assign.report=Variant.assign.report)
-return(mitoTracing)
+redeemR@AssignedVariant<-list(p=p,Variant.assign.report=Variant.assign.report)
+return(redeemR)
 })
 
 
 #' a function to cut tree using assigned variant as branch-length on edge
-#' @param mitoTracing  Need to have had the tree built
+#' @param redeemR  Need to have had the tree built
 #' @param MinCell The minimum number of cells in each clone, otherwise merge with sibling
 #' @param N  branch length to cut the tree
 #' @param Dumpcut Number of can be tolerated to be removed to fulfill the right side. The small value-> Less unassignment, big clones
@@ -476,11 +476,11 @@ return(mitoTracing)
 #' @return 
 #' @import phangorn ape
 setMethod(f="Add_tree_cut",
-          signature="mitoTracing",
-          definition=function(mitoTracing=DN4_stemcell_mitoTracing.seed.verysensitive,MinCell=30,N=1,prob.cut=0.3,Dumpcut=100){
+          signature="redeemR",
+          definition=function(redeemR=DN4_stemcell_redeemR.seed.verysensitive,MinCell=30,N=1,prob.cut=0.3,Dumpcut=100){
 require(phangorn)
-phy=mitoTracing@TREE@phylo   
-Allnodes=MakeAllNodes(mitoTracing,prob.cut=prob.cut)
+phy=redeemR@TREE@phylo   
+Allnodes=MakeAllNodes(redeemR,prob.cut=prob.cut)
 AllAncestors<-Ancestors(phy,phy$edge[,2],type="all")
 SumV.df_CloneNode<-data.frame(Node=phy$edge[,2],SumV=sapply(AllAncestors,function(x){sum(Allnodes[x,3])})) %>% subset(.,SumV>=N) ## Make a node table Node|SumV  
 SumV.df_CloneNode.filtered<-SumV.df_CloneNode[Ancestors(phy,SumV.df_CloneNode$Node) %>% sapply(.,function(x){!any(x %in% SumV.df_CloneNode$Node)}),]  ## Leave only the relative most ancester
@@ -574,9 +574,9 @@ SumV.df_CloneNode.filtered<-SumV.df_CloneNode.filtered[order(SumV.df_CloneNode.f
 SumV.df_CloneNode.filtered$Clone<-1:nrow(SumV.df_CloneNode.filtered)
 FinalClone.report<-FinalCloneNodes %>% apply(.,1,function(x){data.frame(Cell=phy$tip.label[unlist(Descendants(phy,as.numeric(x[1])))],Clade_merge=x[1],Clone_merge=x[3],row.names = NULL)}) %>% do.call(rbind,.)
 OriginClone.report<-SumV.df_CloneNode.filtered  %>% apply(.,1,function(x){data.frame(Cell=phy$tip.label[unlist(Descendants(phy,as.numeric(x[1])))],Clade=x[1],Clone=x[4],row.names = NULL)}) %>% do.call(rbind,.)
-mitoTracing@CellMeta<-mitoTracing@CellMeta[,!colnames(mitoTracing@CellMeta) %in% c("Clade_merge","Clone_merge","Clade","Clone")]
-mitoTracing@CellMeta<-merge(mitoTracing@CellMeta,merge(FinalClone.report,OriginClone.report,all=T),all.x=T)
-return(mitoTracing)  # Note, may get NA, if only a few cells are NA, it is expected those are not assigned confidently
+redeemR@CellMeta<-redeemR@CellMeta[,!colnames(redeemR@CellMeta) %in% c("Clade_merge","Clone_merge","Clade","Clone")]
+redeemR@CellMeta<-merge(redeemR@CellMeta,merge(FinalClone.report,OriginClone.report,all=T),all.x=T)
+return(redeemR)  # Note, may get NA, if only a few cells are NA, it is expected those are not assigned confidently
 })
 
 
@@ -584,9 +584,9 @@ return(mitoTracing)  # Note, may get NA, if only a few cells are NA, it is expec
 # functions
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-#' Create_mitoTracing
+#' Create_redeemR
 #'
-#' This function is to create mitoTracing with basic information
+#' This function is to create redeemR with basic information
 #' @param GTsummary_list simply put GTSummary (Generated by CW_mgatk.read) into list, this allows mergeing multiple dataset this way.
 #' @param depth_list  simply put depth(Generated by DepthSummary) into list, this allows mergeing multiple dataset this way.
 #' @param feature.list_list  simply put feature.list(Generated by Vfilter_v3) into list, this allows mergeing multiple dataset this way.
@@ -597,10 +597,10 @@ return(mitoTracing)  # Note, may get NA, if only a few cells are NA, it is expec
 #' @param VAFcut only use variants with VAF smaller than VAFcut. Default is 1.  We can use smaller value to constrain into only using rare variants
 #' @param Cellcut only use variants with at least cellcut cells carry
 #' @param maxctscut only use variants with at least in one cell with at leaset maxctscut variant fragments
-#' @return mitoTracing class
+#' @return redeemR class
 #' @export
 #' @import Seurat ape phytools phangorn treeio ggtree tidytree ggtreeExtra
-Create_mitoTracing<-function(GTsummary_list,depth_list,feature.list_list,meta_list,labels,thr="VerySensitive",qualifiedCellCut=10,OnlyHetero=T,VAFcut=1,Cellcut=2,maxctscut=2){
+Create_redeemR<-function(GTsummary_list,depth_list,feature.list_list,meta_list,labels,thr="VerySensitive",qualifiedCellCut=10,OnlyHetero=T,VAFcut=1,Cellcut=2,maxctscut=2){
 require(ape)
 require(phytools)
 require(phangorn)
@@ -633,7 +633,7 @@ V.fitered.list<-c(V.fitered.list,list(V.filtered))
 V.union.unique<-unique(V.union)
 names(V.fitered.list)<-labels
 GTsummary.all.filtered<-subset(GTsummary.all,Variants %in% V.union.unique & Cell %in% CellMeta.all$Cell)
-ob<-mitoTracing()
+ob<-redeemR()
 ob@GTsummary.filtered<-GTsummary.all.filtered
 ob@CellMeta<-CellMeta.all
 ob@V.fitered.list=V.fitered.list
@@ -721,12 +721,12 @@ return(distance)
 
 
 
-#' Make_AnnTable, Make a big dataframe, each row is a cell, each column includes info such as clonal UMAP, Clonal ID, ATAC/RNA/WNN UMAP, PCA, gene expression of chosen gene, etc.  Require a MitoTracing object and a multiome wrapper that better matches the cells in the MitoTracing  
-#' @param Mitotracing  eg. DN4_HSC_mitoTracing.Sensitive
-#' @param Multiome   eg. Donor04_HSC_Multiome_wrapper,  Multiome_wrapper object that matches with the MitoTracing, a reclustering using Multi_Wrapper() is recommended
-#' @param clonal_features   eg. c("nCount_mitoV","seurat_clusters"), The column names take from Mitotracing@Seurat@meta.data, importantly the clonal clusterings
+#' Make_AnnTable, Make a big dataframe, each row is a cell, each column includes info such as clonal UMAP, Clonal ID, ATAC/RNA/WNN UMAP, PCA, gene expression of chosen gene, etc.  Require a redeemR object and a multiome wrapper that better matches the cells in the redeemR  
+#' @param redeemR  eg. DN4_HSC_redeemR.Sensitive
+#' @param Multiome   eg. Donor04_HSC_Multiome_wrapper,  Multiome_wrapper object that matches with the redeemR, a reclustering using Multi_Wrapper() is recommended
+#' @param clonal_features   eg. c("nCount_mitoV","seurat_clusters"), The column names take from redeemR@Seurat@meta.data, importantly the clonal clusterings
 #' @param clonal_features_rename   eg. c("nCount_mitoV","clone_clusters") Rename the clonal_features
-#' @param CellMeta_features   eg. c("meanCov","nCount_RNA","nFeature_RNA","nCount_ATAC","nFeature_ATAC","CellType") The column names take from  Mitotracing@CellMeta, may useful cell features
+#' @param CellMeta_features   eg. c("meanCov","nCount_RNA","nFeature_RNA","nCount_ATAC","nFeature_ATAC","CellType") The column names take from  redeemR@CellMeta, may useful cell features
 #' @param CellMeta_features_rename   eg. c("Mito_meanCov","nCount_RNA","nFeature_RNA","nCount_ATAC","nFeature_ATAC","CellType") Rename the CellMeta
 #' @param multiome_features   eg. c("seurat_clusters")  The column names take from Multiome@meta.data 
 #' @param multiome_features_rename   eg. c("NewSeurat_cluster")   Rename the column names for multiome_features
@@ -741,10 +741,10 @@ return(distance)
 #' @param PostTrans_from   Default c(2,3)  # This is a tricky part eh nmerging files are involved, find the postfix from cellranger agg for different sample
 #' @param PostTrans_to   Default c(2,1)
 #' @export
-#' @import dplyr EZsinglecell2
+#' @import dplyr
 #' @return AnnTable
 Make_AnnTable<-function(
-    Mitotracing=DN4_HSC_mitoTracing.Sensitive,
+    redeemR=DN4_HSC_redeemR.Sensitive,
     Multiome=Donor04_HSC_Multiome_wrapper,
     clonal_features=c("nCount_mitoV","seurat_clusters"),
     clonal_features_rename=c("nCount_mitoV","clone_clusters"),
@@ -766,22 +766,22 @@ Make_AnnTable<-function(
 multiome_meta_tb<-Translate_RNA2ATAC(Multiome@meta.data, PostFix =T, from = PostTrans_from, to=PostTrans_to)
 multiome_meta_tb$RNAname<-row.names(multiome_meta_tb)
 row.names(multiome_meta_tb)<-multiome_meta_tb$ATACName
-## First, check if the cells in MitoTracing object are well matched in Multiome_wrapper
-Matching<-length(intersect(Mitotracing@CellMeta$Cell,multiome_meta_tb$ATACName))
-print(paste(length(Mitotracing@CellMeta$Cell),"Cells in MitoTracing object,", length(multiome_meta_tb$ATACName), "Cells in Multiome_wrapper object ---", Matching, "Cells matched"))
-if(Matching/length(Mitotracing@CellMeta$Cell)<0.5){
-    stop("Less than 10% of cells in MitoTracing is not matchable by multiome_wrapper, please check. Hint, maybe the PostTrans_from and to is messed up?")
+## First, check if the cells in redeemR object are well matched in Multiome_wrapper
+Matching<-length(intersect(redeemR@CellMeta$Cell,multiome_meta_tb$ATACName))
+print(paste(length(redeemR@CellMeta$Cell),"Cells in redeemR object,", length(multiome_meta_tb$ATACName), "Cells in Multiome_wrapper object ---", Matching, "Cells matched"))
+if(Matching/length(redeemR@CellMeta$Cell)<0.5){
+    stop("Less than 10% of cells in redeemR is not matchable by multiome_wrapper, please check. Hint, maybe the PostTrans_from and to is messed up?")
 }
 
 ## Make AnnTable, cellname|clone Umap1| clone umap2 (required)
-AnnTable<-Mitotracing@Seurat@reductions$umap@cell.embeddings %>% as.data.frame %>%tibble::rownames_to_column("Cell")
+AnnTable<-redeemR@Seurat@reductions$umap@cell.embeddings %>% as.data.frame %>%tibble::rownames_to_column("Cell")
 row.names(AnnTable)<-AnnTable$Cell
 names(AnnTable)<-c("Cell","cloUMAP_1","cloUMAP_2")
 ## Make Clonal feature table -- the clonal clustering, etc (Reccomended)
-clonal_features_tb<-Mitotracing@Seurat@meta.data[,clonal_features,drop=F]
+clonal_features_tb<-redeemR@Seurat@meta.data[,clonal_features,drop=F]
 names(clonal_features_tb)<-clonal_features_rename
 ## Make CellMeta feature table -- mito coverage, ATAC/RNA counts, etc, these info are coming from initial multiome wrapping
-CellMeta_features_tb<-Mitotracing@CellMeta[,CellMeta_features,drop=F]
+CellMeta_features_tb<-redeemR@CellMeta[,CellMeta_features,drop=F]
 names(CellMeta_features_tb)<-CellMeta_features_rename
 ## Make multiome feature table -- only to be useful when re-clustering is performed  
 Multiome_feature_tb<-multiome_meta_tb[,multiome_features,drop=F]
@@ -823,8 +823,8 @@ names(accessibility)<-gsub("-","_",names(accessibility))
 AnnTable<-Tomerge_v2(AnnTable,accessibility)
 }
 if(length(Variants)>0){
-Available.Variants<-Variants[Variants %in% colnames(Mitotracing@Cts.Mtx.bi)]
-variantstoshow<-as.matrix(Mitotracing@Cts.Mtx.bi[,Available.Variants])
+Available.Variants<-Variants[Variants %in% colnames(redeemR@Cts.Mtx.bi)]
+variantstoshow<-as.matrix(redeemR@Cts.Mtx.bi[,Available.Variants])
 AnnTable<-Tomerge_v2(AnnTable,variantstoshow)
 }
 AnnTable[is.na(AnnTable)]<-0
@@ -832,18 +832,18 @@ return(AnnTable)
 }
 
 
-#' Subset_MitoTracing Subset a mitotracing object by selecting a subset of cells, return a new MitoTracing object with only 4 slots: para; CellMeta; Cts.Mtx.bi; UniqueV, can be used for downstreme compute distance, clonal clustering, make tree, etc
-#' @param Mitotracing  The Parent MitoTracing object eg. DN4_HSC_mitoTracing.Sensitive
+#' Subset_redeemR Subset a redeemR object by selecting a subset of cells, return a new redeemR object with only 4 slots: para; CellMeta; Cts.Mtx.bi; UniqueV, can be used for downstreme compute distance, clonal clustering, make tree, etc
+#' @param redeemR  The Parent redeemR object eg. DN4_HSC_redeemR.Sensitive
 #' @param Cells   Important, give a vector of Cell names(ATAC cell names)
 #' @param ExtraInfo   Extra information, usually "Subset from ..."
 #' @import Matrix
 #' @export
-#' @return MitoTracing Object
-Subset_MitoTracing<-function(MitoTracing,Cells,ExtraInfo="Subset from ... "){
+#' @return redeemR Object
+Subset_redeemR<-function(redeemR,Cells,ExtraInfo="Subset from ... "){
 print("Raw slots are skipped: -GTsummary.filtered, -V.fitered.list, ")
-Cells<-Cells[Cells %in% row.names(MitoTracing@Cts.Mtx.bi)]    
-Variants.matrix<-MitoTracing@Cts.Mtx[Cells,]
-Variants.matrix.bi<-MitoTracing@Cts.Mtx.bi[Cells,]
+Cells<-Cells[Cells %in% row.names(redeemR@Cts.Mtx.bi)]    
+Variants.matrix<-redeemR@Cts.Mtx[Cells,]
+Variants.matrix.bi<-redeemR@Cts.Mtx.bi[Cells,]
 
 Variants.matrix.filtered<-Variants.matrix[,colSums(Variants.matrix.bi)>=2]
 Variants.matrix.bi.filtered<-Variants.matrix.bi[,colSums(Variants.matrix.bi)>=2]
@@ -851,9 +851,9 @@ Variants.matrix.bi.filtered<-Variants.matrix.bi[,colSums(Variants.matrix.bi)>=2]
 Variants.matrix.bi.filtered<-Variants.matrix.bi.filtered[rowSums(Variants.matrix.bi.filtered)>=2,]  ## This step will filter out some cells
 Variants.matrix.filtered<-Variants.matrix.filtered[rowSums(Variants.matrix.bi.filtered)>=2,]  ## This step will filter out some cells
 Variants.matrix.filtered<-Variants.matrix.filtered[row.names(Variants.matrix.filtered) %in% row.names(Variants.matrix.bi.filtered),]
-ob<-new("mitoTracing")
-ob@para<-c(MitoTracing@para,Extra=ExtraInfo)
-ob@CellMeta<-subset(MitoTracing@CellMeta,Cell %in% Cells)
+ob<-new("redeemR")
+ob@para<-c(redeemR@para,Extra=ExtraInfo)
+ob@CellMeta<-subset(redeemR@CellMeta,Cell %in% Cells)
 Variants.matrix.filtered<-Variants.matrix.filtered[row.names(Variants.matrix.bi.filtered),]
 ob@Cts.Mtx<-Variants.matrix.filtered
 ob@Cts.Mtx.bi<-Variants.matrix.bi.filtered
@@ -1009,15 +1009,15 @@ split_profile=function(profile){
 
 
 #' Define a function make the Allnodes(Node|Parent|Freq|CladeSize), where Freq is the number of variants assigned to the node(as ending point) 
-#' from mitotracing object, 
+#' from redeemR object, 
 #' 
-#' @param mitotracing  a mitotracing object already have the tree built
+#' @param redeemR  a redeemR object already have the tree built
 #' @param prob.cut The probability cutoff to include confidently assigned variant
 #' @export
 #' @import dplyr
-MakeAllNodes<-function(mitotracing=DN4_stemcell_mitoTracing.seed.verysensitive, prob.cut=0.3){
-phy=mitotracing@TREE@phylo
-NodeVariant.summary<-mitotracing@AssignedVariant$Variant.assign.report %>% subset(prob>=prob.cut) %>% .$Edge.Assign %>% table %>% as.data.frame() %>% .[order(.$Freq,decreasing=T),]
+MakeAllNodes<-function(redeemR=DN4_stemcell_redeemR.seed.verysensitive, prob.cut=0.3){
+phy=redeemR@TREE@phylo
+NodeVariant.summary<-redeemR@AssignedVariant$Variant.assign.report %>% subset(prob>=prob.cut) %>% .$Edge.Assign %>% table %>% as.data.frame() %>% .[order(.$Freq,decreasing=T),]
 colnames(NodeVariant.summary)[1]<-"Node"
 EdgeTable<-phy$edge %>% as.data.frame
 colnames(EdgeTable)<-c("Parent","Node")
@@ -1030,19 +1030,19 @@ return(Allnodes)
 
 #' Define a function to perform single-cell based hard porogeny assignment
 #' This function was developed based on DN4T2.basics.ipynb
-#' @param HSC_mitoTracing  The HSC_mitoTracing is the mitoTracing object for defined HSC
-#' @param Full_mitoTracing The FULL_mitoTracing is the mitoTracing object for the full BMMC_HSPC_HSC
+#' @param HSC_redeemR  The HSC_redeemR is the redeemR object for defined HSC
+#' @param Full_redeemR The FULL_redeemR is the redeemR object for the full BMMC_HSPC_HSC
 #' @param distCut Default is 0.95, the distance, below which I define as the related progeny
 #' @export
 #' @import ggnewscale tibble dplyr RColorBrewer
-ProgenyMapping<-function(HSC_mitoTracing=DN4_PhenoHSC_mitoTracing.verysensitive,Full_mitoTracing=DN4_BMMC_HSPC_HSC_mitoTracing.verysensitive,distCut=0.95,d="w_jaccard"){
+ProgenyMapping<-function(HSC_redeemR=DN4_PhenoHSC_redeemR.verysensitive,Full_redeemR=DN4_BMMC_HSPC_HSC_redeemR.verysensitive,distCut=0.95,d="w_jaccard"){
 require(ggnewscale)
 require(tibble)
 require(dplyr)
 require(RColorBrewer)
 ## Prepare distance matrix from HSC to non-HSCs
-BMMC_HSPC_HSC.dist<-as.matrix(slot(Full_mitoTracing@DistObjects,d))
-HSCs<-HSC_mitoTracing@CellMeta$Cell
+BMMC_HSPC_HSC.dist<-as.matrix(slot(Full_redeemR@DistObjects,d))
+HSCs<-HSC_redeemR@CellMeta$Cell
 HSCs<-HSCs[HSCs %in% colnames(BMMC_HSPC_HSC.dist)]
 NonHSCs<-row.names(BMMC_HSPC_HSC.dist)[!row.names(BMMC_HSPC_HSC.dist) %in% HSCs]
 BMMC_HSPC_HSC.dist.fromHSC<-BMMC_HSPC_HSC.dist[NonHSCs,HSCs]
@@ -1050,21 +1050,21 @@ BMMC_HSPC_HSC.dist.fromHSC<-BMMC_HSPC_HSC.dist[NonHSCs,HSCs]
 p1.1<-BMMC_HSPC_HSC.dist.fromHSC[,sample(1:ncol(BMMC_HSPC_HSC.dist.fromHSC),1)] %>% data.frame(Distance=.,rk=rank(.)) %>% ggplot()+aes(rk,Distance)+geom_point()+geom_hline(yintercept = distCut)+theme_bw()
 p1.2<-BMMC_HSPC_HSC.dist.fromHSC[,sample(1:ncol(BMMC_HSPC_HSC.dist.fromHSC),1)] %>% data.frame(Distance=.,rk=rank(.)) %>% ggplot()+aes(rk,Distance)+geom_point()+geom_hline(yintercept = distCut)+theme_bw()
 p1.3<-BMMC_HSPC_HSC.dist.fromHSC[,sample(1:ncol(BMMC_HSPC_HSC.dist.fromHSC),1)] %>% data.frame(Distance=.,rk=rank(.)) %>% ggplot()+aes(rk,Distance)+geom_point()+geom_hline(yintercept = distCut)+theme_bw()
-meta<-Full_mitoTracing@CellMeta[,c("Cell","meanCov")] %>% tibble::column_to_rownames("Cell")
+meta<-Full_redeemR@CellMeta[,c("Cell","meanCov")] %>% tibble::column_to_rownames("Cell")
 HSC.output<-apply(BMMC_HSPC_HSC.dist.fromHSC,2,function(x){length(which(x<distCut))}) %>% data.frame(OutputN=.) %>% Tomerge_v2(.,meta)
-VariantNumber<-Full_mitoTracing@GTsummary.filtered %>% subset(.,Cell %in% HSCs) %>% group_by(Cell) %>% dplyr::summarise(VariantNumber=n()) %>% tibble::column_to_rownames(var="Cell")
+VariantNumber<-Full_redeemR@GTsummary.filtered %>% subset(.,Cell %in% HSCs) %>% group_by(Cell) %>% dplyr::summarise(VariantNumber=n()) %>% tibble::column_to_rownames(var="Cell")
 HSC.output<-Tomerge_v2(HSC.output,VariantNumber)
 HSC.output<-HSC.output %>% tibble::rownames_to_column(var = "Cell")
 p2<-ggplot(HSC.output)+aes(VariantNumber,log10(OutputN))+geom_point()+xlim(0,40)+theme_bw()+geom_smooth(method="lm")
 ## Make a dic to translate from cell name to coarse cell type
-dic<-recode(Full_mitoTracing@CellMeta$STD.CellType,
+dic<-recode(Full_redeemR@CellMeta$STD.CellType,
 HSC="Stem",
 MPP="EarlyP",CMP="EarlyP",MKP="MK",
 MEP="ME",GMP="Mye",MDP="Mye",CDP="Mye", EryP="ME",
 LMPP="Lym",CLP="Lym",ProB="Lym",Plasma="Lym",
 Mono="Mye",Ery="ME",mDC="Mye", cDC="Mye",
 CD4="Lym",CD8="Lym" ,NK="Lym"  ,B="Lym" ,pDC="Lym") 
-names(dic)<-Full_mitoTracing@CellMeta$Cell
+names(dic)<-Full_redeemR@CellMeta$Cell
 ## Calculate output lineages
 LineageNames<-levels(dic)
 ResolvedLineage<-function(x){
@@ -1102,13 +1102,13 @@ LineageBiasTest.Mye<-LineageBiasTest(df=HSC_output_lineages,L="Mye",L.exp=Mye.ex
 LineageBiasTest.MK<-LineageBiasTest(df=HSC_output_lineages,L="MK",L.exp=MK.expM)  %>% tibble::rownames_to_column(var="Cell")
 LineageBiasTest.ME<-LineageBiasTest(df=HSC_output_lineages,L="ME",L.exp=ME.expM)  %>% tibble::rownames_to_column(var="Cell")
 LineageBiasTest.EarlyP<-LineageBiasTest(df=HSC_output_lineages,L="EarlyP",L.exp=EarlyP.expM)  %>% tibble::rownames_to_column(var="Cell")
-n=length(unique(HSC_mitoTracing@CellMeta$Clone_merge))
+n=length(unique(HSC_redeemR@CellMeta$Clone_merge))
 qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
 col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-meta<-HSC_mitoTracing@CellMeta
+meta<-HSC_redeemR@CellMeta
 meta$Clone_merge<-as.factor(meta$Clone_merge)
 options(repr.plot.width=10,repr.plot.height=4,repr.plot.res=600)
-p<-ggtree(HSC_mitoTracing@TREE@treedata,size=0.1,branch.length = "none")#+geom_tiplab(as_ylab=TRUE, color='firebrick')
+p<-ggtree(HSC_redeemR@TREE@treedata,size=0.1,branch.length = "none")#+geom_tiplab(as_ylab=TRUE, color='firebrick')
 p3<-p+
 geom_facet(panel="Clone",data=meta,geom = geom_bar,mapping = aes(x = 1,fill=Clone_merge),orientation = 'y', width = 1, stat='identity')+
 scale_fill_manual(values=col_vector)+
@@ -1125,10 +1125,10 @@ xlim_expand(c(-2,2), "MK")+xlim_expand(c(-2,2), "ME")+xlim_expand(c(-2,2), "Earl
 p3<-facet_widths(p3, widths=c(2,0.25,1,1,1,1,1,1,1))
 #To meake a lineage summary, 
 #output_lineages<-HSC_T2_output_lineages
-#HSC_mitoTracing ## It has to be a mitotracing object with Clone_merge
-output_lineage.summary<-HSC_output_lineages %>% tibble::rownames_to_column("Cell") %>% merge(.,HSC_mitoTracing@CellMeta[,c("Cell","Clone_merge")]) %>% 
+#HSC_redeemR ## It has to be a redeemR object with Clone_merge
+output_lineage.summary<-HSC_output_lineages %>% tibble::rownames_to_column("Cell") %>% merge(.,HSC_redeemR@CellMeta[,c("Cell","Clone_merge")]) %>% 
 group_by(Clone_merge) %>% dplyr::summarise(Lym=sum(Lym),Mye=sum(Mye),ME=sum(ME),MK=sum(MK),TotalOutPut=sum(Totaloutput)) %>% subset(.,!is.na(Clone_merge)) %>% 
-merge(.,as.data.frame(table(HSC_mitoTracing@CellMeta$Clone_merge)),by.x="Clone_merge",by.y="Var1") %>% mutate(OutLevel=TotalOutPut/Freq)
+merge(.,as.data.frame(table(HSC_redeemR@CellMeta$Clone_merge)),by.x="Clone_merge",by.y="Var1") %>% mutate(OutLevel=TotalOutPut/Freq)
 output_lineage.summary.pct<-output_lineage.summary[,1:5] %>% tibble::column_to_rownames("Clone_merge") %>% apply(.,1,function(x){x/sum(x)}) %>% t() 
 output_lineage.summary.pct.scale<-scale(output_lineage.summary.pct) %>% data.frame(.,OutLevel.scale=scale(output_lineage.summary$OutLevel)) %>%
 tibble::rownames_to_column("Clone_merge")
@@ -1140,17 +1140,16 @@ return(list(LineageSummary=LineageSummary,LineageEnrich=LineageEnrich,p1_list=li
 
 #' Define a function to perform Find marker for top vs bottom clones
 #' This function was developed based on DN4T2.basics.ipynb
-#' @param topClones  a vector of clone ID eg. c("1","3","7"),this must be in HSC_mitoTracing@CellMeta$Clone_merge
-#' @param bottomClones  a vector of clone ID eg. c("2","5"), this must be in HSC_mitoTracing@CellMeta$Clone_merge
-#' @param ob Seurat object (Multiomics), the postfix needs to be compatible with HSC_mitoTracing, the cells will be matched by cell names
-#' @param HSC_mitoTracing  mitoTracing object for HSC
+#' @param topClones  a vector of clone ID eg. c("1","3","7"),this must be in HSC_redeemR@CellMeta$Clone_merge
+#' @param bottomClones  a vector of clone ID eg. c("2","5"), this must be in HSC_redeemR@CellMeta$Clone_merge
+#' @param ob Seurat object (Multiomics), the postfix needs to be compatible with HSC_redeemR, the cells will be matched by cell names
+#' @param HSC_redeemR  redeemR object for HSC
 #' @param test  the statistic method to use for DE, a wrapper function from Seurat FindAllMarkers
 #' @export 
-#' @import EZsinglecell2 tibble Seurat
-Clone_FinderMarker<-function(topClones,bottomClones,HSC_Multiome_wrapper=Donor04_HSC_Multiome_wrapper,HSC_mitoTracing,assay="SCT",test="wilcox"){
-require(EZsinglecell2)
+#' @import tibble Seurat
+Clone_FinderMarker<-function(topClones,bottomClones,HSC_Multiome_wrapper=Donor04_HSC_Multiome_wrapper,HSC_redeemR,assay="SCT",test="wilcox"){
 require(Seurat)
-clone.df<-HSC_mitoTracing@CellMeta[,c("Cell","Clone_merge")] %>% mutate(Cell=Translate_simple_ATAC2RNA(Cell)) %>% tibble::column_to_rownames("Cell")
+clone.df<-HSC_redeemR@CellMeta[,c("Cell","Clone_merge")] %>% mutate(Cell=Translate_simple_ATAC2RNA(Cell)) %>% tibble::column_to_rownames("Cell")
 meta.top<-subset(clone.df,Clone_merge %in% topClones) %>% mutate(LB="top")
 meta.bottom<-subset(clone.df,Clone_merge %in% bottomClones) %>% mutate(LB="bottom")
 meta<-rbind(meta.top,meta.bottom)
@@ -1222,9 +1221,9 @@ if(return_igraph){
 #' ProgenyMapping_np 
 #' Define a function to compute network propagation based probability
 #' FromDist2Graph is needed to convert fistance matrix into MNN graph
-#' @param HSC_mitoTracing  The HSC_mitoTracing is the mitoTracing object for defined HSC,  have already gone through Add_DepthMatrix--Add_AssignVariant--Add_tree_cut, otherwise, need
+#' @param HSC_redeemR  The HSC_redeemR is the redeemR object for defined HSC,  have already gone through Add_DepthMatrix--Add_AssignVariant--Add_tree_cut, otherwise, need
 #' othereise, need a column in CellMeta that indicates the clone ID
-#' @param Full_mitoTracing The FULL_mitoTracing is the mitoTracing object for the full BMMC_HSPC_HSC
+#' @param Full_redeemR The FULL_redeemR is the redeemR object for the full BMMC_HSPC_HSC
 #' @param CloneCol "Clone_merge"
 #' @param k  the k.param used for MNN graph 
 #' @param gm gamma default is 0.05 which mean 95% information is passing out
@@ -1233,17 +1232,17 @@ if(return_igraph){
 #' @return a list of two  ALLmeta.npClone (A meta data with last column npClone), np_mat (the network propagation matrix))
 #' @export
 #' @import SCAVENGE dplyr
-ProgenyMapping_np<-function(HSC_mitoTracing=DN4_stemcell_mitoTracing.seed.verysensitive,
-                       Full_mitoTracing=DN4_BMMC_HSPC_HSC_mitoTracing.verysensitive,
+ProgenyMapping_np<-function(HSC_redeemR=DN4_stemcell_redeemR.seed.verysensitive,
+                       Full_redeemR=DN4_BMMC_HSPC_HSC_redeemR.verysensitive,
                        CloneCol="Clone_merge",k=30,gm=0.5,useLSI=F,useSCAVENGE_LSI=F,subsample=F,ProbCut=0.7,Celltype="Rig.CellType"){
 print("Note: By default, usLSI=F, the MNN nretwork is based on jaccard; Alternatively, useLSI=T")
 print("Note: In case useLSI,useSCAVENGE_LSI=T to use SCAVENGE to compute LSI, else, do LSI via Seurat")
 print("Note: subsample=T, to subsample into same number of seed cells in each clone")
 require(SCAVENGE)
 require(dplyr)
-HSCmeta<-HSC_mitoTracing@CellMeta
+HSCmeta<-HSC_redeemR@CellMeta
 HSCmeta<-HSCmeta[!is.na(HSCmeta[,CloneCol]),]
-ALLmeta<-Full_mitoTracing@CellMeta
+ALLmeta<-Full_redeemR@CellMeta
 if(subsample){
   print(table(HSCmeta[,CloneCol]))
   HSCmeta<-HSCmeta %>% group_by(Clone_merge) %>% sample_n(min(as.numeric(table(HSCmeta[,CloneCol]))))
@@ -1254,18 +1253,18 @@ if(useLSI){
     if(useSCAVENGE_LSI){
       print("use LSI-SCAVENGE")  
       rm_v = c("Variants310TC","Variants3109TC","Variants5764CT")
-      rm_idx <- which(colnames(Full_mitoTracing@Cts.Mtx.bi) %in% rm_v)
-      cell_rm_idx <- which(rowSums(Full_mitoTracing@Cts.Mtx.bi[, -rm_idx]) ==0)
-      tfidf_mat = tfidf(bmat=t(Full_mitoTracing@Cts.Mtx.bi[-cell_rm_idx, -rm_idx]), mat_binary=TRUE, TF=TRUE, log_TF=TRUE)
+      rm_idx <- which(colnames(Full_redeemR@Cts.Mtx.bi) %in% rm_v)
+      cell_rm_idx <- which(rowSums(Full_redeemR@Cts.Mtx.bi[, -rm_idx]) ==0)
+      tfidf_mat = tfidf(bmat=t(Full_redeemR@Cts.Mtx.bi[-cell_rm_idx, -rm_idx]), mat_binary=TRUE, TF=TRUE, log_TF=TRUE)
       lsi_mat <- do_lsi(tfidf_mat, dims=30)
       AdjMtx<- SCAVENGE::getmutualknn(lsi_mat[, 2:k], k)
     }else{
     print("use LSI-Seurat")  
-    AdjMtx<- SCAVENGE::getmutualknn(Full_mitoTracing@Seurat@reductions$lsi@cell.embeddings[, 2:k], k)
+    AdjMtx<- SCAVENGE::getmutualknn(Full_redeemR@Seurat@reductions$lsi@cell.embeddings[, 2:k], k)
     }
 }else{
   print("use raw w_jaccard")
-AdjMtx<-FromDist2Graph(Full_mitoTracing@DistObjects@w_jaccard,k.param = k,return_igraph = F)
+AdjMtx<-FromDist2Graph(Full_redeemR@DistObjects@w_jaccard,k.param = k,return_igraph = F)
 }
 ALLCells<-row.names(AdjMtx)
 np_mat <- matrix(nrow=length(ALLCells), ncol=length(table(HSCmeta[,CloneCol])))
@@ -1288,12 +1287,12 @@ ALLmeta.npClone<-Tomerge_v2(ALLmeta.npClone,MaxProbability)
 ALLmeta.npClone.filtered<-subset(ALLmeta.npClone,MaxProb>=ProbCut)
 ## To evaluate the HSC assignment
 HSC.assign<-subset(ALLmeta.npClone,STD.CellType=="HSC") %>% .[,c("Cell","npClone","MaxProb")]
-HSC.ori<-HSC_mitoTracing@CellMeta[,c("Cell","Clone_merge")] %>% .[complete.cases(.),] 
+HSC.ori<-HSC_redeemR@CellMeta[,c("Cell","Clone_merge")] %>% .[complete.cases(.),] 
 HSC.ori_assign<-merge(HSC.ori,HSC.assign)
 Accuracy_HSC.BenchMark<-length(which(HSC.ori_assign$Clone_merge==HSC.ori_assign$npClone))/nrow(HSC.ori_assign)
 
 
-ClonalSize<-as.data.frame(table(HSC_mitoTracing@CellMeta$Clone_merge)) %>% rename(npClone="Var1")
+ClonalSize<-as.data.frame(table(HSC_redeemR@CellMeta$Clone_merge)) %>% rename(npClone="Var1")
 datatoplot<-cbind(ALLmeta.npClone.filtered[,c("Cell","npClone")],Lin=recode(ALLmeta.npClone.filtered[,Celltype],
 HSC="Stem",
 MPP="EarlyP",CMP="EarlyP",
@@ -1304,8 +1303,8 @@ Mono="Mye",Ery="Mye",cDC="Mye",
 CD4="Lym",CD8="Lym" ,NK="Lym" ,B="Lym" ,pDC="Lym",ProB="Lym")) %>% group_by(npClone) %>% reshape2::dcast(npClone~Lin,fun.aggregate = length) %>% mutate(Total=EarlyP+Lym+ME+MK+Mye) %>% 
 merge(.,ClonalSize) %>% rename(Size="Freq") %>% mutate(EarlyP=EarlyP/Total,Lym=Lym/Total,ME=ME/Total,MK=MK/Total,Mye=Mye/Total,Total.norm=Total/Size,Total.norm_NPadj=Total/Stem) 
 datatoplot<-datatoplot[order(datatoplot$Total.norm,decreasing=T),] %>% mutate(npClone=factor(npClone,levels=npClone))   
-HSC_mitoTracing@CellMeta<-data.frame(VN=rowSums(HSC_mitoTracing@Cts.Mtx.bi)) %>% tibble::rownames_to_column("Cell")  %>% merge(HSC_mitoTracing@CellMeta,.)
-depth_V<-HSC_mitoTracing@CellMeta %>% group_by(Clone_merge) %>% dplyr::summarise(Depth=mean(meanCov),VN=mean(VN)) %>% mutate(npClone=as.character(Clone_merge))
+HSC_redeemR@CellMeta<-data.frame(VN=rowSums(HSC_redeemR@Cts.Mtx.bi)) %>% tibble::rownames_to_column("Cell")  %>% merge(HSC_redeemR@CellMeta,.)
+depth_V<-HSC_redeemR@CellMeta %>% group_by(Clone_merge) %>% dplyr::summarise(Depth=mean(meanCov),VN=mean(VN)) %>% mutate(npClone=as.character(Clone_merge))
 datatoplot<-merge(datatoplot,depth_V) %>% mutate(StemOdds=Stem/Total)
 datatoplot.scale<-datatoplot %>% mutate(Size=Size,Lym=as.numeric(scale(Lym)),Mye=as.numeric(scale(Mye)),ME=as.numeric(scale(ME)),MK=as.numeric(scale(MK)), OutLevel.scale=as.numeric(scale(Total.norm)), OutLevel_NPadj.scale=as.numeric(scale(Total.norm_NPadj))) %>% 
 dplyr::select(npClone,Lym,Mye,ME,MK,OutLevel.scale,OutLevel_NPadj.scale) %>% rename(Clone_merge="npClone")
@@ -1315,16 +1314,16 @@ return(list(Accuracy_HSC.BenchMark=Accuracy_HSC.BenchMark,ALLmeta.npClone=ALLmet
 #' MakeDF4Regress  
 #' Define a function to make two dataframe for regression analysis
 #' This function was developed based on HSC_multiome_Het_2.ipynb
-#' @param multiome_wrapper This outject should includes all and more than HSCs cells in mitoTracing
-#' @param mitoTracing  scMitoTracing object for HSC
+#' @param multiome_wrapper This outject should includes all and more than HSCs cells in redeemR
+#' @param redeemR  scredeemR object for HSC
 #' @param progeny_np run via ProgenyMapping_np
 #' @param assay SCT for expression, ATAC for ATAC
-#' @param useNPimputation default is T, use all cells called by network propagation, inaddition to the top cells in mitoTracing
+#' @param useNPimputation default is T, use all cells called by network propagation, inaddition to the top cells in redeemR
 #' @param maxcloneUMI default is 10, Only include genes, in the max clone the expression greater than 10
 #' @return list(mtx.clone=mtx.clone,mtx.clone.norm.scale=mtx.clone.norm.scale)
 #' @export
 MakeDF4Regress<-function(multiome_wrapper=Donor04_HSC_Multiome_wrapper,
-                         mitoTracing=DN4_stemcell_mitoTracing.seed.sensitive,
+                         redeemR=DN4_stemcell_redeemR.seed.sensitive,
                          progeny_np=DN4_HSC_LSI_progeny_np,
                          assay="SCT",useNPimputation=T,maxcloneUMI=10){
 ## Get mtx
@@ -1334,7 +1333,7 @@ row.names(mtx)<-gsub("Cell","",row.names(mtx))
 if(useNPimputation){
     CloneInfo<-subset(progeny_np$ALLmeta.npClone,STD.CellType=="HSC") %>% .[,c("Cell","npClone")] %>% mutate(Cell_RNA=Translate_simple_ATAC2RNA(Cell)) 
 }else{
-    CloneInfo<-mitoTracing@CellMeta[,c("Cell","Clone_merge")]%>% mutate(Cell_RNA=Translate_simple_ATAC2RNA(Cell)) %>% rename(npClone="Clone_merge")   
+    CloneInfo<-redeemR@CellMeta[,c("Cell","Clone_merge")]%>% mutate(Cell_RNA=Translate_simple_ATAC2RNA(Cell)) %>% rename(npClone="Clone_merge")   
 }
 CloneInfo<-CloneInfo %>%tibble::remove_rownames() %>% tibble::column_to_rownames("Cell_RNA") %>% select(-Cell)
 
@@ -1363,8 +1362,8 @@ return(list(mtx.clone=mtx.clone,mtx.clone.norm.scale=mtx.clone.norm.scale))
 #' 
 #' Firstly used in HSC_multiome_Het_2.ipynb
 #' @param LinOut  produced by MakeDF4Regress
-#' @param regress_factor=c("OutLevel.scale","OutLevel_NPadj.scale","Lym","Mye","MK","ME")
-#' @param n.cores  =8
+#' @param regress_factor default is c("OutLevel.scale","OutLevel_NPadj.scale","Lym","Mye","MK","ME")
+#' @param n.cores  default is 8
 #' @export
 #' @import foreach doParallel
 Run_Lin_regression<-function(LinOut,regress_factor=c("OutLevel.scale","OutLevel_NPadj.scale","Lym","Mye","MK","ME"),n.cores=8){

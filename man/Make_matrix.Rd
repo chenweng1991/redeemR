@@ -3,16 +3,16 @@
 \name{Make_matrix}
 \alias{Make_matrix}
 \title{Make_matrix
-This will make the matixies of Cell VS mitochondrial variants and return mitoTracing
+This will make the matixies of Cell VS mitochondrial variants and return redeemR
 Results stored in Cts.Mtx and Cts.Mtx.bi}
 \usage{
 Make_matrix(object)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 }
 \description{
 Make_matrix
-This will make the matixies of Cell VS mitochondrial variants and return mitoTracing
+This will make the matixies of Cell VS mitochondrial variants and return redeemR
 Results stored in Cts.Mtx and Cts.Mtx.bi
 }

@@ -23,8 +23,8 @@ Tomerge_v2<-function(A,B,leavex=T,leavey=F){
 #' @param meta  a dataframe with the row names as the RNA cell barcode usually with the post -1
 #' @param bclength The cell barcode length, default is 16
 #' @param from A vector of the postfix,  usually is c(1,2,3,...), it depends on how many samples are aggregated in Cellranger RNA part
-#' @param to A vector of the postfix, those cooresponds to the postfix added in scMitoTracing, in general, if it matches, then simply c(1,2,3,...), 
-#' but in case not match, here provides a way to transform into scMitoTracing order
+#' @param to A vector of the postfix, those cooresponds to the postfix added in redeemR, in general, if it matches, then simply c(1,2,3,...), 
+#' but in case not match, here provides a way to transform into scredeemR order
 #' @return meta a dataframe
 #' @examples
 #' Translate_RNA2ATAC(meta)
@@ -52,8 +52,8 @@ return(meta)
 #' @param name  RNA name, as the RNA cell barcode usually with the post -1
 #' @param bclength The cell barcode length, default is 16
 #' @param from A vector of the postfix,  usually is c(1,2,3,...), it depends on how many samples are aggregated in Cellranger RNA part
-#' @param to A vector of the postfix, those cooresponds to the postfix added in scMitoTracing, in general, if it matches, then simply c(1,2,3,...), 
-#' but in case not match, here provides a way to transform into scMitoTracing order
+#' @param to A vector of the postfix, those cooresponds to the postfix added in redeemR, in general, if it matches, then simply c(1,2,3,...), 
+#' but in case not match, here provides a way to transform into redeemR order
 #' @return ATAC name
 #' Translate_RNA2ATAC(`a vector of RNA names`)
 #' @export
@@ -80,8 +80,8 @@ return(name)
 #' @param name  RNA name, as the RNA cell barcode usually with the post -1
 #' @param bclength The cell barcode length, default is 16
 #' @param from A vector of the postfix,  usually is c(1,2,3,...), it depends on how many samples are aggregated in Cellranger RNA part
-#' @param to A vector of the postfix, those cooresponds to the postfix added in scMitoTracing, in general, if it matches, then simply c(1,2,3,...), 
-#' but in case not match, here provides a way to transform into scMitoTracing order
+#' @param to A vector of the postfix, those cooresponds to the postfix added in redeemR, in general, if it matches, then simply c(1,2,3,...), 
+#' but in case not match, here provides a way to transform into redeemR order
 #' @return RNA name
 #' Translate_RNA2ATAC(`a vector of RNA names`)
 #' @export
@@ -110,7 +110,7 @@ return(name)
 #'
 #' This function allows you to input a list of sparse matrix and merge by rownames, return a new sparse matrix
 #' @param mtx.list  A list of sparse matrix to be merged
-#' @param postfix  a vector of postfix (Usually are numbers that added at the end of cell names). Better be consistent with a merged MitoTracing object orders
+#' @param postfix  a vector of postfix (Usually are numbers that added at the end of cell names). Better be consistent with a merged redeemR object orders
 #' @return new sparse matrix
 #' @examples
 #' Donor4_HSC_HPC_BMMC.Mtx<-MergeMtx(list(Donor04_BMMC_Multiome_wrapper$seurat@assays$RNA@counts,Donor04_HPC_Multiome_wrapper$seurat@assays$RNA@counts,Donor04_HSC_Multiome_wrapper$seurat@assays$RNA@counts),c(3,2,1))
