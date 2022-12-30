@@ -12,8 +12,10 @@
 #' @export
 #' @import dplyr
 DepthSummary<-function(path,CellSubset=NA,only_Total=T){
+    message("By default only total depth is summarized")
+    message("Depprecated ")
     QualifiedTotalCts<-read.table(paste(path,"/QualifiedTotalCts",sep=""))
-    if(!is.na(cellSubSet)){
+    if(!is.na(CellSubset)){
       print("Will subset cells...")
       print(paste(length(unique(QualifiedTotalCts$V1)),"Cells in QualifiedTotalCts"))
       print(paste(length(CellSubset),"Cells in the provided subset"))
@@ -31,18 +33,17 @@ DepthSummary<-function(path,CellSubset=NA,only_Total=T){
     }else{
     Pos.MeanCov<-QualifiedTotalCts %>% group_by(V2) %>% dplyr::summarise(meanCov=mean(V4))
     Cell.MeanCov<-QualifiedTotalCts %>% group_by(V1) %>% dplyr::summarise(meanCov=mean(V4))
-    depth_VerySensitive<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
+    depth_LS<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
 
     Pos.MeanCov<-QualifiedTotalCts %>% group_by(V2) %>% dplyr::summarise(meanCov=mean(V5))
     Cell.MeanCov<-QualifiedTotalCts %>% group_by(V1) %>% dplyr::summarise(meanCov=mean(V5))
-    depth_Sensitive<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
+    depth_S<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
 
     Pos.MeanCov<-QualifiedTotalCts %>% group_by(V2) %>% dplyr::summarise(meanCov=mean(V6))
     Cell.MeanCov<-QualifiedTotalCts %>% group_by(V1) %>% dplyr::summarise(meanCov=mean(V6))
-    depth_Specific<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
+    depth_VS<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
 
-    depth<-list(Total=depth_Total,VerySensitive=depth_VerySensitive,Sensitive=depth_Sensitive,Specific=depth_Specific)
-
+    depth<-list(Total=depth_Total,VerySensitive=depth_LS,Sensitive=depth_S,Specific=depth_VS)
     return(depth)
     }
 }
@@ -86,43 +87,95 @@ return(Genotypes.summary)
 #'
 #' This function allows you to read raw data from XX/final folder, the output from mitoV
 #' @param path The XX/final folder, the output from mitoV
+#' @param thr The thredhold of filtering T(Total),LS(Less Stringent:c=0.75,a1=2,a2=1), S(Stringent:c=0.75,a1=3,a2=2), VS(Very Stringent:c=0.75,a1=4,a2=3)"
 #' @param Processed Boolean variable (Default F), if true directly readRDS("VariantsGTSummary.RDS") or, generate and saveout "VariantsGTSummary.RDS"
 #' @return this returns depth which is a list of 4 df (Total/VerySensitive/Sensitive/Specific), each is a genotype summary
 #' @examples WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
 #' DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
 #' @export
-CW_mgatk.read<-function(path,Processed=F){
-setwd(path)
+redeemR.read<-function(path,thr="S",Processed=F){
 if(Processed){
-    VariantsGTSummary<-readRDS("VariantsGTSummary.RDS")
+    VariantsGTSummary<-readRDS(paste(path,"/VariantsGTSummary.RDS",sep=""))
 }else{
-    RawGenotypes.Sensitive.StrandBalance<-read.table("RawGenotypes.Sensitive.StrandBalance")
-    RawGenotypes.VerySensitive.StrandBalance<-read.table("RawGenotypes.VerySensitive.StrandBalance")
-    RawGenotypes.Specific.StrandBalance<-read.table("RawGenotypes.Specific.StrandBalance")
-    RawGenotypes.Total.StrandBalance<-read.table("RawGenotypes.Total.StrandBalance")
+    if(missing(path)|missing(thr)){
+        message("redeemR.read(path,thr)")
+        message("missing variable path or thr")
+        message("path is a string to the redeemV result folder that contains RawGenotypes.XX")
+        message("thr is one of T,LS,S,VS:")
+        message("T(Total),LS(Less Stringent:c=0.75,a1=2,a2=1), S(Stringent:c=0.75,a1=3,a2=2), VS(Very Stringent:c=0.75,a1=4,a2=3)")
+        message("Term from redeemV is deprecated: VerySensitive equal to Less Stringent, Sensitive equal to Stringent, Specific equal to Very Stringent")
+        return(NULL)
+    }
     GiveName<-c("UMI","Cell","Pos","Variants","Call","Ref","FamSize","GT_Cts","CSS","DB_Cts","SG_Cts","Plus","Minus","Depth")
-    colnames(RawGenotypes.Sensitive.StrandBalance)<-GiveName
-    colnames(RawGenotypes.VerySensitive.StrandBalance)<-GiveName
-    colnames(RawGenotypes.Specific.StrandBalance)<-GiveName
-    colnames(RawGenotypes.Total.StrandBalance)<-GiveName
-    Specific.GTSummary<-GTSummary(RawGenotypes.Specific.StrandBalance)
-    Sensitive.GTSummary<-GTSummary(RawGenotypes.Sensitive.StrandBalance)
-    VerySensitive.GTSummary<-GTSummary(RawGenotypes.VerySensitive.StrandBalance)
-    Total.GTSummary<-GTSummary(RawGenotypes.Total.StrandBalance)
+    if(thr=="T"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Total.StrandBalance",sep=""))
+    }else if(thr=="LS"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.VerySensitive.StrandBalance",sep=""))
+    }else if(thr=="S"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Sensitive.StrandBalance",sep=""))
+    }else if(thr=="VS"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Specific.StrandBalance",sep=""))
+    } 
+    colnames(RawGenotypes)<-GiveName
+    VariantsGTSummary<-GTSummary(RawGenotypes)
     ##Calculate heteroplasmy
-    Specific.GTSummary$hetero<-with(Specific.GTSummary,Freq/depth)
-    Sensitive.GTSummary$hetero<-with(Sensitive.GTSummary,Freq/depth)
-    VerySensitive.GTSummary$hetero<-with(VerySensitive.GTSummary,Freq/depth)
-    Total.GTSummary$hetero<-with(Total.GTSummary,Freq/depth)
-    VariantsGTSummary<-list(Total=Total.GTSummary,VerySensitive=VerySensitive.GTSummary,Sensitive=Sensitive.GTSummary,Specific=Specific.GTSummary)
-    saveRDS(VariantsGTSummary,"VariantsGTSummary.RDS")
+    VariantsGTSummary$hetero<-with(VariantsGTSummary,Freq/depth)
+    attr(VariantsGTSummary,"thr")<-"S"
+    attr(VariantsGTSummary,"depth")<-DepthSummary(dir)
+    attr(VariantsGTSummary,"path")<-dir
+    saveRDS(VariantsGTSummary,paste(path,"/VariantsGTSummary.RDS",sep=""))
+    return(VariantsGTSummary)
 }
-return(VariantsGTSummary)
 }
 
-#' Function to filter variants
+#' redeemR.read Function to read in ReDeeM outputs
 #'
-#' This function allows you to filter variants
+#' This function allows you to read raw data from XX/final folder, the output from mitoV
+#' @param path The XX/final folder, the output from mitoV
+#' @param Processed Boolean variable (Default F), if true directly readRDS("VariantsGTSummary.RDS") or, generate and saveout "VariantsGTSummary.RDS"
+#' @return this returns depth which is a list of 4 df (Total/VerySensitive/Sensitive/Specific), each is a genotype summary
+#' @examples WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
+#' DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
+#' @export
+redeemR.read<-function(path,thr="S"){
+    if(missing(path)|missing(thr)){
+        message("redeemR.read(path,thr)")
+        message("missing variable path or thr")
+        message("path is a string to the redeemV result folder that contains RawGenotypes.XX")
+        message("thr is one of T,LS,S,VS:")
+        message("T(Total),LS(Less Stringent:c=0.75,a1=2,a2=1), S(Stringent:c=0.75,a1=3,a2=2), VS(Very Stringent:c=0.75,a1=4,a2=3)")
+        message("Term from redeemV is deprecated: VerySensitive equal to Less Stringent, Sensitive equal to Stringent, Specific equal to Very Stringent")
+        return(NULL)
+    }
+    GiveName<-c("UMI","Cell","Pos","Variants","Call","Ref","FamSize","GT_Cts","CSS","DB_Cts","SG_Cts","Plus","Minus","Depth")
+    if(thr=="T"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Total.StrandBalance",sep=""))
+    }else if(thr=="LS"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.VerySensitive.StrandBalance",sep=""))
+    }else if(thr=="S"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Sensitive.StrandBalance",sep=""))
+    }else if(thr=="VS"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Specific.StrandBalance",sep=""))
+    } 
+    colnames(RawGenotypes)<-GiveName
+    VariantsGTSummary<-GTSummary(RawGenotypes)
+    ##Calculate heteroplasmy
+    VariantsGTSummary$hetero<-with(VariantsGTSummary,Freq/depth)
+    return(VariantsGTSummary)
+}
+
+#' Internal CV 
+#'
+#' This function allows you to read raw data from XX/final folder, the output from mitoV
+#' @param x input a vector of numeric values
+CV<-function(x){
+    var(x)/mean(x)
+}
+
+
+#' Function to filter variants, deprecated
+#'
+#' This function allows you to filter variants,deprecated, use Vfilter_v4 instead
 #' @param InputSummary The GTSummary file read in by function CW_mgatk.read
 #' @param depth The .depth file by function DepthSummary
 #' @param Rmvhomo Boolean (Default F) If true, remove the homozygous variants
@@ -135,6 +188,7 @@ return(VariantsGTSummary)
 #' @export
 #' @import dplyr
 Vfilter_v3<-function(InputSummary,depth,Rmvhomo=F,Min_Cells=2, Max_Count_perCell=2,QualifyCellCut=10){
+message("Vfilter_v3 has been deprecated, please use Vfilter_v4")    
     CV<-function(x){
     var(x)/mean(x)
     }
@@ -170,6 +224,41 @@ feature.list<-c(feature.list,list(out))
 }
     names(feature.list)<-Names
     return(feature.list)
+}
+
+#' Function to filter variants, v4
+#'
+#' This function allows you to filter variants,deprecated, use Vfilter_v4 instead
+#' @param InputSummary The GTSummary file read in by function CW_mgatk.read
+#' @param depth The .depth file by function DepthSummary
+#' @param Rmvhomo Boolean (Default F) If true, remove the homozygous variants
+#' @param Min_Cells Default 2, A qualified variant needs the minimum number of cells that have this variant
+#' @param Max_Count_perCell Default 2,  A qualified variant needs to show at least 2 counts in one cell
+#' @param QualifyCellCut Default 10, Minimum depth for a qualified cell
+#' @return this returns feature.list
+#' @examples
+#' DN1CD34_1.Variants.feature.lst<-Vfilter_v3(InputSummary=DN1CD34_1.VariantsGTSummary,depth=DN1CD34_1.depth)
+#' @export
+#' @import dplyr
+Vfilter_v4<-function(InputSummary=VariantsGTSummary,Min_Cells=2, Max_Count_perCell=2,QualifyCellCut=10){   
+VariantFeature0<- InputSummary %>% group_by(Variants) %>% dplyr::summarise(CellN=n(),PositiveMean=mean(hetero),maxcts=max(Freq),CV=CV(hetero),TotalVcount=sum(Freq))
+VariantFeature0$pos<-strsplit(VariantFeature0$Variants,"_") %>% sapply(.,function(x){x[1]}) %>% as.numeric
+VariantFeature0<-merge(VariantFeature0,attr(InputSummary,"depth")[["Pos.MeanCov"]],by.x="pos",by.y="V2")   ## This generate different meanCov for each threahold
+VariantFeature0$TotalCov<-length(unique(InputSummary$Cell))*VariantFeature0$meanCov
+VariantFeature0$totalVAF<-VariantFeature0$TotalVcount/VariantFeature0$TotalCov
+qualifiedCell<-subset(attr(InputSummary,"depth")[["Cell.MeanCov"]],meanCov>=QualifyCellCut)[,1,drop=T]  ## Filter Qualified cell based on total depth
+InputSummary.qualified<-subset(InputSummary,Cell %in% qualifiedCell)
+VariantFeature<- InputSummary.qualified %>% group_by(Variants) %>% dplyr::summarise(CellN=n(),PositiveMean=mean(hetero),maxcts=max(Freq),CV=CV(hetero),TotalVcount=sum(Freq))
+print(paste(nrow(VariantFeature0),"variants to start"))
+print(paste(nrow(VariantFeature),"variants after remove low quality cells"))
+VariantFeature$CellNPCT<-VariantFeature$CellN/length(unique(InputSummary.qualified$Cell))
+VariantFeature<-merge(VariantFeature[,c("Variants","CellN","PositiveMean","maxcts","CellNPCT")],VariantFeature0[,c("Variants","TotalVcount","TotalCov","totalVAF","CV")],by="Variants")
+HomoVariants<-subset(VariantFeature,CellNPCT>0.75 & PositiveMean>0.75 & CV<0.01)$Variants
+VariantFeature$HomoTag<-ifelse(VariantFeature$Variants %in% HomoVariants,"Homo","Hetero")
+print(paste("Tag Homoplasmy:",HomoVariants))
+VariantFeature.filtered<-subset(VariantFeature,CellN>=Min_Cells & maxcts>=Max_Count_perCell)
+print(paste("After filtering,",nrow(VariantFeature.filtered), "Variants left"))
+attr(VariantFeature.filtered,"HomoVariants")<-HomoVariants
 }
 
 
