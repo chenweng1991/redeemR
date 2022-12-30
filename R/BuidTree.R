@@ -1,6 +1,3 @@
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Class definitions
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #' An intermediate  S4 class Datatoplots
 #'
@@ -13,13 +10,16 @@ Datatoplots<-setClass(
     )
 )
 
+#' @title An intermediate  S3 class 
+#' 
+setOldClass("dist")
+
 
 #' An intermediate  S4 class Datatoplots
 #'
 #' @slot jaccard distance object dist: Jaccard distance
 #' @slot Dice distance object dist: Dice distance
 #' @slot jaccard3W distance object dist: jaccard3W
-#' @import stats
 #' @export
 DistObjects<-setClass(
     "DistObjects",
@@ -39,7 +39,7 @@ DistObjects<-setClass(
 #' @slot phylo the phylo tree class from ape package
 #' @slot treedata treedata class from tidytree
 #' @slot records character to store annotations
-#' @import ape phytools phangorn treeio ggtree tidytree ggtreeExtra
+#' @import ape phytools phangorn tidytree ggtreeExtra
 #' @export
 TREE<-setClass(
     "TREE",
@@ -384,7 +384,8 @@ setMethod(f="Add_DepthMatrix",
 #' @param redeemR  Need to have redeemR@Ctx.Mtx.depth (By Add_DepthMatrix),  redeemR@Cts.Mtx  redeemR@Cts.Mtx.bi, redeemR@TREE
 #' @export
 #' @return redeemR with @AssignedVarian list of two p is a probability matrix of variants vs edges (Rowsum is 1) and Variant.assign.report, a dataframe (Variant|Edge.Assign|prob) 
-#' @import foreach doParallel pryr doMC
+#' @import foreach doParallel doMC
+#' @importFrom pryr mem_used
 setMethod(f="Add_AssignVariant",
           signature="redeemR",
           definition=function(redeemR=DN1_HSC_redeemR.VerySensitive,n.cores=4){
@@ -414,7 +415,7 @@ NonZero.logV<-log(1-Zero.p) # A matrix of log(probability of 1 or >=1 given w/ m
 Zero.logP<-log(0.95) # A matrix of log(probability of zero given no mutation in the cell)  Variant vs cell
 NonZero.logP<-log(1-0.95) # A matrix of log(probability of 1 or >=1 given no mutation in the cell)  Variant vs cell
 print("(use doMC)Will gc in each loop; Befrore going into the loop, the memory use is:")
-print(mem_used())
+print(pryr::mem_used())
 ## Compute the loglik
 # my.cluster <- parallel::makeCluster(n.cores,type="FORK")
 # print(my.cluster)
@@ -599,13 +600,12 @@ return(redeemR)  # Note, may get NA, if only a few cells are NA, it is expected 
 #' @param maxctscut only use variants with at least in one cell with at leaset maxctscut variant fragments
 #' @return redeemR class
 #' @export
-#' @import Seurat ape phytools phangorn treeio ggtree tidytree ggtreeExtra
+#' @import Seurat ape phytools phangorn tidytree ggtreeExtra
+#' @importFrom ggtree ggtree
 Create_redeemR<-function(GTsummary_list,depth_list,feature.list_list,meta_list,labels,thr="VerySensitive",qualifiedCellCut=10,OnlyHetero=T,VAFcut=1,Cellcut=2,maxctscut=2){
 require(ape)
 require(phytools)
 require(phangorn)
-require(treeio)
-require(ggtree)
 require(tidytree)
 require(ggtreeExtra)
 CellMeta.all<-c()
@@ -1035,6 +1035,7 @@ return(Allnodes)
 #' @param distCut Default is 0.95, the distance, below which I define as the related progeny
 #' @export
 #' @import ggnewscale tibble dplyr RColorBrewer
+#' @importFrom ggtree ggtree
 ProgenyMapping<-function(HSC_redeemR=DN4_PhenoHSC_redeemR.verysensitive,Full_redeemR=DN4_BMMC_HSPC_HSC_redeemR.verysensitive,distCut=0.95,d="w_jaccard"){
 require(ggnewscale)
 require(tibble)
@@ -1170,7 +1171,8 @@ return(markers)
 #' @param return_igraph Wheather return igraph, default is T which return igraph. Otherwise, return adjacent matrix
 #' @return igraph or adjacent matrix
 #' @export
-#' @import Matrix igraph
+#' @import Matrix
+#' @importFrom  igraph get.adjacency graph.edgelist
 FromDist2Graph<-function(d,k.param=30,return_igraph=T){
 if(!is.matrix(d)){
   d<-as.matrix(d)

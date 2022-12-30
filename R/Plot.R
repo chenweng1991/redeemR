@@ -10,6 +10,7 @@
 #' plot_depth(DN1CD34_1.depth$Total,"Total")
 #' @export
 #' @import ggplot2
+#' @importFrom gridExtra grid.arrange
 plot_depth<-function(depth=DN1CD34_1.depth,name="",w=10,h=3){
 d1<-depth[[1]]
 d2<-depth[[2]]
@@ -18,7 +19,7 @@ names(d2)<-c("cell","meanCov")
 options(repr.plot.width=w, repr.plot.height=h)
 p1<-ggplot(d1)+aes(pos,meanCov)+geom_point()+theme_bw()
 p2<-ggplot(d1)+aes("cell",meanCov)+geom_violin()+geom_boxplot()+theme_bw()
-grid.arrange(p1,p2,layout_matrix=rbind(c(1,1,1,1,1,1,2)),top=name)
+gridExtra::grid.arrange(p1,p2,layout_matrix=rbind(c(1,1,1,1,1,1,2)),top=name)
 }
 
 
@@ -75,10 +76,10 @@ return(p1)
 #' @examples
 #' plot_variant(DN1CD34_1.VariantsGTSummary,DN1CD34_1.Variants.feature.lst,depth=DN1CD34_1.depth,cat=c("Total","VerySensitive","Sensitive","Specific"),p4xlim = 30)
 #' @export
-#' @import ggplot2 gridExtra ggExtra
+#' @import ggplot2 ggExtra
+#' @importFrom gridExtra grid.arrange
 plot_variant<-function(GTSummary,feature.list,depth,cat=c("Total","VerySensitive","Sensitive","Specific"),p4xlim=50,QualifyCellCut=10){
 options(repr.plot.width=20, repr.plot.height=6)
-require(gridExtra)
 require(ggExtra)
 qualifiedCell<-subset(depth[["Total"]][[2]],meanCov>=QualifyCellCut)[,1,drop=T]  ## Filter Qualified cell based on total depth
 for (c in cat){
@@ -97,7 +98,7 @@ p3<-ggMarginal(p3, type = "histogram",)
 CellVar.Sum<-subset(GTSummary[[c]],Variants %in% QualifiedV$Variants & Cell %in% qualifiedCell) %>% group_by(Cell) %>% dplyr::summarise(VN=n(), maxcts=max(Freq),mediancts=median(Freq))
 p4title<-paste("Qualified Cell number:",length(qualifiedCell),"\nMedian V number is",median(CellVar.Sum$VN),"\n",CountVperCell(CellVar.Sum$VN,c,CellN=nrow(CellVar.Sum)))
 p4<-ggplot(CellVar.Sum)+aes(VN)+geom_histogram(binwidth = 1,color="black",fill="white")+xlim(0,p4xlim)+ggtitle(p4title)+theme(axis.text=element_text(size=20))+geom_vline(xintercept = median(CellVar.Sum$VN),linetype=2)
-grid.arrange(p1,p2,p3,p4,ncol=4,top=c)
+gridExtra::grid.arrange(p1,p2,p3,p4,ncol=4,top=c)
 }
 }
 
@@ -108,7 +109,7 @@ grid.arrange(p1,p2,p3,p4,ncol=4,top=c)
 #' @param name c
 #' @param CellN nrow(CellVar.Sum)
 #' @examples
-#' CountVperCell(CellVar.Sum$VN,c,CellN=nrow(CellVar.Sum)))
+#' CountVperCell(CellVar.Sum$VN,c,CellN=nrow(CellVar.Sum))
 CountVperCell<-function(x,name,CellN){
 s<-c(CellN-length(x),length(which(x==1)),length(which(x>=2 &x<=5)),length(which(x>=6 &x<=10)),length(which(x>10)))
 names(s)<-c("0","1","2-5","6-10",">10")

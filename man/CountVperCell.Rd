@@ -17,5 +17,5 @@ CountVperCell(x, name, CellN)
 Internal function in plot_variant
 }
 \examples{
-CountVperCell(CellVar.Sum$VN,c,CellN=nrow(CellVar.Sum)))
+CountVperCell(CellVar.Sum$VN,c,CellN=nrow(CellVar.Sum))
 }

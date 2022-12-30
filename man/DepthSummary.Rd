@@ -4,14 +4,14 @@
 \alias{DepthSummary}
 \title{Function to summarize the depth (Total that passed Q30)}
 \usage{
-DepthSummary(path, CellSubset = NA, cellSubSetName = NA)
+DepthSummary(path, CellSubset = NA, only_Total = T)
 }
 \arguments{
 \item{path}{The XX/final folder, the output from mitoV}
 
 \item{CellSubset}{A vector of ATAC cell names for subsetting, default is NA}
 
-\item{cellSubSetName}{a string to name this Subset, should explain with the CellSubset}
+\item{only_Total}{Default is T, Only return total depth summary. Don't care about depth in different quality filtering}
 
 \item{Processed}{Boolean variable(Default T), if true directly readRDS("depth.RDS") or, generate and saveout "depth.RDS"}
 }

@@ -4,16 +4,16 @@
 #' @param path The XX/final folder, the output from mitoV
 #' @param Processed Boolean variable(Default T), if true directly readRDS("depth.RDS") or, generate and saveout "depth.RDS"
 #' @param CellSubset A vector of ATAC cell names for subsetting, default is NA
-#' @param cellSubSetName a string to name this Subset, should explain with the CellSubset
+#' @param only_Total Default is T, Only return total depth summary. Don't care about depth in different quality filtering
 #' @return this returns depth which is a list of 4 list(Total/VerySensitive/Sensitive/Specific), each contains 2 df, summarize mito coverage by Pos/Cell
 #' @examples
 #' WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
 #' DN1CD34_1.depth<-DepthSummary(WD,Processed = T)
 #' @export
 #' @import dplyr
-DepthSummary<-function(path,CellSubset=NA,cellSubSetName=NA){
+DepthSummary<-function(path,CellSubset=NA,only_Total=T){
     QualifiedTotalCts<-read.table(paste(path,"/QualifiedTotalCts",sep=""))
-    if(!is.na(cellSubSetName)){
+    if(!is.na(cellSubSet)){
       print("Will subset cells...")
       print(paste(length(unique(QualifiedTotalCts$V1)),"Cells in QualifiedTotalCts"))
       print(paste(length(CellSubset),"Cells in the provided subset"))
@@ -25,22 +25,26 @@ DepthSummary<-function(path,CellSubset=NA,cellSubSetName=NA){
     }
     Pos.MeanCov<-QualifiedTotalCts %>% group_by(V2) %>% dplyr::summarise(meanCov=mean(V3))
     Cell.MeanCov<-QualifiedTotalCts %>% group_by(V1) %>% dplyr::summarise(meanCov=mean(V3))
-    depth_Total<-list(Pos.MeanCov,Cell.MeanCov)
-
+    depth_Total<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
+    if (only_Total){
+        return(depth_Total)
+    }else{
     Pos.MeanCov<-QualifiedTotalCts %>% group_by(V2) %>% dplyr::summarise(meanCov=mean(V4))
     Cell.MeanCov<-QualifiedTotalCts %>% group_by(V1) %>% dplyr::summarise(meanCov=mean(V4))
-    depth_VerySensitive<-list(Pos.MeanCov,Cell.MeanCov)
+    depth_VerySensitive<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
 
     Pos.MeanCov<-QualifiedTotalCts %>% group_by(V2) %>% dplyr::summarise(meanCov=mean(V5))
     Cell.MeanCov<-QualifiedTotalCts %>% group_by(V1) %>% dplyr::summarise(meanCov=mean(V5))
-    depth_Sensitive<-list(Pos.MeanCov,Cell.MeanCov)
+    depth_Sensitive<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
 
     Pos.MeanCov<-QualifiedTotalCts %>% group_by(V2) %>% dplyr::summarise(meanCov=mean(V6))
     Cell.MeanCov<-QualifiedTotalCts %>% group_by(V1) %>% dplyr::summarise(meanCov=mean(V6))
-    depth_Specific<-list(Pos.MeanCov,Cell.MeanCov)
+    depth_Specific<-list(Pos.MeanCov=Pos.MeanCov,Cell.MeanCov=Cell.MeanCov)
 
     depth<-list(Total=depth_Total,VerySensitive=depth_VerySensitive,Sensitive=depth_Sensitive,Specific=depth_Specific)
-return(depth)
+
+    return(depth)
+    }
 }
 
 
