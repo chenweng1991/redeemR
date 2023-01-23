@@ -4,9 +4,7 @@
 \alias{redeemR.read}
 \title{Function to read in mitoV outputs}
 \usage{
-redeemR.read(path, thr = "S")
-
-redeemR.read(path, thr = "S")
+redeemR.read(path, thr = "S", Processed = F)
 }
 \arguments{
 \item{path}{The XX/final folder, the output from mitoV}
@@ -17,17 +15,11 @@ redeemR.read(path, thr = "S")
 }
 \value{
 this returns depth which is a list of 4 df (Total/VerySensitive/Sensitive/Specific), each is a genotype summary
-
-this returns depth which is a list of 4 df (Total/VerySensitive/Sensitive/Specific), each is a genotype summary
 }
 \description{
 This function allows you to read raw data from XX/final folder, the output from mitoV
-
-This function allows you to read raw data from XX/final folder, the output from mitoV
 }
 \examples{
-WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
-DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
 WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
 DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
 }

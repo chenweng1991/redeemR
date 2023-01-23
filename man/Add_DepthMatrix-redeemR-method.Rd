@@ -5,7 +5,7 @@
 \title{Add_DepthMatrix
 Optional, add a matrix with same dimension with the Cts.Mtx and Cts.Mtx.bi, which display the depths}
 \usage{
-\S4method{Add_DepthMatrix}{redeemR}(object, QualifiedTotalCts)
+\S4method{Add_DepthMatrix}{redeemR}(object)
 }
 \arguments{
 \item{object}{mitoTracin class}

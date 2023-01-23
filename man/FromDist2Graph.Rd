@@ -3,7 +3,7 @@
 \name{FromDist2Graph}
 \alias{FromDist2Graph}
 \title{FromDist2Graph
-From disttance object or matrix to graph, default is to return igraph object
+From distance object or matrix to graph, default is to return igraph object
 This function was developed based on}
 \usage{
 FromDist2Graph(d, k.param = 30, return_igraph = T)
@@ -20,6 +20,6 @@ igraph or adjacent matrix
 }
 \description{
 FromDist2Graph
-From disttance object or matrix to graph, default is to return igraph object
+From distance object or matrix to graph, default is to return igraph object
 This function was developed based on
 }

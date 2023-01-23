@@ -6,13 +6,15 @@
 This will make the matixies of Cell VS mitochondrial variants and return redeemR
 Results stored in Cts.Mtx and Cts.Mtx.bi}
 \usage{
-\S4method{Make_matrix}{redeemR}(object)
+\S4method{Make_matrix}{redeemR}(object, onlyhetero = T)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
+
+\item{onlyhetero}{Only use heteroplasmic mutations}
 }
 \value{
-mitoTracin class
+redeemR class
 }
 \description{
 Make_matrix

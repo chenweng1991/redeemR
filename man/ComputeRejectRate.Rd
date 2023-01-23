@@ -4,17 +4,14 @@
 \alias{ComputeRejectRate}
 \title{Function to compute the reject rate(The filtering rate in concensus variant calling)}
 \usage{
-ComputeRejectRate(WD)
+ComputeRejectRate(ob)
 }
 \arguments{
-\item{WD}{The path to the work space usually  XXX/mitoV/final}
+\item{ob}{The redeemR object}
 }
 \value{
-a dataframe that store the percentage of variant in a given threahold again total
+a modified ob with RejectRate added to @CellMeta
 }
 \description{
 This function allows you to computae the filtering rate for each single cell
-}
-\examples{
-DN9_BMMC_RejectRate<-ComputeRejectRate("/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/Donor9/DN9_BMMC/MTenrichCombine/mitoV/final/")
 }

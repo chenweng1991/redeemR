@@ -74,6 +74,8 @@ redeemR<-setClass(
             CellMeta="data.frame",
             V.fitered="data.frame",
             UniqueV="character",
+            DepthSummary="list",
+            HomoVariants="character",
             Cts.Mtx="dgCMatrix",
             Cts.Mtx.bi="dgCMatrix",
             Ctx.Mtx.depth="matrix",
@@ -82,7 +84,8 @@ redeemR<-setClass(
             DataToplotList="Datatoplots",
             DistObjects="DistObjects",
             TREE="TREE",
-            AssignedVariant="list"
+            AssignedVariant="list",
+            attr="list"
            )
 )
 
@@ -96,7 +99,7 @@ redeemR<-setClass(
 #' Results stored in Cts.Mtx and Cts.Mtx.bi
 #' @param object redeemR class
 #' @export
-setGeneric(name="Make_matrix", def=function(object)standardGeneric("Make_matrix"))
+setGeneric(name="Make_matrix", def=function(object,...)standardGeneric("Make_matrix"))
 
 #' SeuratLSIClustering
 #' This will use the mito variants for Seurat clustering (LSI based)
@@ -168,29 +171,38 @@ setMethod(f="show",
           signature="redeemR",
           definition=function(object){
               print(object@para)
-              print(paste("Total Cell number:",nrow(object@CellMeta)))
+              print(object@attr$Filter.Cell)
+              print(object@attr$Filter.V)
               print(table(object@CellMeta$Label))
               print(paste("Total Variant number:",length(object@UniqueV)))
+              print(paste("Including Homoplasmy Variant number:",length(object@HomoVariants)))
               print(paste("Slot:",slotNames(object)))
+              print(paste("The original path:",object@attr$path))
           })
 
 #' Make_matrix
 #' This will make the matixies of Cell VS mitochondrial variants and return redeemR
 #' Results stored in Cts.Mtx and Cts.Mtx.bi
-#' @param object mitoTracin class
-#' @return mitoTracin class
+#' @param object redeemR class
+#' @param onlyhetero Only use heteroplasmic mutations
+#' @return redeemR class
 #' @export
 setMethod(f="Make_matrix",
           signature="redeemR",
-          definition=function(object){
+          definition=function(object,onlyhetero=T){
                 require(dplyr)
                 require(Matrix.utils)
-                Cts.Mtx<-dMcast(object@GTsummary.filtered,Cell~Variants,value.var = "Freq")
+                if(onlyhetero){
+                    GTsummary.filtered<-subset(object@GTsummary.filtered,!Variants %in% object@HomoVariants)
+                    message("Only heteroplasmic mutations are used")
+                }
+                Cts.Mtx<-dMcast(GTsummary.filtered,Cell~Variants,value.var = "Freq")
                 colnames(Cts.Mtx)<-strsplit(as.character(colnames(Cts.Mtx)),"_") %>% sapply(.,function(x){paste(x[1],x[2],x[3],sep="")})
                 Cts.Mtx.bi<-Cts.Mtx
                 Cts.Mtx.bi[Cts.Mtx.bi>=1]<-1
                 object@Cts.Mtx.bi<-Cts.Mtx.bi
                 object@Cts.Mtx<-Cts.Mtx
+                message("@Cts.Mtx and @Cts.Mtx.bi are added")
 #                 validObject(object)
                 return(object)
 })
@@ -238,12 +250,12 @@ setMethod(f="SeuratLSIClustering",
               Cts.Mtx.bi<-as.matrix(object@Cts.Mtx.bi)
               Cts.Mtx.bi<-Cts.Mtx.bi[,!colnames(Cts.Mtx.bi) %in% rmvariants]
               Cts.Mtx.bi<-Cts.Mtx.bi[rowSums(Cts.Mtx.bi)>0,]
-              Cell_Variant.seurat<-CreateSeuratObject(counts = t(as.matrix(Cts.Mtx.bi)), assay = "mitoV")
+              Cell_Variant.seurat<-CreateSeuratObject(counts = t(as.matrix(Cts.Mtx.bi)), assay = "redeemR")
           }else{
               Cts.Mtx<-as.matrix(object@Cts.Mtx)
               Cts.Mtx<-Cts.Mtx[,!colnames(object@Cts.Mtx) %in% rmvariants]
               Cts.Mtx<-Cts.Mtx[rowSums(Cts.Mtx)>0,]
-              Cell_Variant.seurat<-CreateSeuratObject(counts = t(as.matrix(Cts.Mtx)), assay = "mitoV")
+              Cell_Variant.seurat<-CreateSeuratObject(counts = t(as.matrix(Cts.Mtx)), assay = "redeemR")
           }
           VariableFeatures(Cell_Variant.seurat) <- row.names(Cell_Variant.seurat) #names(which(Matrix::rowSums(Cell_Variant.seurat) > 100))
           Cell_Variant.seurat <- RunTFIDF(Cell_Variant.seurat, n = 50)
@@ -307,12 +319,15 @@ setMethod(f="AddDist",
           print("Weight vector matches well with the Cell-Variant matrix, continue...")
           if(jaccard){
               d.Jaccard<-BinaryDist(object@Cts.Mtx.bi,method="Jaccard")
+              message("jaccard distances added")
           }    
           if(dice){
                d.Dice<-BinaryDist(object@Cts.Mtx.bi,method="Dice")
+               message("dice distances added")
           }
           if(jaccard3w){
               d.3WJaccard<-BinaryDist(object@Cts.Mtx.bi,method="3WJaccard")
+              message("3wjaccard distances added")
           }
           if(w_jaccard){
               if(length(weightDF)==0){
@@ -320,15 +335,18 @@ setMethod(f="AddDist",
                   
               }
               d.w_jaccard<-quick_w_jaccard(object@Cts.Mtx.bi,w=weight)
+              message("weighted jaccard distances added")
           }
           if(w_cosine){
               if(length(weightDF)==0){
                   stop("Please input the weight, otherwise turn off the w_cosine")
               }
               d.w_cosine<-quick_w_cosine(object@Cts.Mtx.bi,w=weight)
+              message("weighted cosine distances added")
           }
           if(LSIdist){
               d.lsi<-dist(object@Seurat@reductions$lsi@cell.embeddings[,dim])
+              message("LSI distances added")
           }
           object@DistObjects<-new("DistObjects",jaccard=d.Jaccard, Dice=d.Dice,jaccard3W=d.3WJaccard,w_jaccard=d.w_jaccard,w_cosine=d.w_cosine,LSIdist=d.lsi)
           return(object)
@@ -362,9 +380,11 @@ setMethod(f="AddTree",
 #' @import reshape2
 setMethod(f="Add_DepthMatrix",
           signature="redeemR",
-          definition=function(object,QualifiedTotalCts){
+          definition=function(object){
           require(reshape2)
-          colnames(QualifiedTotalCts)<-c("Cell","Pos","Total","VerySensitive","Sensitive","Specific")
+          message("Remember to update for combined object")
+          QualifiedTotalCts<-read.table(paste(object@attr$path,"/QualifiedTotalCts",sep=""))
+          colnames(QualifiedTotalCts)<-c("Cell","Pos","T","LS","S","VS")
           Dic<-gsub("Variants","",colnames(object@Cts.Mtx.bi)) %>% substr(.,1,nchar(.)-2) %>% as.integer %>% data.frame(Variants=colnames(object@Cts.Mtx.bi),Pos=.)
           QualifiedTotalCts.subset<-subset(QualifiedTotalCts,Cell %in% row.names(object@Cts.Mtx.bi)) %>% merge(.,Dic,by="Pos") %>% .[,c("Cell","Variants",object@para["Threhold"])]
           DepthMatrix<-dcast(QualifiedTotalCts.subset,Cell~Variants) %>% tibble::column_to_rownames("Cell") %>% as.matrix
@@ -576,8 +596,8 @@ SumV.df_CloneNode.filtered<-SumV.df_CloneNode.filtered[order(SumV.df_CloneNode.f
 SumV.df_CloneNode.filtered$Clone<-1:nrow(SumV.df_CloneNode.filtered)
 FinalClone.report<-FinalCloneNodes %>% apply(.,1,function(x){data.frame(Cell=phy$tip.label[unlist(Descendants(phy,as.numeric(x[1])))],Clade_merge=x[1],Clone_merge=x[3],row.names = NULL)}) %>% do.call(rbind,.)
 OriginClone.report<-SumV.df_CloneNode.filtered  %>% apply(.,1,function(x){data.frame(Cell=phy$tip.label[unlist(Descendants(phy,as.numeric(x[1])))],Clade=x[1],Clone=x[4],row.names = NULL)}) %>% do.call(rbind,.)
-redeemR@CellMeta<-redeemR@CellMeta[,!colnames(redeemR@CellMeta) %in% c("Clade_merge","Clone_merge","Clade","Clone")]
-redeemR@CellMeta<-merge(redeemR@CellMeta,merge(FinalClone.report,OriginClone.report,all=T),all.x=T)
+redeemR@CellMeta<-redeemR@CellMeta[,!colnames(redeemR@CellMeta) %in% c("Clade_merge","Clone_merge")]
+redeemR@CellMeta<-merge(redeemR@CellMeta,FinalClone.report,all.x=T)
 return(redeemR)  # Note, may get NA, if only a few cells are NA, it is expected those are not assigned confidently
 })
 
@@ -644,6 +664,36 @@ ob@para<-c(Threhold=thr,qualifiedCellCut=qualifiedCellCut,OnlyHetero=OnlyHetero,
 return(ob)
 }
 
+#' Create_redeemR
+#'
+#' This function is to create redeemR with basic information
+#' @param VariantsGTSummary simply put GTSummary (Generated by redeemR.read) 
+#' @param qualifiedCellCut The minimum median mitochondrial coverage for a qualified cell, default is 10
+#' @param OnlyHetero If only consider the heteroplasmy variants, default is T
+#' @param VAFcut only use variants with VAF smaller than VAFcut. Default is 1.  We can use smaller value to constrain into only using rare variants
+#' @param Cellcut only use variants with at least cellcut cells carry
+#' @param maxctscut only use variants with at least in one cell with at leaset maxctscut variant fragments
+#' @return redeemR class
+#' @export
+#' @import Seurat ape phytools phangorn tidytree ggtreeExtra
+#' @importFrom ggtree ggtree
+Create_redeemR<-function(VariantsGTSummary=VariantsGTSummary,qualifiedCellCut=10,VAFcut=1,Cellcut=2,maxctscut=2){
+CellMeta<-subset(attr(VariantsGTSummary,"depth")[["Cell.MeanCov"]],meanCov>=qualifiedCellCut)
+names(CellMeta)[1]<-"Cell"
+VariantsGTSummary.feature<-Vfilter_v4(VariantsGTSummary,Min_Cells = Cellcut, Max_Count_perCell = maxctscut, QualifyCellCut = qualifiedCellCut)
+GTsummary.filtered<-subset(VariantsGTSummary,Variants %in% VariantsGTSummary.feature$Variants & Cell %in% CellMeta$Cell)
+ob<-new("redeemR")
+ob@GTsummary.filtered<-GTsummary.filtered
+ob@CellMeta<-CellMeta
+ob@V.fitered=VariantsGTSummary.feature
+ob@HomoVariants<-attr(VariantsGTSummary.feature,"HomoVariants")
+ob@UniqueV<-VariantsGTSummary.feature$Variants
+ob@DepthSummary<-attr(VariantsGTSummary,"depth")
+ob@para<-c(Threhold=attr(VariantsGTSummary,"thr"),qualifiedCellCut=qualifiedCellCut,VAFcut=VAFcut,Cellcut=Cellcut,maxctscut=maxctscut)
+ob@attr<-list(Filter.Cell=attr(VariantsGTSummary.feature,"Filter.Cell"),Filter.V=attr(VariantsGTSummary.feature,"Filter.V"),path=attr(VariantsGTSummary,"path"))
+return(ob)
+}
+
 
 #' Compute distances for binary distances
 #' @param M the binary matrix, Each row is a cell, each column is a variant, generated by Make_matrix
@@ -652,9 +702,9 @@ return(ob)
 #' @export
 #' @return dist object
 BinaryDist<-function(M,method="Jaccard"){
-print("This function compute pairwise distance(row-row) for binary matrix, input sparse matrix(Each row is cell, each column is variant)")
-print("Available method:")
-print(c("Jaccard","Dice","3WJaccard","Simpson","Kulczynski2","Ochiai","Hamming"))
+#print("This function compute pairwise distance(row-row) for binary matrix, input sparse matrix(Each row is cell, each column is variant)")
+#print("Available method:")
+#print(c("Jaccard","Dice","3WJaccard","Simpson","Kulczynski2","Ochiai","Hamming"))
 require(Matrix)
 Total<-Matrix::rowSums(M) # Compute total variant number for each cell
 a<-M %*% Matrix::t(M)   ## Compute the overlaped variants across any two cells
@@ -1166,7 +1216,7 @@ return(markers)
 
 
 #' FromDist2Graph 
-#' From disttance object or matrix to graph, default is to return igraph object
+#' From distance object or matrix to graph, default is to return igraph object
 #' This function was developed based on 
 #' @param d the distance matrix,  this can be either dist or a matrix
 #' @param k.param K default is 30
@@ -1174,7 +1224,7 @@ return(markers)
 #' @return igraph or adjacent matrix
 #' @export
 #' @import Matrix
-#' @importFrom  igraph get.adjacency graph.edgelist
+#' @importFrom  igraph get.adjacency graph.edgelist graph_from_adjacency_matrix
 FromDist2Graph<-function(d,k.param=30,return_igraph=T){
 if(!is.matrix(d)){
   d<-as.matrix(d)
@@ -1211,7 +1261,7 @@ adj <- igraph::get.adjacency(igraph::graph.edgelist(el))
 mutualknn <- 1 * ((adj + Matrix::t(adj)) > 0)
 colnames(mutualknn) <- rownames(mutualknn) <- rownames(d)
 if(return_igraph){
-  g<-graph_from_adjacency_matrix(mutualknn,diag = F,mode = "undirected")
+  g<-igraph::graph_from_adjacency_matrix(mutualknn,diag = F,mode = "undirected")
   return(g)
 }else{
   return(mutualknn)
@@ -1564,3 +1614,4 @@ options(repr.plot.width=20, repr.plot.height=12,repr.plot.res=100)
 grid.arrange(grobs=ps,top=pre)
     
 }
+

@@ -4,10 +4,10 @@
 \alias{plot_depth}
 \title{Function to plot the mito depth summary}
 \usage{
-plot_depth(depth = DN1CD34_1.depth, name = "", w = 10, h = 3)
+plot_depth(ob, name = "", w = 10, h = 3)
 }
 \arguments{
-\item{depth}{The .depth file by function DepthSummary}
+\item{ob}{The redeemR object}
 
 \item{name}{The plot name shown on top}
 

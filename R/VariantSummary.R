@@ -128,42 +128,6 @@ if(Processed){
 }
 }
 
-#' redeemR.read Function to read in ReDeeM outputs
-#'
-#' This function allows you to read raw data from XX/final folder, the output from mitoV
-#' @param path The XX/final folder, the output from mitoV
-#' @param Processed Boolean variable (Default F), if true directly readRDS("VariantsGTSummary.RDS") or, generate and saveout "VariantsGTSummary.RDS"
-#' @return this returns depth which is a list of 4 df (Total/VerySensitive/Sensitive/Specific), each is a genotype summary
-#' @examples WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
-#' DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
-#' @export
-redeemR.read<-function(path,thr="S"){
-    if(missing(path)|missing(thr)){
-        message("redeemR.read(path,thr)")
-        message("missing variable path or thr")
-        message("path is a string to the redeemV result folder that contains RawGenotypes.XX")
-        message("thr is one of T,LS,S,VS:")
-        message("T(Total),LS(Less Stringent:c=0.75,a1=2,a2=1), S(Stringent:c=0.75,a1=3,a2=2), VS(Very Stringent:c=0.75,a1=4,a2=3)")
-        message("Term from redeemV is deprecated: VerySensitive equal to Less Stringent, Sensitive equal to Stringent, Specific equal to Very Stringent")
-        return(NULL)
-    }
-    GiveName<-c("UMI","Cell","Pos","Variants","Call","Ref","FamSize","GT_Cts","CSS","DB_Cts","SG_Cts","Plus","Minus","Depth")
-    if(thr=="T"){
-        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Total.StrandBalance",sep=""))
-    }else if(thr=="LS"){
-        RawGenotypes<-read.table(paste(path,"/RawGenotypes.VerySensitive.StrandBalance",sep=""))
-    }else if(thr=="S"){
-        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Sensitive.StrandBalance",sep=""))
-    }else if(thr=="VS"){
-        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Specific.StrandBalance",sep=""))
-    } 
-    colnames(RawGenotypes)<-GiveName
-    VariantsGTSummary<-GTSummary(RawGenotypes)
-    ##Calculate heteroplasmy
-    VariantsGTSummary$hetero<-with(VariantsGTSummary,Freq/depth)
-    return(VariantsGTSummary)
-}
-
 #' Internal CV 
 #'
 #' This function allows you to read raw data from XX/final folder, the output from mitoV
@@ -259,27 +223,35 @@ print(paste("Tag Homoplasmy:",HomoVariants))
 VariantFeature.filtered<-subset(VariantFeature,CellN>=Min_Cells & maxcts>=Max_Count_perCell)
 print(paste("After filtering,",nrow(VariantFeature.filtered), "Variants left"))
 attr(VariantFeature.filtered,"HomoVariants")<-HomoVariants
+attr(VariantFeature.filtered,"Filter.Cell")<-c(AllCellN=nrow(attr(InputSummary,"depth")[["Cell.MeanCov"]]),QualifiedCellN=length(qualifiedCell))
+attr(VariantFeature.filtered,"Filter.V")<-c(VN_total=nrow(VariantFeature0),VN_rmvLowQualityCell=nrow(VariantFeature),VN_filter=nrow(VariantFeature.filtered),VN_filter_rmvHomo=nrow(subset(VariantFeature.filtered,HomoTag!="Homo")))
+return(VariantFeature.filtered)
 }
 
 
 #' Function to compute the reject rate(The filtering rate in concensus variant calling)
 #'
 #' This function allows you to computae the filtering rate for each single cell
-#' @param WD The path to the work space usually  XXX/mitoV/final
-#' @return a dataframe that store the percentage of variant in a given threahold again total
-#' @examples
-#' DN9_BMMC_RejectRate<-ComputeRejectRate("/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9/Donor9/DN9_BMMC/MTenrichCombine/mitoV/final/")
+#' @param ob The redeemR object
+#' @return  a modified ob with RejectRate added to @CellMeta
 #' @export
-ComputeRejectRate<-function(WD){
+ComputeRejectRate<-function(ob){
+WD=ob@attr$path
 Total<-read.table(paste(WD,"/RawGenotypes.Total.StrandBalance",sep=""))
-VerySensitive<-read.table(paste(WD,"/RawGenotypes.VerySensitive.StrandBalance",sep=""))
-Sensitive<-read.table(paste(WD,"/RawGenotypes.Sensitive.StrandBalance",sep=""))
-Specific<-read.table(paste(WD,"/RawGenotypes.Specific.StrandBalance",sep=""))
+if(ob@para["Threhold"]=="T"){
+    RawGenotypes<-read.table(paste(ob@attr$path,"/RawGenotypes.Total.StrandBalance",sep=""))
+}else if(ob@para["Threhold"]=="LS"){
+    RawGenotypes<-read.table(paste(ob@attr$path,"/RawGenotypes.VerySensitive.StrandBalance",sep=""))
+}else if(ob@para["Threhold"]=="S"){
+    RawGenotypes<-read.table(paste(ob@attr$path,"/RawGenotypes.Sensitive.StrandBalance",sep=""))
+}else if(ob@para["Threhold"]=="VS"){
+    RawGenotypes<-read.table(paste(ob@attr$path,"/RawGenotypes.Specific.StrandBalance",sep=""))
+}    
 res<-Total %>% group_by(V2) %>% dplyr::summarise(Total=n())
-res<-VerySensitive %>% group_by(V2) %>% dplyr::summarise(VerySensitive=n()) %>% merge(res,.,by="V2")
-res<-Sensitive %>% group_by(V2) %>% dplyr::summarise(Sensitive=n()) %>% merge(res,.,by="V2")
-res<-Specific %>% group_by(V2) %>% dplyr::summarise(Specific=n()) %>% merge(res,.,by="V2")
-res<-res %>% mutate(VerySensitive=VerySensitive/Total) %>% mutate(Sensitive=Sensitive/Total) %>% mutate(Specific=Specific/Total)
+res<-RawGenotypes %>% group_by(V2) %>% dplyr::summarise(RejectRate=n()) %>% merge(res,.,by="V2")
+res<-res %>% mutate(RejectRate=RejectRate/Total) %>% select(-Total)
 colnames(res)[1]<-"Cell"
-return(res)
+ob@CellMeta<-merge(ob@CellMeta,res,by="Cell")
+message("RejectRate has been added to @CellMeta")
+return(ob)
 }

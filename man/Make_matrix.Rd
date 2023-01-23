@@ -6,7 +6,7 @@
 This will make the matixies of Cell VS mitochondrial variants and return redeemR
 Results stored in Cts.Mtx and Cts.Mtx.bi}
 \usage{
-Make_matrix(object)
+Make_matrix(object, ...)
 }
 \arguments{
 \item{object}{redeemR class}
