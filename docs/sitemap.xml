@@ -85,6 +85,9 @@
     <loc>/reference/BinaryDist.html</loc>
   </url>
   <url>
+    <loc>/reference/CV.html</loc>
+  </url>
+  <url>
     <loc>/reference/CW_mgatk.read.html</loc>
   </url>
   <url>
@@ -125,6 +128,9 @@
   </url>
   <url>
     <loc>/reference/GTSummary.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Get_Clonal_Variants.html</loc>
   </url>
   <url>
     <loc>/reference/LineageBiasPlot.html</loc>
@@ -211,6 +217,9 @@
     <loc>/reference/SeuratLSIClustering.html</loc>
   </url>
   <url>
+    <loc>/reference/Show_Consensus.html</loc>
+  </url>
+  <url>
     <loc>/reference/Subset_MitoTracing.html</loc>
   </url>
   <url>
@@ -233,6 +242,9 @@
   </url>
   <url>
     <loc>/reference/Vfilter_v3.html</loc>
+  </url>
+  <url>
+    <loc>/reference/Vfilter_v4.html</loc>
   </url>
   <url>
     <loc>/reference/add_derived_profile_info.html</loc>
@@ -269,6 +281,9 @@
   </url>
   <url>
     <loc>/reference/redeemR-class.html</loc>
+  </url>
+  <url>
+    <loc>/reference/redeemR.read.html</loc>
   </url>
   <url>
     <loc>/reference/show-mitoTracing-method.html</loc>

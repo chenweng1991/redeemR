@@ -44,7 +44,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">DepthSummary</span><span class="op">(</span><span class="va">path</span>, CellSubset <span class="op">=</span> <span class="cn">NA</span>, cellSubSetName <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">DepthSummary</span><span class="op">(</span><span class="va">path</span>, CellSubset <span class="op">=</span> <span class="cn">NA</span>, only_Total <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -57,8 +57,8 @@
 <dd><p>A vector of ATAC cell names for subsetting, default is NA</p></dd>
 
 
-<dt>cellSubSetName</dt>
-<dd><p>a string to name this Subset, should explain with the CellSubset</p></dd>
+<dt>only_Total</dt>
+<dd><p>Default is T, Only return total depth summary. Don't care about depth in different quality filtering</p></dd>
 
 
 <dt>Processed</dt>

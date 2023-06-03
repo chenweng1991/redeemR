@@ -60,14 +60,26 @@
 <div class="section level1">
 <div class="page-header"><h1 id="redeemr">redeemR<a class="anchor" aria-label="anchor" href="#redeemr"></a>
 </h1></div>
-<!-- badges: start --><!-- badges: end --><p>The use of redeemR is to analyze the deep mito variants and lineage tracing Package testing Jupyter notebook is here</p>
+<!-- badges: start --><!-- badges: end --><p>ReDeeM: single-cell <strong>Re</strong>gulatory multi-omics with <strong>Dee</strong>p <strong>M</strong>itochondrial mutation profiling. ReDeeM is an engineering-free single cell sequencing technology for somatic mutation-based retrospective lineage tracing, clonal/subclonal mapping, with simultaneous cell-state profiling (transcriptomics and chromatin accessibility).</p>
+<p>The redeemR is the second component in ReDeeM computational toolsets - <a href="https://github.com/chenweng1991/REDEEM-V" class="external-link">redeemV</a> is an in-house python package for mapping and deep mitochondrial mutation calling. (Input from rawdata) - <a href="https://github.com/chenweng1991/REDEEM-R" class="external-link">redeemR</a> is an in-house R package for downstream lineage tracing and single cell integrative analysis. (Input from redeemV)</p>
+<p>The goal of redeemR is to refine the somatic mitochondiral mutations, build the single-cell phylogenetic tree and facilitate clonal/subclonal-resolved single-cell multiomics analysis.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of redeemR:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"chenweng1991/redeemR"</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">EZsinglecell2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">redeemR</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<ul><li>[Getting started]</li></ul>
+</div>
+<div class="section level2">
+<h2 id="contact">Contact<a class="anchor" aria-label="anchor" href="#contact"></a>
+</h2>
+<p>If you run into issues and would like to report them, please submit an Issue. Also please feel free to contact authors: cweng{at}broadinstitute.org, fyu{at}broadinstitute.org.</p>
 </div>
 </div>
 

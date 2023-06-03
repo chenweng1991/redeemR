@@ -1615,3 +1615,38 @@ grid.arrange(grobs=ps,top=pre)
     
 }
 
+#' Get_Clonal_Variants 
+#' 
+#' This function identify specific mutations for each clone based on Fisher Exact Test
+#' Of note, the ReDeeM object need to have Clone_merge in CellMeta (After running Add_tree_cut)
+#' @param object ReDeeM object
+#' @export
+## Define plotting functions
+Get_Clonal_Variants<-function(object){
+meta<-object@CellMeta %>% .[complete.cases(.),c("Cell","Clone_merge"),drop=F]
+mtx<-object@Cts.Mtx.bi[meta$Cell,]
+Clonal_Variants<-list()
+for(clone in unique(meta$Clone_merge)){
+CellofClone<-subset(meta,Clone_merge==clone)$Cell
+Total<-nrow(meta) ## Total Cell number
+CloneSize<-length(CellofClone)
+ps<-c()
+odds<-c()
+    for (i in 1:ncol(mtx)){
+    VariantSize<-sum(mtx[,i])  # Number of cells with the variants
+    A=sum(mtx[CellofClone,i])   # Number of cell in the clone and with variants
+    B=CloneSize-A      # Number of cell in the clone and without variants
+    C=VariantSize-A  # Number of cell not in the clone but with the variant
+    D=Total-CloneSize-C  # Number of cell not in the clone and not with the variant
+    mod<-fisher.test(matrix(c(A,B,C,D),2,2),alternative="greater")
+    p<-mod$p.value
+    odd<-mod$estimate
+        ps<-c(ps,p)
+        odds<-c(odds,odd)
+    }
+stat<-data.frame(p=ps,odd=odds,FDR=qvalue(ps)$qvalues,variants=colnames(mtx)) 
+Clonal_Variants<-c(Clonal_Variants,list(stat))
+}
+names(Clonal_Variants)<-unique(meta$Clone_merge)
+return(Clonal_Variants)
+}  
