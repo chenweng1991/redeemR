@@ -28,7 +28,7 @@ library(redeemR)
 ```
 
 ## Documentation 
-- [Getting started]
+- [Getting started](./Get_Started.ipynb)
 
 
 ## Contact
