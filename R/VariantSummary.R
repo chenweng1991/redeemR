@@ -120,9 +120,9 @@ if(Processed){
     VariantsGTSummary<-GTSummary(RawGenotypes)
     ##Calculate heteroplasmy
     VariantsGTSummary$hetero<-with(VariantsGTSummary,Freq/depth)
-    attr(VariantsGTSummary,"thr")<-"S"
-    attr(VariantsGTSummary,"depth")<-DepthSummary(dir)
-    attr(VariantsGTSummary,"path")<-dir
+    attr(VariantsGTSummary,"thr")<-thr
+    attr(VariantsGTSummary,"depth")<-DepthSummary(path)
+    attr(VariantsGTSummary,"path")<-path
     saveRDS(VariantsGTSummary,paste(path,"/VariantsGTSummary.RDS",sep=""))
     return(VariantsGTSummary)
 }
