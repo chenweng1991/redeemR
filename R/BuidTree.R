@@ -246,7 +246,12 @@ setMethod(f="SeuratLSIClustering",
           signature="redeemR",
           definition=function(object,binary=T,res=0.6,lsidim=2:50,rmvariants=c("Variants310TC","Variants3109TC","Variants5764CT")){
           require(Signac)
+          require(Seurat)
           if(binary){
+              if (packageVersion("Seurat")>"4.9.9"){
+                  print("Seurat5 is on, convert data structure to v4")
+                  options(Seurat.object.assay.version = 'v4')
+              }
               Cts.Mtx.bi<-as.matrix(object@Cts.Mtx.bi)
               Cts.Mtx.bi<-Cts.Mtx.bi[,!colnames(Cts.Mtx.bi) %in% rmvariants]
               Cts.Mtx.bi<-Cts.Mtx.bi[rowSums(Cts.Mtx.bi)>0,]
