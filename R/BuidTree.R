@@ -255,7 +255,7 @@ setMethod(f="SeuratLSIClustering",
               Cts.Mtx.bi<-as.matrix(object@Cts.Mtx.bi)
               Cts.Mtx.bi<-Cts.Mtx.bi[,!colnames(Cts.Mtx.bi) %in% rmvariants]
               Cts.Mtx.bi<-Cts.Mtx.bi[rowSums(Cts.Mtx.bi)>0,]
-              Cell_Variant.seurat<-CreateSeuratObject(counts = t(as.matrix(Cts.Mtx.bi)), assay = "redeemR")
+              Cell_Variant.seurat<-CreateSeuratObject(counts = as(t(as.matrix(Cts.Mtx.bi)),"CsparseMatrix"), assay = "redeemR")
           }else{
               Cts.Mtx<-as.matrix(object@Cts.Mtx)
               Cts.Mtx<-Cts.Mtx[,!colnames(object@Cts.Mtx) %in% rmvariants]
