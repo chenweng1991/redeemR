@@ -248,9 +248,9 @@ setMethod(f="SeuratLSIClustering",
           require(Signac)
           require(Seurat)
           if(binary){
-              if (packageVersion("Seurat")>"4.9.9"){
-                  print("Seurat5 is on, convert data structure to v4")
-                  options(Seurat.object.assay.version = 'v4')
+              if (packageVersion("Seurat")>"4.0.0"){
+                  print("Seurat5 is on, convert data structure to v3")
+                  options(Seurat.object.assay.version = 'v3')
               }
               Cts.Mtx.bi<-as.matrix(object@Cts.Mtx.bi)
               Cts.Mtx.bi<-Cts.Mtx.bi[,!colnames(Cts.Mtx.bi) %in% rmvariants]
