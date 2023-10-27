@@ -83,9 +83,10 @@ return(Genotypes.summary)
 
 
 
-#' Function to read in mitoV outputs
+#' Function to read in redeemV outputs
 #'
-#' This function allows you to read raw data from XX/final folder, the output from mitoV
+#' This function allows you to read raw data from XX/final folder, the output from redeemV
+#' It process the data same way as CW_mgatk.read but need to specify one threadhold(thr)
 #' @param path The XX/final folder, the output from mitoV
 #' @param thr The thredhold of filtering T(Total),LS(Less Stringent:c=0.75,a1=2,a2=1), S(Stringent:c=0.75,a1=3,a2=2), VS(Very Stringent:c=0.75,a1=4,a2=3)"
 #' @param Processed Boolean variable (Default F), if true directly readRDS("VariantsGTSummary.RDS") or, generate and saveout "VariantsGTSummary.RDS"
@@ -137,6 +138,45 @@ CV<-function(x){
 }
 
 
+#' Old Function to read in redeemV outputs 
+#' It process the data same way as redeemR.read but simultanously reading in all threadhold as a list
+#' This function allows you to read raw data from XX/final folder, the output from redeemV
+#' @param path The XX/final folder, the output from mitoV
+#' @param Processed Boolean variable (Default F), if true directly readRDS("VariantsGTSummary.RDS") or, generate and saveout "VariantsGTSummary.RDS"
+#' @return this returns depth which is a list of 4 df (Total/VerySensitive/Sensitive/Specific), each is a genotype summary
+#' @examples WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
+#' DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
+#' @export
+CW_mgatk.read<-function(path,Processed=F){
+message("CW_mgatk.read is the old version (simultanously reading in all threadhold as a list), it has been deprecated, please use redeemR.read")
+setwd(path)
+if(Processed){
+    VariantsGTSummary<-readRDS("VariantsGTSummary.RDS")
+}else{
+    RawGenotypes.Sensitive.StrandBalance<-read.table("RawGenotypes.Sensitive.StrandBalance")
+    RawGenotypes.VerySensitive.StrandBalance<-read.table("RawGenotypes.VerySensitive.StrandBalance")
+    RawGenotypes.Specific.StrandBalance<-read.table("RawGenotypes.Specific.StrandBalance")
+    RawGenotypes.Total.StrandBalance<-read.table("RawGenotypes.Total.StrandBalance")
+    GiveName<-c("UMI","Cell","Pos","Variants","Call","Ref","FamSize","GT_Cts","CSS","DB_Cts","SG_Cts","Plus","Minus","Depth")
+    colnames(RawGenotypes.Sensitive.StrandBalance)<-GiveName
+    colnames(RawGenotypes.VerySensitive.StrandBalance)<-GiveName
+    colnames(RawGenotypes.Specific.StrandBalance)<-GiveName
+    colnames(RawGenotypes.Total.StrandBalance)<-GiveName
+    Specific.GTSummary<-GTSummary(RawGenotypes.Specific.StrandBalance)
+    Sensitive.GTSummary<-GTSummary(RawGenotypes.Sensitive.StrandBalance)
+    VerySensitive.GTSummary<-GTSummary(RawGenotypes.VerySensitive.StrandBalance)
+    Total.GTSummary<-GTSummary(RawGenotypes.Total.StrandBalance)
+    ##Calculate heteroplasmy
+    Specific.GTSummary$hetero<-with(Specific.GTSummary,Freq/depth)
+    Sensitive.GTSummary$hetero<-with(Sensitive.GTSummary,Freq/depth)
+    VerySensitive.GTSummary$hetero<-with(VerySensitive.GTSummary,Freq/depth)
+    Total.GTSummary$hetero<-with(Total.GTSummary,Freq/depth)
+    VariantsGTSummary<-list(Total=Total.GTSummary,VerySensitive=VerySensitive.GTSummary,Sensitive=Sensitive.GTSummary,Specific=Specific.GTSummary)
+    saveRDS(VariantsGTSummary,"VariantsGTSummary.RDS")
+}
+return(VariantsGTSummary)
+}
+
 #' Function to filter variants, deprecated
 #'
 #' This function allows you to filter variants,deprecated, use Vfilter_v4 instead
@@ -152,7 +192,7 @@ CV<-function(x){
 #' @export
 #' @import dplyr
 Vfilter_v3<-function(InputSummary,depth,Rmvhomo=F,Min_Cells=2, Max_Count_perCell=2,QualifyCellCut=10){
-message("Vfilter_v3 has been deprecated, please use Vfilter_v4")    
+message("Vfilter_v3 is the old version that works with CW_mgatk.read , it has been deprecated, please use Vfilter_v4 with redeemR.read")    
     CV<-function(x){
     var(x)/mean(x)
     }
@@ -192,16 +232,14 @@ feature.list<-c(feature.list,list(out))
 
 #' Function to filter variants, v4
 #'
-#' This function allows you to filter variants,deprecated, use Vfilter_v4 instead
-#' @param InputSummary The GTSummary file read in by function CW_mgatk.read
+#' This function allows you to filter variants
+#' @param InputSummary The GTSummary file read in by function redeemR.read
 #' @param depth The .depth file by function DepthSummary
 #' @param Rmvhomo Boolean (Default F) If true, remove the homozygous variants
 #' @param Min_Cells Default 2, A qualified variant needs the minimum number of cells that have this variant
 #' @param Max_Count_perCell Default 2,  A qualified variant needs to show at least 2 counts in one cell
 #' @param QualifyCellCut Default 10, Minimum depth for a qualified cell
 #' @return this returns feature.list
-#' @examples
-#' DN1CD34_1.Variants.feature.lst<-Vfilter_v3(InputSummary=DN1CD34_1.VariantsGTSummary,depth=DN1CD34_1.depth)
 #' @export
 #' @import dplyr
 Vfilter_v4<-function(InputSummary=VariantsGTSummary,Min_Cells=2, Max_Count_perCell=2,QualifyCellCut=10){   
