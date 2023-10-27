@@ -6,8 +6,7 @@
 \usage{
 Run_Lin_regression(
   LinOut,
-  regress_factor = c("OutLevel.scale", "OutLevel_NPadj.scale", "Lym", "Mye", "MK",
-    "ME"),
+  regress_factor = c("OutLevel.scale", "OutLevel_NPadj.scale", "Lym", "Mye", "MK", "ME"),
   n.cores = 8
 )
 }

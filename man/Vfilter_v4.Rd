@@ -12,7 +12,7 @@ Vfilter_v4(
 )
 }
 \arguments{
-\item{InputSummary}{The GTSummary file read in by function CW_mgatk.read}
+\item{InputSummary}{The GTSummary file read in by function redeemR.read}
 
 \item{Min_Cells}{Default 2, A qualified variant needs the minimum number of cells that have this variant}
 
@@ -28,8 +28,5 @@ Vfilter_v4(
 this returns feature.list
 }
 \description{
-This function allows you to filter variants,deprecated, use Vfilter_v4 instead
-}
-\examples{
-DN1CD34_1.Variants.feature.lst<-Vfilter_v3(InputSummary=DN1CD34_1.VariantsGTSummary,depth=DN1CD34_1.depth)
+This function allows you to filter variants
 }

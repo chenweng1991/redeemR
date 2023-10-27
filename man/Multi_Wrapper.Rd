@@ -5,8 +5,8 @@
 \title{Wrap Seurat Multiomics clustering}
 \usage{
 Multi_Wrapper(
- 
-    path = "/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/CellRanger/Donor01_CD34_1/outs",
+  path =
+    "/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/CellRanger/Donor01_CD34_1/outs",
   atacmin = 1000,
   umimin = 1000,
   CellID = NULL
