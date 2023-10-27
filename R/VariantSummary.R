@@ -93,7 +93,7 @@ return(Genotypes.summary)
 #' @examples WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
 #' DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
 #' @export
-redeemR.read<-function(path,thr="S",Processed=F){
+redeemR.read<-function(path,thr="S",Processed=F,rdsname="/VariantsGTSummary.RDS"){
 if(Processed){
     VariantsGTSummary<-readRDS(paste(path,"/VariantsGTSummary.RDS",sep=""))
 }else{
@@ -123,7 +123,7 @@ if(Processed){
     attr(VariantsGTSummary,"thr")<-thr
     attr(VariantsGTSummary,"depth")<-DepthSummary(path)
     attr(VariantsGTSummary,"path")<-path
-    saveRDS(VariantsGTSummary,paste(path,"/VariantsGTSummary.RDS",sep=""))
+    saveRDS(VariantsGTSummary,paste(path,rdsname,sep=""))
     return(VariantsGTSummary)
 }
 }
