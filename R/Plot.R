@@ -23,6 +23,28 @@ p2<-ggplot(d1)+aes("cell",meanCov)+geom_violin()+geom_boxplot()+theme_bw()
 gridExtra::grid.arrange(p1,p2,layout_matrix=rbind(c(1,1,1,1,1,1,2)),top=name)
 }
 
+#' Legacy Function to plot the mito depth summary
+#'
+#' This function allows you to plot both position-wise and cell-wise mito depth summary
+#' @param depth The .depth file by function DepthSummary
+#' @param name The plot name shown on top
+#' @param w the Width of the plot, default=10
+#' @param h the height of the plot default=3
+#' @return directly out put the plot
+#' @examples
+#' plot_depth(DN1CD34_1.depth$Total,"Total")
+#' @export
+#' @import ggplot2
+plot_depth_legacy<-function(depth=DN1CD34_1.depth,name="",w=10,h=3){
+d1<-depth[[1]]
+d2<-depth[[2]]
+names(d1)<-c("pos","meanCov")
+names(d2)<-c("cell","meanCov")
+options(repr.plot.width=w, repr.plot.height=h)
+p1<-ggplot(d1)+aes(pos,meanCov)+geom_point()+theme_bw()
+p2<-ggplot(d1)+aes("cell",meanCov)+geom_violin()+geom_boxplot()+theme_bw()
+grid.arrange(p1,p2,layout_matrix=rbind(c(1,1,1,1,1,1,2)),top=name)
+}
 
 #' Function to plot bulk level mutation signatures
 #'
