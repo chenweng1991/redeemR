@@ -170,7 +170,6 @@ plot_variant_legacy<-function(GTSummary, feature.list, depth, cat = c("Total", "
         CellVar.Sum <- subset(GTSummary[[c]], Variants %in% QualifiedV$Variants & 
             Cell %in% qualifiedCell) %>% group_by(Cell) %>% dplyr::summarise(VN = n(), 
             maxcts = max(Freq), mediancts = median(Freq))
-        CellVar.Sum<-subset(GTSummary,Variants %in% QualifiedV$Variants & Cell %in% qualifiedCell) %>% group_by(Cell) %>% dplyr::summarise(VN=n(), maxcts=max(Freq),mediancts=median(Freq))
         p4title<-paste("Qualified Cell number:",length(qualifiedCell),"\nMedian V number is",median(CellVar.Sum$VN),"\n",CountVperCell(CellVar.Sum$VN,c,CellN=nrow(CellVar.Sum)))
         p4<-ggplot(CellVar.Sum)+aes(VN)+geom_histogram(binwidth = 1,color="black",fill="white")+xlim(0,p4xlim)+ggtitle(p4title)+theme(axis.text=element_text(size=20))+geom_vline(xintercept = median(CellVar.Sum$VN),linetype=2)
         return(list(p1,p2,p3,p4))
