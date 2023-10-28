@@ -30,6 +30,7 @@ no returns, directly plot
 \description{
 This function works with CW_mgatk.read and Vfilter_v3
 This allows you to plot the mito mutation metrics
+This legacy function is useful to look at all threadhold simultaneous
 For each category(stringency),
 p1: Variant allele frequency(VAF);
 p2: Heteroplasmy histogram
