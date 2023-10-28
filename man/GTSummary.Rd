@@ -7,7 +7,7 @@
 GTSummary(RawGenotypes, filterN = T)
 }
 \arguments{
-\item{RawGenotypes}{Well-named "RawGenotypes.Sensitive.StrandBalance" file in function CW_mgatk.read}
+\item{RawGenotypes}{Well-named "RawGenotypes.Sensitive.StrandBalance" file in function redeemR.read or CW_mgatk.read}
 
 \item{filterN}{Boolean variable, if true filter out the variant with "N"}
 }

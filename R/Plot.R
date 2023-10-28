@@ -93,8 +93,6 @@ return(p1)
 #' @param p4xlim the p4 xlim(number of variant per cell), default is 50
 #' @param QualifyCellCut median coverage for qualified cells, default is 10
 #' @return no returns, directly plot
-#' @examples
-#' plot_variant(DN1CD34_1.VariantsGTSummary,DN1CD34_1.Variants.feature.lst,depth=DN1CD34_1.depth,cat=c("Total","VerySensitive","Sensitive","Specific"),p4xlim = 30)
 #' @export
 #' @import ggplot2 ggExtra
 #' @importFrom gridExtra grid.arrange
@@ -122,6 +120,58 @@ p4<-ggplot(CellVar.Sum)+aes(VN)+geom_histogram(binwidth = 1,color="black",fill="
 gridExtra::grid.arrange(p1,p2,p3,p4,ncol=4,top=c)
 }
 
+
+#' Legacy Function to plot variant metrics
+#'
+#' This function works with CW_mgatk.read and Vfilter_v3 
+#' This allows you to plot the mito mutation metrics
+#' For each category(stringency),
+#' p1: Variant allele frequency(VAF);
+#' p2: Heteroplasmy histogram
+#' p3: CellN(Number of caells that carry the variants) VS maxcts( The number of variant counts in the highest cell)
+#' p4: Histogram to show the distribution of the number of variant per cell
+#' @param GTSummary GTSummary from CW_mgatk.read
+#' @param feature.list feature.list from Vfilter_v3
+#' @param cat The catogories, it can be cat = c("Total", "VerySensitive", "Sensitive", "Specific") or a subset
+#' @param p4xlim the p4 xlim(number of variant per cell), default is 50
+#' @param QualifyCellCut median coverage for qualified cells, default is 10
+#' @return no returns, directly plot
+#' @examples
+#' plot_variant(DN1CD34_1.VariantsGTSummary,DN1CD34_1.Variants.feature.lst,depth=DN1CD34_1.depth,cat=c("Total","VerySensitive","Sensitive","Specific"),p4xlim = 30)
+#' @export
+#' @import ggplot2 ggExtra
+#' @importFrom gridExtra grid.arrange
+plot_variant_legacy<-function(GTSummary, feature.list, depth, cat = c("Total", "VerySensitive", "Sensitive", "Specific"), p4xlim = 50, QualifyCellCut = 10) 
+{
+    options(repr.plot.width = 20, repr.plot.height = 6)
+    require(gridExtra)
+    require(ggExtra)
+    qualifiedCell <- subset(depth[["Total"]][[2]], meanCov >= QualifyCellCut)[, 1, drop = T]
+    for (c in cat) {
+        p1 <- ggplot(feature.list[[c]]) + aes(log10(VAF), log10(CV), 
+            color = HomoTag) + geom_point(size = 0.2) + theme_bw() + 
+            scale_color_brewer(palette = "Set1") + theme(axis.text = element_text(size = 20, 
+            color = "black"))
+        p1 <- ggMarginal(p1, type = "histogram", )
+        p2 <- subset(GTSummary[[c]], depth > 20) %>% .$hetero %>% 
+            data.frame(HeteroPlasmy = .) %>% ggplot() + aes(HeteroPlasmy) + 
+            geom_histogram(binwidth = 0.05) + theme_bw() + theme(axis.text = element_text(size = 20, 
+            color = "black"))
+        QualifiedV <- subset(feature.list[[c]], maxcts >= 2 & CellN >= 2 & HomoTag == "Hetero")
+        p3title = paste(c, ":", nrow(QualifiedV), "Qualified Hetero Variants\nMedian Cell # per V:", 
+            median(QualifiedV$CellN), "\nVariants # maxcts>=3:", 
+            length(which(QualifiedV$maxcts >= 3)))
+        p3 <- ggplot(feature.list[[c]]) + aes(log2(CellN), log2(maxcts)) + 
+            geom_jitter(color = "grey80") + geom_point(data = subset(feature.list[[c]], 
+            maxcts >= 2 & CellN >= 2 & HomoTag == "Hetero"), 
+            color = "black", size = 1) + theme_classic() + ggtitle(p3title)
+        p3 <- ggMarginal(p3, type = "histogram", )
+        CellVar.Sum <- subset(GTSummary[[c]], Variants %in% QualifiedV$Variants & 
+            Cell %in% qualifiedCell) %>% group_by(Cell) %>% dplyr::summarise(VN = n(), 
+            maxcts = max(Freq), mediancts = median(Freq))
+        return(list(p1,p2,p3,p4))
+    }
+}
 
 #' Internal function in plot_variant
 #'

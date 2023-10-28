@@ -53,7 +53,7 @@ DepthSummary<-function(path,CellSubset=NA,only_Total=T){
 #' Function to generate GTS summary
 #'
 #' This function allows you to summarize the meta data for each genotyped variant
-#' @param RawGenotypes Well-named "RawGenotypes.Sensitive.StrandBalance" file in function CW_mgatk.read
+#' @param RawGenotypes Well-named "RawGenotypes.Sensitive.StrandBalance" file in function redeemR.read or CW_mgatk.read
 #' @param filterN Boolean variable, if true filter out the variant with "N"
 #' @return Genotypes.summary a dataframe that summarize several metrics for each genotype
 #' @examples Usually used inside of function CW_mgatk.read
