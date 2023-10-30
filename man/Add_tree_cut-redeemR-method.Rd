@@ -21,6 +21,9 @@
 
 \item{Dumpcut}{Number of can be tolerated to be removed to fulfill the right side. The small value-> Less unassignment, big clones}
 }
+\value{
+redeemR object
+}
 \description{
 a function to cut tree using assigned variant as branch-length on edge
 }

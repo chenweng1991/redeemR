@@ -500,7 +500,7 @@ return(redeemR)
 #' @param N  branch length to cut the tree
 #' @param Dumpcut Number of can be tolerated to be removed to fulfill the right side. The small value-> Less unassignment, big clones
 #' @export
-#' @return 
+#' @return redeemR object
 #' @import phangorn ape
 setMethod(f="Add_tree_cut",
           signature="redeemR",
@@ -704,7 +704,8 @@ return(ob)
 #'
 #' This function is to convert the older version mitotracing into the redeemR
 #' @param mitotracing mitotracing object
-
+#' @return redeemR class
+#' @export
 convert_mitotracing_redeemR<-function(mitotracing){
 ob<-new("redeemR")
 ob@GTsummary.filtered<-mitotracing@GTsummary.filtered
