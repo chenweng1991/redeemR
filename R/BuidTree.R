@@ -89,6 +89,39 @@ redeemR<-setClass(
            )
 )
 
+#' Legacy function: Major mitoTracing class that store clonal-resolved multi-omics
+#'
+#' @slot GTsummary.filtered  The Mitochondrial genotype data frame
+#' @slot CellMeta Store meta data for each cell type
+#' @slot V.fitered.list a list of data frame of variant metrics, VAF, cellN, etc (each for different stringency),
+#' @slot UniqueV A character showing the number of usable variant
+#' @slot Cts.Mtx A sparse matrix cell-mitoVariants, store the variant count
+#' @slot Cts.Mtx.bi A sparse matrix cell-mitoVariants, The variant count has been binarized into 0 and 1
+#' @slot Ctx.Mtx.depth A sparse matrix cell-mitoVariants(total counts for each position), store the variant count
+#' @slot para A character showing the parameter of this object
+#' @slot Seurat Seurat object storing the clonal clustering results
+#' @slot DataToplotList The customized class of Datatoplots: A list of dataframe for further plotting
+#' @slot DistObjects The customized class that stores the cell-cell distances
+#' @slot TREE The customized class that wraps phylogenetic tree
+#' @import Seurat
+#' @export
+mitoTracing<-setClass(
+    "mitoTracing",
+    slots=c(GTsummary.filtered="data.frame",
+            CellMeta="data.frame",
+            V.fitered.list="list",
+            UniqueV="character",
+            Cts.Mtx="dgCMatrix",
+            Cts.Mtx.bi="dgCMatrix",
+            Ctx.Mtx.depth="matrix",
+            para="character",
+            Seurat="Seurat",
+            DataToplotList="Datatoplots",
+            DistObjects="DistObjects",
+            TREE="TREE",
+            AssignedVariant="list"
+           )
+)
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Class definitions
@@ -660,7 +693,7 @@ V.fitered.list<-c(V.fitered.list,list(V.filtered))
 V.union.unique<-unique(V.union)
 names(V.fitered.list)<-labels
 GTsummary.all.filtered<-subset(GTsummary.all,Variants %in% V.union.unique & Cell %in% CellMeta.all$Cell)
-ob<-redeemR()
+ob<-mitoTracing()
 ob@GTsummary.filtered<-GTsummary.all.filtered
 ob@CellMeta<-CellMeta.all
 ob@V.fitered.list=V.fitered.list
