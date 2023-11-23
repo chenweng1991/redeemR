@@ -152,6 +152,12 @@ setGeneric(name="AddDatatoplot_clustering", def=function(object,...)standardGene
 #' @export
 setGeneric(name="AddDist", def=function(object,...) standardGeneric("AddDist"))
 
+#' AddDist_legacy
+#' This add Jaccard, Dice, Jaccard3W distance and stored in DistObjects
+#' @param object mitoTracing class
+#' @export
+setGeneric(name="AddDist_legacy", def=function(object,...) standardGeneric("AddDist_legacy"))
+
 #' Make_tree
 #' This will generate a basic phylogenetic tree
 #' @param object redeemR class
@@ -159,6 +165,14 @@ setGeneric(name="AddDist", def=function(object,...) standardGeneric("AddDist"))
 #' @param algorithm the algorithm used to build the tree, choose from "nj" and "upgma"
 #' @export
 setGeneric(name="Make_tree", def=function(object,d="jaccard", algorithm="upgma",onlyreturntree=F,...) standardGeneric("Make_tree"))
+
+#' Make_tree_legacy
+#' This will generate a basic phylogenetic tree
+#' @param object mitoTracing class
+#' @param d "jaccard" or "Dice" or "jaccard3W"
+#' @param algorithm the algorithm used to build the tree, choose from "nj" and "upgma"
+#' @export
+setGeneric(name="Make_tree_legacy", def=function(object,d="jaccard", algorithm="upgma",onlyreturntree=F,...) standardGeneric("Make_tree_legacy"))
 
 #' Add_Tree
 #' Optional, if a phylogentic tree object phylo is already available, can be directly added to the redeemR
@@ -242,10 +256,10 @@ setMethod(f="Make_matrix",
 
 #' Make_tree
 #' This will generate a basic phylogenetic tree
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @param d "jaccard" or "Dice" or "jaccard3W" or  "w_jaccard"  "w_cosine"  "LSIdist"
 #' @param algorithm the algorithm used to build the tree, choose from "nj" and "upgma"
-#' @return mitoTracin class
+#' @return redeemR class
 #' @export
 setMethod(f="Make_tree",
           signature="redeemR",
@@ -266,7 +280,32 @@ setMethod(f="Make_tree",
           }
 })
 
-
+#' Make_tree_legacy
+#' This will generate a basic phylogenetic tree
+#' @param object redeemR class
+#' @param d "jaccard" or "Dice" or "jaccard3W" or  "w_jaccard"  "w_cosine"  "LSIdist"
+#' @param algorithm the algorithm used to build the tree, choose from "nj" and "upgma"
+#' @return redeemR class
+#' @export
+setMethod(f="Make_tree_legacy",
+          signature="mitoTracing",
+          definition=function(object,d,algorithm,onlyreturntree=F){
+          message("Make_tree_legacy is a legacy function what works for mitoTracing")
+          dist<-slot(object@DistObjects,d)
+          if(algorithm=="nj"){
+          phylo<-nj(dist)
+          }else if (algorithm=="upgma"){
+          phylo<-upgma(dist)
+          }
+          treedata<-as.treedata(phylo)
+          TREEobject<-new("TREE",phylo=phylo,treedata=treedata,records=paste(d,algorithm,sep="-"))
+          if(onlyreturntree){
+          return(TREEobject)
+          }else{
+          object@TREE<-TREEobject
+          return(object)
+          }
+})
 
 #' SeuratLSIClustering
 #' This will use the mito variants for Seurat clustering (LSI based)
@@ -309,7 +348,7 @@ setMethod(f="SeuratLSIClustering",
 
 #' AddDatatoplot_clustering
 #' This prepare the clonal clustering data to plot
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @return redeemR class
 #' @export
 setMethod(f="AddDatatoplot_clustering",
@@ -324,7 +363,7 @@ setMethod(f="AddDatatoplot_clustering",
 
 #' AddDist
 #' This add Jaccard, Dice, Jaccard3W distance and stored in DistObjects
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @param jaccard  default=T
 #' @param dice    default=T
 #' @param jaccard3w  default=T
@@ -390,13 +429,81 @@ setMethod(f="AddDist",
           return(object)
           })
 
+#' AddDist_legacy
+#' This add Jaccard, Dice, Jaccard3W distance and stored in DistObjects
+#' @param object mitoTracin class
+#' @param jaccard  default=T
+#' @param dice    default=T
+#' @param jaccard3w  default=T
+#' @param w_jaccard   default=T
+#' @param w_cosine default=T
+#' @param weight A two column dataframe, "Variant"(The variant name should match cell-variant matrix column, e.g, Variants310TC), "weight" (numeric)
+#' @param NN To replace NA, which means a variant shown in the object is not shown in the weight vector, with a number, default is 1 for jaccard system. 
+#' @param LSIdist default=T
+#' @param dim the dimensions to use to calculate LSI distance default is 2:50
+#' @return redeemR class
+#' @export
+setMethod(f="AddDist_legacy",
+          signature="mitoTracing",
+          definition=function(object,jaccard=T,dice=T,jaccard3w=T,w_jaccard=T,w_cosine=T,weightDF=NULL,NN=1,LSIdist=T,dim=2:50){
+          message("AddDist_legacy is a legacy function what works for mitoTracing")
+          d.Jaccard<-NA
+          d.Dice<-NA    
+          d.3WJaccard<-NA
+          d.w_jaccard<-NA
+          d.w_cosine<-NA
+          if(length(weightDF)!=0){
+            weight<-data.frame(Variants=colnames(object@Cts.Mtx.bi)) %>% merge(.,weightDF,by="Variants",all.x = T,sort = F) %>% .$weight
+          }  
+          if(length(which(is.na(weight)))!=0){
+            weight[is.na(weight)]<-NN
+            print("Some variant i weight is not found in cell-variant matrix, use 1")
+          }
+          if(length(weight)!=ncol(object@Cts.Mtx.bi)){
+             stop("The length of weight does not match the variant numbers in the martix")
+          }
+          print("Weight vector matches well with the Cell-Variant matrix, continue...")
+          if(jaccard){
+              d.Jaccard<-BinaryDist(object@Cts.Mtx.bi,method="Jaccard")
+              message("jaccard distances added")
+          }    
+          if(dice){
+               d.Dice<-BinaryDist(object@Cts.Mtx.bi,method="Dice")
+               message("dice distances added")
+          }
+          if(jaccard3w){
+              d.3WJaccard<-BinaryDist(object@Cts.Mtx.bi,method="3WJaccard")
+              message("3wjaccard distances added")
+          }
+          if(w_jaccard){
+              if(length(weightDF)==0){
+                  stop("Please input the weight, otherwise turn off the w_jaccard")
+                  
+              }
+              d.w_jaccard<-quick_w_jaccard(object@Cts.Mtx.bi,w=weight)
+              message("weighted jaccard distances added")
+          }
+          if(w_cosine){
+              if(length(weightDF)==0){
+                  stop("Please input the weight, otherwise turn off the w_cosine")
+              }
+              d.w_cosine<-quick_w_cosine(object@Cts.Mtx.bi,w=weight)
+              message("weighted cosine distances added")
+          }
+          if(LSIdist){
+              d.lsi<-dist(object@Seurat@reductions$lsi@cell.embeddings[,dim])
+              message("LSI distances added")
+          }
+          object@DistObjects<-new("DistObjects",jaccard=d.Jaccard, Dice=d.Dice,jaccard3W=d.3WJaccard,w_jaccard=d.w_jaccard,w_cosine=d.w_cosine,LSIdist=d.lsi)
+          return(object)
+          })
 
 
 #' Add_Tree
 #' Optional, if a phylogentic tree object phylo is already available, can be directly added to the redeemR class in slot TREE
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @param phylo phyogenetic tree object
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @return redeemR class
 #' @export
 setMethod(f="AddTree",
@@ -411,7 +518,7 @@ setMethod(f="AddTree",
 
 #' Add_DepthMatrix
 #' Optional, add a matrix with same dimension with the Cts.Mtx and Cts.Mtx.bi, which display the depths
-#' @param object mitoTracin class
+#' @param object redeemR class
 #' @param QualifiedTotalCts a big source data, usually at XXX/mitoV/final,  If needed, edit V1, the cell name, which may have additional postfix due to combine
 #' @return redeemR class
 #' @export

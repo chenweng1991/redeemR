@@ -8,7 +8,7 @@ This prepare the clonal clustering data to plot}
 \S4method{AddDatatoplot_clustering}{redeemR}(object)
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 }
 \value{
 redeemR class

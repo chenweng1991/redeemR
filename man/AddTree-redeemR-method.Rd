@@ -8,7 +8,7 @@ Optional, if a phylogentic tree object phylo is already available, can be direct
 \S4method{AddTree}{redeemR}(object, phylo, record = "")
 }
 \arguments{
-\item{object}{mitoTracin class}
+\item{object}{redeemR class}
 
 \item{phylo}{phyogenetic tree object}
 }
