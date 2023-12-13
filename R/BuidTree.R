@@ -1454,13 +1454,13 @@ if(return_igraph){
 #' @return a list of two  ALLmeta.npClone (A meta data with last column npClone), np_mat (the network propagation matrix))
 #' @export
 #' @import dplyr
-#' @importFrom SCAVENGE tfidf do_lsi getmutualknn randomWalk_sparse
 ProgenyMapping_np<-function(HSC_redeemR=DN4_stemcell_redeemR.seed.verysensitive,
                        Full_redeemR=DN4_BMMC_HSPC_HSC_redeemR.verysensitive,
                        CloneCol="Clone_merge",k=30,gm=0.5,useLSI=F,useSCAVENGE_LSI=F,subsample=F,ProbCut=0.7,Celltype="Rig.CellType"){
 print("Note: By default, usLSI=F, the MNN nretwork is based on jaccard; Alternatively, useLSI=T")
 print("Note: In case useLSI,useSCAVENGE_LSI=T to use SCAVENGE to compute LSI, else, do LSI via Seurat")
 print("Note: subsample=T, to subsample into same number of seed cells in each clone")
+require(SCAVENGE)
 HSCmeta<-HSC_redeemR@CellMeta
 HSCmeta<-HSCmeta[!is.na(HSCmeta[,CloneCol]),]
 ALLmeta<-Full_redeemR@CellMeta
