@@ -29,11 +29,11 @@ Imports:
     qvalue,
     RColorBrewer,
     reshape2,
-    SCAVENGE (>= 1.0.1),
     Seurat,
     stats,
     tibble,
-    tidytree,
-    treeio
+    treeio,
+    tidytree
+    SCAVENGE (>= 1.0.1)
 Remotes: 
     github::sankaranlab/SCAVENGE
