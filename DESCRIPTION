@@ -33,7 +33,7 @@ Imports:
     stats,
     tibble,
     treeio,
-    tidytree
+    tidytree,
     SCAVENGE (>= 1.0.1)
 Remotes: 
     github::sankaranlab/SCAVENGE
