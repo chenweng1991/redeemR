@@ -525,10 +525,12 @@ setMethod(f="AddTree",
 #' @import reshape2
 setMethod(f="Add_DepthMatrix",
           signature="redeemR",
-          definition=function(object){
+          definition=function(object,QualifiedTotalCts=""){
           require(reshape2)
           message("Remember to update for combined object")
+          if(length(QualifiedTotalCts)==0){
           QualifiedTotalCts<-read.table(paste(object@attr$path,"/QualifiedTotalCts",sep=""))
+          }
           colnames(QualifiedTotalCts)<-c("Cell","Pos","T","LS","S","VS")
           Dic<-gsub("Variants","",colnames(object@Cts.Mtx.bi)) %>% substr(.,1,nchar(.)-2) %>% as.integer %>% data.frame(Variants=colnames(object@Cts.Mtx.bi),Pos=.)
           QualifiedTotalCts.subset<-subset(QualifiedTotalCts,Cell %in% row.names(object@Cts.Mtx.bi)) %>% merge(.,Dic,by="Pos") %>% .[,c("Cell","Variants",object@para["Threhold"])]
