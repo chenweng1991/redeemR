@@ -1526,8 +1526,8 @@ Mono="Mye",Ery="Mye",cDC="Mye",
 CD4="Lym",CD8="Lym" ,NK="Lym" ,B="Lym" ,pDC="Lym",ProB="Lym")) %>% group_by(npClone) %>% reshape2::dcast(npClone~Lin,fun.aggregate = length) %>% mutate(Total=EarlyP+Lym+ME+MK+Mye) %>% 
 merge(.,ClonalSize) %>% rename(Size="Freq") %>% mutate(EarlyP=EarlyP/Total,Lym=Lym/Total,ME=ME/Total,MK=MK/Total,Mye=Mye/Total,Total.norm=Total/Size,Total.norm_NPadj=Total/Stem) 
 datatoplot<-datatoplot[order(datatoplot$Total.norm,decreasing=T),] %>% mutate(npClone=factor(npClone,levels=npClone))   
-HSC_redeemR@CellMeta<-data.frame(VN=rowSums(HSC_redeemR@Cts.Mtx.bi)) %>% tibble::rownames_to_column("Cell")  %>% merge(HSC_redeemR@CellMeta,.)
-depth_V<-HSC_redeemR@CellMeta %>% group_by(Clone_merge) %>% dplyr::summarise(Depth=mean(meanCov),VN=mean(VN)) %>% mutate(npClone=as.character(Clone_merge))
+HSCmeta<-data.frame(VN=rowSums(HSC_redeemR@Cts.Mtx.bi)) %>% tibble::rownames_to_column("Cell")  %>% merge(HSC_redeemR@CellMeta,.)
+depth_V<-HSCmeta %>% group_by(Clone_merge) %>% dplyr::summarise(Depth=mean(meanCov),VN=mean(VN)) %>% mutate(npClone=as.character(Clone_merge))
 datatoplot<-merge(datatoplot,depth_V) %>% mutate(StemOdds=Stem/Total)
 datatoplot.scale<-datatoplot %>% mutate(Size=Size,Lym=as.numeric(scale(Lym)),Mye=as.numeric(scale(Mye)),ME=as.numeric(scale(ME)),MK=as.numeric(scale(MK)), OutLevel.scale=as.numeric(scale(Total.norm)), OutLevel_NPadj.scale=as.numeric(scale(Total.norm_NPadj))) %>% 
 dplyr::select(npClone,Lym,Mye,ME,MK,OutLevel.scale,OutLevel_NPadj.scale) %>% rename(Clone_merge="npClone")
