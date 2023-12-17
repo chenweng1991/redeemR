@@ -37,3 +37,6 @@ Imports:
     SCAVENGE (>= 1.0.1)
 Remotes: 
     github::sankaranlab/SCAVENGE
+Depends: 
+    R (>= 2.10)
+LazyData: true
