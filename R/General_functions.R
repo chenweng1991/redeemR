@@ -699,3 +699,126 @@ Tomerge.col<-function(df1,df2)
 		return(newdf)
 	}
 }
+
+#' gsea_enrichmentheat
+#'
+#' This function plot GSEA enrichment analysis
+#' @param df Selected term table
+#' @param df.sourse The output from Fun.enrich_withFC
+#' @param title The title of the plot
+#' @param labelsize x/y axis label size default is 8
+#' @param insidesize inside number label size default is 3
+#' @param thedatabase default is msig.db
+#' @param headless default is T
+#' @param upsidedown default is F
+#' @return p
+#' @export
+#' @examples
+gsea_enrichmentheat<-function(df,df.sourse=H1_S7.Betatraj_all.huge.clusters.GSEA,title,labelsize=8,insidesize=3,thedatabase=msig.db,headless=T,upsidedown=F)
+{
+	row.names(df)<-df[,1]
+	df<-df[,!grepl("ratio",colnames(df))]
+	names(df)[grep("FDR",names(df))]<-gsub("_FDR","",names(df)[grep("FDR",names(df))])
+
+	Termnumbers<-c()
+	for (i in 1: nrow(df))
+	{
+		Termnumbers<-rbind(Termnumbers,Getgenenumber(df[i,],thesource=df.sourse))
+	}
+	row.names(Termnumbers)<-row.names(df)
+	require(RColorBrewer)
+	df<-df[order(df[,"tag"]),]
+	df<-df[,-which(names(df)=="tag")]
+	df.classed<-apply(df[,2:ncol(df)],c(1,2),AddsigTag.6.new)
+	df.classed<-cbind(Msigterm=as.character(df$Msigterm),df.classed)
+	df.classed<-as.data.frame(df.classed)
+	df.classed[,"Msigterm"]<-factor(df.classed[,"Msigterm"],levels=df.classed[,"Msigterm"])
+	#	df.classed.m<-reshape2::melt(df.classed)
+	df.classed.m<-reshape2::melt(df.classed,id.vars=c("Msigterm"))
+	df.classed.m$value<-factor(df.classed.m$value,levels=c(">0.05","0.05-0.01","1e-2~1e-4","1e-4~1e-6","1e-6~1e-8","1e-8~1e-10","<1e-10"))
+	colpallete<-c("white",Getpallet2(0,0,(length(unique(df.classed.m$value))+2))[3:length(Getpallet2(0,0,(length(unique(df.classed.m$value))+2)))])
+	Termnumbers.m<-reshape2::melt(Termnumbers)
+	Termnumbers.m$value<-as.factor(Termnumbers.m$value)
+	tmp1<-cbind(df.classed.m,tmp=paste(df.classed.m[,1],df.classed.m[,2],sep=".."))
+	tmp2<-cbind(Termnumbers.m,tmp=paste(Termnumbers.m[,1],Termnumbers.m[,2],sep=".."))
+	toplot.m<-merge(tmp1,tmp2[,c(3,4)],by="tmp")[,-1]
+	mylabs<-paste(tolower(unlist(lapply(strsplit(names(unlist(lapply(thedatabase[row.names(Termnumbers)],length))),"_"),function(x){paste(x[1:length(x)],collapse=" ")})))," (",unlist(lapply(thedatabase[row.names(Termnumbers)],length)),")",sep="") %>% firstup(.)
+	if(headless)
+	{
+		mylabs<-strsplit(mylabs," ")%>% lapply(.,function(x){x[2:length(x)]}) %>% lapply(.,function(x){paste(x,collapse=" ")}) %>% unlist %>% firstup()
+	}
+	if(upsidedown)
+	{
+		toplot.m$Msigterm<-factor(toplot.m$Msigterm,levels=rev(levels(toplot.m$Msigterm)))
+		mylabs<-rev(mylabs)
+	}
+	p<-ggplot(toplot.m)+aes(variable,Msigterm,fill=value.x)+geom_tile(color="black")+scale_fill_manual(values=colpallete)+ggtitle(title)+coord_fixed()+theme(axis.text.x=element_text(angle=90,hjust=1,size=labelsize),axis.text.y=element_text(size=labelsize))+geom_text(aes(label=value.y),size=insidesize)+scale_y_discrete(labels=mylabs)
+	return(p)
+}
+
+#' Getgenenumber
+#'
+#' Internal function Getgenenumber
+#' @param x x
+#' @param thesource thesource
+#' @return cur.numbers
+Getgenenumber<-function(x,thesource)
+{
+	cur.numbers<-unlist(lapply(thesource[[2]][[as.character(x[1,1])]],length))
+	# cur.numbers[which(x[2:(length(x)-1)]>0.05)]<-NA
+	return(cur.numbers)
+}
+
+#' AddsigTag.6.new
+#'
+#' Internal function AddsigTag.6.new
+#' @param number
+#' @return sigtag
+AddsigTag.6.new<-function(number)
+{
+	if (number>0.05)
+	{
+		return(">0.05")
+	}else if (number<=0.05 &number>0.01)
+	{
+		return("0.05-0.01")
+	}else if(number<=0.01 & number>0.0001)
+	{
+		return("1e-2~1e-4")
+	} else if (number<=0.0001 & number>0.000001)
+	{
+		return("1e-4~1e-6")
+	}else if (number<=0.000001 & number>0.00000001)
+	{
+		return("1e-6~1e-8")
+	}else if (number<=0.00000001 & number>0.0000000001)
+	{
+		return("1e-8~1e-10")
+	}else if (number<=0.0000000001 & number>0)
+	{
+		return("<1e-10")
+	}else if(number<=0)
+	{
+		return(">0.05")
+	}
+}
+
+#' Getpallet2
+#'
+#' Internal function Getpallet2
+#' @param wN
+#' @param topn
+#' @param highlen
+#' @param lowcolor
+#' @return x
+Getpallet2<-function(wN,topn,highlen,lowcolor="white")
+{
+	myred<-colorRampPalette(brewer.pal(9,"Reds"))(highlen)
+	#myblue<-rev(colorRampPalette(brewer.pal(9,"Blues"))(lowlen))
+	mypanel<-c(rep(lowcolor,wN),myred,rep(myred[length(myred)],topn))
+	return(mypanel)
+}
+    firstup <- function(x) {
+	substr(x, 1, 1) <- toupper(substr(x, 1, 1))
+	x
+}
