@@ -8,14 +8,16 @@
 <!-- badges: end -->
 
 
-ReDeeM: single-cell **Re**gulatory multi-omics with **Dee**p **M**itochondrial mutation profiling. ReDeeM is an engineering-free single cell sequencing technology for somatic mutation-based retrospective lineage tracing, clonal/subclonal mapping, with simultaneous cell-state profiling (transcriptomics and chromatin accessibility).
+## Introduction
+ReDeeM: single-cell **Re**gulatory multi-omics with **Dee**p **M**itochondrial mutation profiling. ReDeeM is a single-cell multiomics platform featuring ultra-sensitive mitochondrial DNA (mtDNA) variant calling and joint RNA+ATAC profiling. ReDeeM enables fine-scale lineage tracing at single cell level, allowing for subclonal and phylogenetic analyses, with simultaneous integrative analyses of cell-state and gene regulatory circuits.</br> 
 
 
-The redeemR is the second component in ReDeeM computational toolsets
-- [redeemV](https://github.com/chenweng1991/REDEEM-V) is an in-house python package for mapping and deep mitochondrial mutation calling. (Input from rawdata)
-- [redeemR](https://github.com/chenweng1991/REDEEM-R) is an in-house R package for downstream lineage tracing and single cell integrative analysis. (Input from redeemV)
+The analytical pipelines for ReDeeM analysis includes two parts:
+- [redeemV](https://github.com/chenweng1991/redeemV) is set of in-house Bash pipeline and python scripts for mapping and deep mitochondrial mutation calling. (Input from rawdata)
+- [redeemR](https://github.com/chenweng1991/redeemR) is an in-house R package for downstream lineage tracing and single cell integrative analysis. (**This page**, Input from redeemV)
 
-The goal of redeemR is to refine the somatic mitochondiral mutations, build the single-cell phylogenetic tree and facilitate clonal/subclonal-resolved single-cell multiomics analysis.
+**redeemR** is designed to refine the somatic mitochondiral mutations, build the single-cell phylogenetic tree and facilitate genealogical and clonal/subclonal-resolved single-cell multiomics analysis.
+![Github figs](https://github.com/chenweng1991/redeemR/assets/43254272/da3c9a70-53c8-4861-b3ac-3f351a1b540f)
 
 
 ## Installation
@@ -29,7 +31,10 @@ library(redeemR)
 
 ## Documentation 
 - [Getting started](./Get_Started.ipynb)
+- [ReDeeM paper analysis reproducibility](https://github.com/chenweng1991/redeem_reproducibility)
 
+## Citation
+Please check out our study of human hematopoiesis using ReDeeM [Deciphering cell states and genealogies of human hematopoiesis](https://doi.org/10.1038/s41586-024-07066-z)
 
 ## Contact
-If you run into issues and would like to report them, please submit an Issue. Also please feel free to contact authors: cweng{at}broadinstitute.org, fyu{at}broadinstitute.org.
+If you have any questions or suggestions, please feel free to contact us. Feedbacks are very welcome! (Chen Weng, cweng@broadinstitute.org)
