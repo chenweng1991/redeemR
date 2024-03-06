@@ -13,7 +13,7 @@
 #' @import dplyr
 DepthSummary<-function(path,CellSubset=NA,only_Total=T){
     message("By default only total depth is summarized")
-    message("Depprecated ")
+    message("deprecated")
     QualifiedTotalCts<-read.table(paste(path,"/QualifiedTotalCts",sep=""))
     if(!is.na(CellSubset)){
       print("Will subset cells...")
