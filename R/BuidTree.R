@@ -862,6 +862,7 @@ ob@DistObjects<-mitotracing@DistObjects
 ob@para<-mitotracing@para
 ob@Seurat<-mitotracing@Seurat
 ob@Ctx.Mtx.depth<-mitotracing@Ctx.Mtx.depth
+ob@AssignedVariant <- mitotracing@AssignedVariant
 return(ob)    
 }
 
