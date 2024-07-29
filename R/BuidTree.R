@@ -71,6 +71,7 @@ TREE<-setClass(
 redeemR<-setClass(
     "redeemR",
     slots=c(GTsummary.filtered="data.frame",
+            RawGenotypes.V.filtered="data.frame",
             CellMeta="data.frame",
             V.fitered="data.frame",
             UniqueV="character",
