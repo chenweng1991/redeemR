@@ -108,6 +108,7 @@ redeemR<-setClass(
 mitoTracing<-setClass(
     "mitoTracing",
     slots=c(GTsummary.filtered="data.frame",
+            RawGenotypes.V.filtered="data.frame",
             CellMeta="data.frame",
             V.fitered.list="list",
             UniqueV="character",
