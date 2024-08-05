@@ -316,3 +316,54 @@ res<-res %>% mutate(VerySensitive=VerySensitive/Total) %>% mutate(Sensitive=Sens
 colnames(res)[1]<-"Cell"
 return(res)
 }
+
+
+## Functions for redeem Plus  2024-8-5
+
+add_freq_raw<-function(raw){
+GiveName <- c("UMI", "Cell", "Pos", "Variants", "Call", "Ref", "FamSize", "GT_Cts", "CSS", "DB_Cts", "SG_Cts", "Plus", "Minus", "Depth")
+colnames(raw)<-GiveName
+raw$CellVar<-paste(raw$Cell,raw$Variants,sep="_")
+raw.gtsummary<-GTSummary(raw)
+raw<-merge(raw,raw.gtsummary[,c("Var1","Freq")],by.x="CellVar",by.y="Var1",all.x = T)
+return(raw)
+}
+
+#' Function needed to compute the 
+make_position_df_3.4<-function(in_df){
+    first <- str_split_fixed(in_df[,"UMI"], "_", 3)[, c(2)] %>% 
+        as.numeric()
+    last <- str_split_fixed(in_df[,"UMI"], "_", 3)[, c(3)] %>% 
+        as.numeric()
+    start <- pmin(first, last)
+    end <- pmax(first, last)
+    df <- data.frame(UMI=in_df[,"UMI"],start = start, end = end, pos = in_df$Pos, 
+        variant = in_df$Variants) %>% mutate(length = end - start) %>% 
+        mutate(rel_position = (pos - start)/length,Freq=in_df[,"Freq"])
+    df$edge_dist<-pmin(abs(df$pos-df$start),abs(df$pos-df$end))
+    return(df)
+}
+
+
+#' Produce a raw fragment table with frequency (how many cells) and the reletive distance
+#' from redeemR object, 
+#' 
+#' @param redeemR  a redeemR object 
+#' @export
+add_raw_fragment <- function(redeemR,raw="RawGenotypes.Sensitive.StrandBalance"){
+    redeemR.raw <- read.table(paste(redeemR@attr$path,raw,sep="/"))
+    filtered.variants <- unique(redeemR@GTsummary.filtered$Variants)
+    redeemR.raw.passfilter <- subset(redeemR.raw, V4 %in% filtered.variants)
+    raw.pos<- redeemR.raw.passfilter %>% add_freq_raw() %>% make_position_df_3.4()
+    return(add_raw_fragment)
+}
+
+#' Convinient function that takes raw fragment, and out put fragment with frequency
+add_freq_raw<-function(raw){
+GiveName <- c("UMI", "Cell", "Pos", "Variants", "Call", "Ref", "FamSize", "GT_Cts", "CSS", "DB_Cts", "SG_Cts", "Plus", "Minus", "Depth")
+colnames(raw)<-GiveName
+raw$CellVar<-paste(raw$Cell,raw$Variants,sep="_")
+raw.gtsummary<-GTSummary(raw)
+raw<-merge(raw,raw.gtsummary[,c("Var1","Freq")],by.x="CellVar",by.y="Var1",all.x = T)
+return(raw)
+}

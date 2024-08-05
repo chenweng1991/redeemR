@@ -73,4 +73,6 @@ usethis::use_data(CellPCT,overwrite = TRUE)
 
 library(EZsinglecell)
 data(msig.db)
+data(all.genes.refer)
 usethis::use_data(msig.db,overwrite = TRUE)
+usethis::use_data(all.genes.refer,overwrite = TRUE)

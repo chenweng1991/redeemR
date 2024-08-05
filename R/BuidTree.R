@@ -75,6 +75,7 @@ redeemR<-setClass(
             CellMeta="data.frame",
             V.fitered="data.frame",
             UniqueV="character",
+            raw.fragment.uniqV="data.frame",
             DepthSummary="list",
             HomoVariants="character",
             Cts.Mtx="dgCMatrix",

@@ -822,3 +822,4 @@ Getpallet2<-function(wN,topn,highlen,lowcolor="white")
 	substr(x, 1, 1) <- toupper(substr(x, 1, 1))
 	x
 }
+
