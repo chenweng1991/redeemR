@@ -76,3 +76,25 @@ data(msig.db)
 data(all.genes.refer)
 usethis::use_data(msig.db,overwrite = TRUE)
 usethis::use_data(all.genes.refer,overwrite = TRUE)
+
+## 2024-8-11 add more infor into the CellPCT
+Old1_BMMC_mitoTracing.sensitive<-readRDS("/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9_full/RDS/Old1_BMMC_mitoTracing.sensitive")
+Old1_HSPC_mitoTracing.sensitive<-readRDS("/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9_full/RDS/Old1_HSPC_mitoTracing.sensitive")
+Old2_BMMC_mitoTracing.sensitive<-readRDS("/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9_full/RDS/Old2_BMMC_mitoTracing.sensitive")
+Old2_HSPC_mitoTracing.sensitive<-readRDS("/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor4Donor9_full/RDS/Old2_HSPC_mitoTracing.sensitive")
+
+Old1_BMMC_redeemR.sensitive<-convert_mitotracing_redeemR(Old1_BMMC_mitoTracing.sensitive,addAssignedVariant = F)
+Old1_HSPC_redeemR.sensitive<-convert_mitotracing_redeemR(Old1_HSPC_mitoTracing.sensitive,addAssignedVariant = F)
+Old2_BMMC_redeemR.sensitive<-convert_mitotracing_redeemR(Old2_BMMC_mitoTracing.sensitive,addAssignedVariant = F)
+Old2_HSPC_redeemR.sensitive<-convert_mitotracing_redeemR(Old2_HSPC_mitoTracing.sensitive,addAssignedVariant = F)
+
+Freq.old1_BM<-Old1_BMMC_redeemR.sensitive@V.fitered[,c("Variants","CellNPCT")] %>% rename(Old1_BM=CellNPCT)
+Freq.old1_HSPC<-Old1_HSPC_redeemR.sensitive@V.fitered[,c("Variants","CellNPCT")] %>% rename(Old1_HSPC=CellNPCT)
+Freq.old2_BM<-Old2_BMMC_redeemR.sensitive@V.fitered[,c("Variants","CellNPCT")] %>% rename(Old2_BM=CellNPCT)
+Freq.old2_HSPC<-Old2_HSPC_redeemR.sensitive@V.fitered[,c("Variants","CellNPCT")] %>% rename(Old2_HSPC=CellNPCT)
+
+CellPCT.update<-merge(CellPCT,Freq.old1_BM, all=T) %>% merge(.,Freq.old1_HSPC, all=T) %>% 
+merge(.,Freq.old2_BM, all=T) %>% merge(.,Freq.old2_HSPC, all=T)
+CellPCT.update[is.na(CellPCT.update)]<-0
+
+usethis::use_data(CellPCT.update,overwrite = TRUE)

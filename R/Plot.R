@@ -250,3 +250,78 @@ print("Percentage of R1/R2 overlaped mutation detections")
 print(nrow(subset(RawGenotypes,SG_cts==0))/nrow(RawGenotypes))
 gridExtra::grid.arrange(p1,p2,p3,p4,nrow=1)
 }
+
+
+#' run_redeem_qc
+#'
+#' This function generate qc plot to assess filtering strategy
+#' @param redeem The redeemR object
+#' @param homosets the homoplasmic mutation set
+#' @param hotcall make sure hotcall mutations are not included
+#' @export
+run_redeem_qc <- function(redeem, homosets, hotcall= c("310_T_C","9979_G_A","3109_T_C")){
+    print("Make sure add_raw_fragment has been run  after clean_redeem")
+    require(ggplot2)   
+    require(gridExtra)
+    require(igraph)    
+    ## check the position distribution</span>
+    p_pos<-subset(redeem@raw.fragment.uniqV, !variant %in% c(homosets,hotcall))  %>% ggplot()+aes(rel_position)+geom_histogram(bins=100,fill="white",color="black")+theme_cw1()+ggtitle("1+molecule")
+    pos_1mol <- subset(redeem@raw.fragment.uniqV, !variant %in% c(homosets, hotcall)) %>% subset(., Freq==1)  %>% 
+    ggplot()+aes(rel_position)+geom_histogram(bins=100,fill="white",color="black")+theme_cw1()+ggtitle("1 mol")
+    grid.arrange(p_pos,pos_1mol)
+
+    ## Add transition and transversion information
+    redeem@V.fitered <- redeem@V.fitered %>% mutate(changes=add_changes(Variants)) %>% mutate(types=add_types(changes))
+    redeem@raw.fragment.uniqV<-redeem@raw.fragment.uniqV %>% mutate(changes=add_changes(variant)) %>% mutate(types=add_types(changes)) 
+
+    p_cell_maxcts <- ggplot(redeem@V.fitered) + aes(log2(CellN), log2(maxcts), color=types) +geom_point()+scale_color_brewer(palette="Set1")+theme_cw1()
+    p_cell_meancts <- ggplot(redeem@V.fitered) + aes(log2(CellN), log2(PositiveMean_cts), color=types) +geom_point()+scale_color_brewer(palette="Set1")+theme_cw1()
+    grid.arrange(p_cell_maxcts, p_cell_meancts, nrow=1)
+
+    ## report transversion rate
+    raw.fragment.uniqV_allhetero <- subset(redeem@raw.fragment.uniqV, !variant %in% homosets)
+    raw.fragment.uniqV_1mol<-subset(redeem@raw.fragment.uniqV, Freq==1 & !variant %in% homosets)
+    raw.fragment.uniqV_2mol<-subset(redeem@raw.fragment.uniqV, Freq==2 & !variant %in% homosets)
+    raw.fragment.uniqV_3molplus<-subset(redeem@raw.fragment.uniqV, Freq>=3 & !variant %in% homosets)
+    transversion_rate<-c(unweight=sum(redeem@V.fitered$types=="transversion")/nrow(redeem@V.fitered),
+                         weight_freq_all=sum(raw.fragment.uniqV_allhetero$types=="transversion")/nrow(raw.fragment.uniqV_allhetero),
+                         weight_freq_1mol=sum(raw.fragment.uniqV_1mol$types=="transversion")/nrow(raw.fragment.uniqV_1mol),
+                         weight_freq_2mol=sum(raw.fragment.uniqV_2mol$types=="transversion")/nrow(raw.fragment.uniqV_2mol),
+                         weight_freq_3molplus=sum(raw.fragment.uniqV_3molplus$types=="transversion")/nrow(raw.fragment.uniqV_3molplus))
+    print(transversion_rate)
+
+    GTsummary.filtered<- redeem@GTsummary.filtered %>% subset(.,!Variants %in% c(homosets,hotcall))
+
+    ##check number of total mutations; mutation per cell, number of cells connected </span>
+
+    Cts.Mtx <- dMcast(GTsummary.filtered,Cell~Variants,value.var = "Freq")
+    Cts.Mtx.bi <- Cts.Mtx
+    Cts.Mtx.bi[Cts.Mtx.bi>=1]<-1
+
+    number_of_total_mut <- ncol(Cts.Mtx.bi)
+    number_of_total_cells <- nrow(Cts.Mtx.bi)
+    mut_per_cell <- rowSums(Cts.Mtx.bi)
+    redeem_n0.adj.mtx<-CountOverlap_Adj(Cts.Mtx.bi,n=0)
+    diag(redeem_n0.adj.mtx)<-0
+    number_cell_connected<-rowSums(redeem_n0.adj.mtx) 
+    mc <- graph_from_adjacency_matrix(redeem_n0.adj.mtx) %>% igraph::components(mode = "weak") 
+
+    mc <- graph_from_adjacency_matrix(redeem_n0.adj.mtx) %>% igraph::components(mode = "weak") 
+    fraction_in_component<-max(mc$csize)/nrow(redeem_n0.adj.mtx)
+
+    print(paste0("number of cells: ", as.character(number_of_total_cells)))
+    print(paste0("number of total mutations: ", as.character(number_of_total_mut)))
+    print(paste0("number of mutations per cell: ", as.character(median(mut_per_cell))))
+    print(paste0("number of cells connected: ", as.character(median(number_cell_connected))))
+    print(paste0("fraction of cells in component: ", as.character(median(fraction_in_component))))
+
+    report_metric<-list(number_of_total_mut=number_of_total_mut, 
+                        number_of_total_cells=number_of_total_cells,
+                        mut_per_cell=mut_per_cell, 
+                        fraction_in_component=fraction_in_component,
+                        number_cell_connected=number_cell_connected )
+
+    plots <- list(p_pos=p_pos,pos_1mol=pos_1mol, p_cell_maxcts=p_cell_maxcts,p_cell_meancts=p_cell_meancts)
+
+    return(list(plots=plots, transversion_rate=transversion_rate, report_metric=report_metric))
+}

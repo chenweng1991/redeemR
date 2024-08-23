@@ -2,10 +2,14 @@
 % Please edit documentation in R/VariantSummary.R
 \name{add_freq_raw}
 \alias{add_freq_raw}
-\title{Convinient function that takes raw fragment, and out put fragment with frequency}
+\title{Convinient function that takes raw fragment, and out put fragment with frequency
+Produce KS test results, input is the redeem object
+from redeemR object,}
 \usage{
 add_freq_raw(raw)
 }
 \description{
 Convinient function that takes raw fragment, and out put fragment with frequency
+Produce KS test results, input is the redeem object
+from redeemR object,
 }

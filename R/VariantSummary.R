@@ -129,6 +129,121 @@ if(Processed){
 }
 }
 
+
+#' Function to read in redeemV outputs with edge trimming, default is trimming 4bp
+#'
+#' This function allows you to read raw data from XX/final folder, the output from redeemV
+#' It process the data same way as CW_mgatk.read but need to specify one threadhold(thr)
+#' @param path The XX/final folder, the output from mitoV
+#' @param thr The thredhold of filtering T(Total),LS(Less Stringent:c=0.75,a1=2,a2=1), S(Stringent:c=0.75,a1=3,a2=2), VS(Very Stringent:c=0.75,a1=4,a2=3)"
+#' @param Processed Boolean variable (Default F), if true directly readRDS("VariantsGTSummary.RDS") or, generate and saveout "VariantsGTSummary.RDS"
+#' @param edge_trim  how many bp to be trimmed, default is 4, 
+#' @return this returns depth which is a list of 4 df (Total/VerySensitive/Sensitive/Specific), each is a genotype summary
+#' @examples WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
+#' DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
+#' @export
+redeemR.read.trim<-function(path,thr="S",Processed=F,rdsname="/VariantsGTSummary.RDS",edge_trim=4){
+if(Processed){
+    VariantsGTSummary<-readRDS(paste(path,rdsname,sep=""))
+}else{
+    if(missing(path)|missing(thr)){
+        message("redeemR.read(path,thr)")
+        message("missing variable path or thr")
+        message("path is a string to the redeemV result folder that contains RawGenotypes.XX")
+        message("thr is one of T,LS,S,VS:")
+        message("T(Total),LS(Less Stringent:c=0.75,a1=2,a2=1), S(Stringent:c=0.75,a1=3,a2=2), VS(Very Stringent:c=0.75,a1=4,a2=3)")
+        message("Term from redeemV is deprecated: VerySensitive equal to Less Stringent, Sensitive equal to Stringent, Specific equal to Very Stringent")
+        return(NULL)
+    }
+    GiveName<-c("UMI","Cell","Pos","Variants","Call","Ref","FamSize","GT_Cts","CSS","DB_Cts","SG_Cts","Plus","Minus","Depth")
+    if(thr=="T"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Total.StrandBalance",sep=""))
+    }else if(thr=="LS"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.VerySensitive.StrandBalance",sep=""))
+    }else if(thr=="S"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Sensitive.StrandBalance",sep=""))
+    }else if(thr=="VS"){
+        RawGenotypes<-read.table(paste(path,"/RawGenotypes.Specific.StrandBalance",sep=""))
+    } 
+    colnames(RawGenotypes)<-GiveName
+    # handle the trimming
+    RawGenotypes.annotated <- RawGenotypes %>% add_freq_raw() %>% make_position_df_3.5()
+    RawGenotypes.trimed<- filter(RawGenotypes.annotated,edge_dist>=edge_trim)
+    VariantsGTSummary.trimed<-GTSummary(RawGenotypes.trimed)
+    VariantsGTSummary<-GTSummary(RawGenotypes)
+    VariantsGTSummary<- VariantsGTSummary[,c("Var1","Freq")] %>% rename (Freq_before_trim=Freq) %>% 
+    merge(VariantsGTSummary.trimed,.,by="Var1") %>% mutate(depth=depth-(Freq_before_trim-Freq))
+    ##Calculate heteroplasmy
+    VariantsGTSummary$hetero<-with(VariantsGTSummary,Freq/depth)
+    attr(VariantsGTSummary,"thr")<-thr
+    attr(VariantsGTSummary,"depth")<-DepthSummary(path)
+    attr(VariantsGTSummary,"path")<-path
+    attr(VariantsGTSummary,"edge_trim")<-edge_trim
+    saveRDS(VariantsGTSummary,paste(path,rdsname,sep=""))
+    return(VariantsGTSummary)
+}
+}
+
+
+#' Function to read in multiple runs of redeemV outputs with edge trimming, default is trimming 5bp
+#'
+#' This function allows you to read raw data from multiple XX/final folder, the output from redeemV
+#' It process the data same way as CW_mgatk.read but need to specify one threadhold(thr)
+#' @param paths a vector of multiple path strings The XX/final folder, the output from mitoV
+#' @param names The names for the multiple input, same order with folder
+#' @param suffix The suffix for the multiple input, which is added at the end of cell name, separated by "."
+#' @param edge_trim  how many bp to be trimmed, default is 5, 
+#' @return VariantsGTSummary  combined VariantsGTSummary
+#' @export
+redeemR.read.multiple.trim<-function(paths,names, suffix, edge_trim=5){
+print("This version hardcode in using sensitive or S, if other consensus is needed, feel free to modify this source code by changing RawGenotypes.Sensitive.StrandBalance")
+thr="S"
+GiveName<-c("UMI","Cell","Pos","Variants","Call","Ref","FamSize","GT_Cts","CSS","DB_Cts","SG_Cts","Plus","Minus","Depth")
+## Add suffix to cell names and concat the RawGenotypes
+RawGenotypes.concat <- c()
+for (i in 1: length(paths)){
+RawGenotypes<-read.table(paste(paths[i],"/RawGenotypes.Sensitive.StrandBalance",sep=""))
+RawGenotypes$V2 <- paste(RawGenotypes$V2, suffix[i], sep=".")
+RawGenotypes.concat <- rbind(RawGenotypes.concat,RawGenotypes)
+}    
+## Add the column name
+colnames(RawGenotypes.concat)<-GiveName
+## Annotate the rawGenotype by dstance, etc
+RawGenotypes.annotated <- RawGenotypes.concat %>% add_freq_raw() %>% make_position_df_3.5()
+## Trim
+RawGenotypes.trimed<- filter(RawGenotypes.annotated,edge_dist>=edge_trim)
+## Do GTSummary, this part is the same as regular
+VariantsGTSummary.trimed<-GTSummary(RawGenotypes.trimed)
+VariantsGTSummary<-GTSummary(RawGenotypes.concat)
+VariantsGTSummary<- VariantsGTSummary[,c("Var1","Freq")] %>% rename (Freq_before_trim=Freq) %>% 
+merge(VariantsGTSummary.trimed,.,by="Var1") %>% mutate(depth=depth-(Freq_before_trim-Freq))
+VariantsGTSummary$hetero<-with(VariantsGTSummary,Freq/depth)
+
+## Compute for the depth, this part integrate and compute the combined depth
+Pos.MeanCov<-data.frame(pos=1:16569)
+Cell.MeanCov<-c()
+cell.numbers<-c()
+for (i in 1:length(paths)){
+    depth_i<-DepthSummary(paths[i])
+    pos.info <- depth_i[[1]]
+    cell.info <- depth_i[[2]]
+    cell.info$V1 <- paste(cell.info$V1, suffix[i], sep=".")
+    Pos.MeanCov<-cbind(Pos.MeanCov,pos.info[,"meanCov",drop=F]) 
+    Cell.MeanCov<-rbind(Cell.MeanCov,cell.info)
+    cell.numbers<-c(cell.numbers,nrow(cell.info))
+}
+Pos.MeanCov.final<- data.frame(V2=1:16569, meanCov=rowSums(Pos.MeanCov[,2:ncol(Pos.MeanCov)] * cell.numbers)/sum(cell.numbers))  ## Compute final cov by pos
+## add attributes
+attr(VariantsGTSummary,"depth")<-list(Pos.MeanCov=Pos.MeanCov.final, Cell.MeanCov=Cell.MeanCov)
+attr(VariantsGTSummary,"thr")<-thr
+attr(VariantsGTSummary,"path")<-paths
+attr(VariantsGTSummary,"edge_trim")<-edge_trim
+attr(VariantsGTSummary,"combined")<-names
+attr(VariantsGTSummary,"suffix")<-suffix
+return(VariantsGTSummary)
+}
+
+
 #' Internal CV 
 #'
 #' This function allows you to read raw data from XX/final folder, the output from mitoV
@@ -250,16 +365,16 @@ VariantFeature0$TotalCov<-length(unique(InputSummary$Cell))*VariantFeature0$mean
 VariantFeature0$totalVAF<-VariantFeature0$TotalVcount/VariantFeature0$TotalCov
 qualifiedCell<-subset(attr(InputSummary,"depth")[["Cell.MeanCov"]],meanCov>=QualifyCellCut)[,1,drop=T]  ## Filter Qualified cell based on total depth
 InputSummary.qualified<-subset(InputSummary,Cell %in% qualifiedCell)
-VariantFeature<- InputSummary.qualified %>% group_by(Variants) %>% dplyr::summarise(CellN=n(),PositiveMean=mean(hetero),maxcts=max(Freq),CV=CV(hetero),TotalVcount=sum(Freq))
-print(paste(nrow(VariantFeature0),"variants to start"))
-print(paste(nrow(VariantFeature),"variants after remove low quality cells"))
+VariantFeature<- InputSummary.qualified %>% group_by(Variants) %>% dplyr::summarise(CellN=n(),PositiveMean=mean(hetero),PositiveMean_cts=mean(Freq),maxcts=max(Freq),CV=CV(hetero),TotalVcount=sum(Freq))
+#print(paste(nrow(VariantFeature0),"variants to start"))
+#print(paste(nrow(VariantFeature),"variants after remove low quality cells"))
 VariantFeature$CellNPCT<-VariantFeature$CellN/length(unique(InputSummary.qualified$Cell))
-VariantFeature<-merge(VariantFeature[,c("Variants","CellN","PositiveMean","maxcts","CellNPCT")],VariantFeature0[,c("Variants","TotalVcount","TotalCov","totalVAF","CV")],by="Variants")
+VariantFeature<-merge(VariantFeature[,c("Variants","CellN","PositiveMean","PositiveMean_cts","maxcts","CellNPCT")],VariantFeature0[,c("Variants","TotalVcount","TotalCov","totalVAF","CV")],by="Variants")
 HomoVariants<-subset(VariantFeature,CellNPCT>0.75 & PositiveMean>0.75 & CV<0.01)$Variants
 VariantFeature$HomoTag<-ifelse(VariantFeature$Variants %in% HomoVariants,"Homo","Hetero")
-print(paste("Tag Homoplasmy:",HomoVariants))
+#print(paste("Tag Homoplasmy:",HomoVariants))
 VariantFeature.filtered<-subset(VariantFeature,CellN>=Min_Cells & maxcts>=Max_Count_perCell)
-print(paste("After filtering,",nrow(VariantFeature.filtered), "Variants left"))
+#print(paste("After filtering,",nrow(VariantFeature.filtered), "Variants left"))
 attr(VariantFeature.filtered,"HomoVariants")<-HomoVariants
 attr(VariantFeature.filtered,"Filter.Cell")<-c(AllCellN=nrow(attr(InputSummary,"depth")[["Cell.MeanCov"]]),QualifiedCellN=length(qualifiedCell))
 attr(VariantFeature.filtered,"Filter.V")<-c(VN_total=nrow(VariantFeature0),VN_rmvLowQualityCell=nrow(VariantFeature),VN_filter=nrow(VariantFeature.filtered),VN_filter_rmvHomo=nrow(subset(VariantFeature.filtered,HomoTag!="Homo")))
@@ -320,6 +435,7 @@ return(res)
 
 ## Functions for redeem Plus  2024-8-5
 
+## Add frequency to raw fragments
 add_freq_raw<-function(raw){
 GiveName <- c("UMI", "Cell", "Pos", "Variants", "Call", "Ref", "FamSize", "GT_Cts", "CSS", "DB_Cts", "SG_Cts", "Plus", "Minus", "Depth")
 colnames(raw)<-GiveName
@@ -344,6 +460,27 @@ make_position_df_3.4<-function(in_df){
     return(df)
 }
 
+#' make_position, but remain all the raw genotyp information
+#' Input is the ind_df or 
+#' 
+#' @param in_df  raw genotype by redeemV
+#' @export
+## 
+make_position_df_3.5<-function(in_df){
+    first <- str_split_fixed(in_df[,"UMI"], "_", 3)[, c(2)] %>% 
+        as.numeric()
+    last <- str_split_fixed(in_df[,"UMI"], "_", 3)[, c(3)] %>% 
+        as.numeric()
+    start <- pmin(first, last)
+    end <- pmax(first, last)
+    df <- data.frame(in_df,start = start, end = end, pos = in_df$Pos, 
+        variant = in_df$Variants) %>% mutate(length = end - start) %>% 
+        mutate(rel_position = (pos - start)/length,Freq=in_df[,"Freq"])
+    df$edge_dist<-pmin(abs(df$pos-df$start),abs(df$pos-df$end))
+    return(df)
+}
+
+
 
 #' Produce a raw fragment table with frequency (how many cells) and the reletive distance
 #' from redeemR object, 
@@ -351,14 +488,27 @@ make_position_df_3.4<-function(in_df){
 #' @param redeemR  a redeemR object 
 #' @export
 add_raw_fragment <- function(redeemR,raw="RawGenotypes.Sensitive.StrandBalance"){
+    if ("edge_trim" %in% names(redeemR@para)){
+        edge_trim <- as.numeric(redeemR@para["edge_trim"])
+    }else{
+        edge_trim <- 0
+    }
+    print(paste0("It has benn edge trimmed by ", as.character(edge_trim), " bp"))
     redeemR.raw <- read.table(paste(redeemR@attr$path,raw,sep="/"))
     filtered.variants <- unique(redeemR@GTsummary.filtered$Variants)
     redeemR.raw.passfilter <- subset(redeemR.raw, V4 %in% filtered.variants)
-    raw.pos<- redeemR.raw.passfilter %>% add_freq_raw() %>% make_position_df_3.4()
-    return(add_raw_fragment)
+    raw.pos<- redeemR.raw.passfilter %>% add_freq_raw() %>% make_position_df_3.4() %>% filter(edge_dist>=edge_trim)
+    redeemR@raw.fragment.uniqV <- raw.pos
+    return(redeemR)
 }
 
+
 #' Convinient function that takes raw fragment, and out put fragment with frequency
+#' Produce KS test results, input is the redeem object
+#' from redeemR object, 
+#' 
+#' @param raw
+#' @export
 add_freq_raw<-function(raw){
 GiveName <- c("UMI", "Cell", "Pos", "Variants", "Call", "Ref", "FamSize", "GT_Cts", "CSS", "DB_Cts", "SG_Cts", "Plus", "Minus", "Depth")
 colnames(raw)<-GiveName
@@ -367,3 +517,52 @@ raw.gtsummary<-GTSummary(raw)
 raw<-merge(raw,raw.gtsummary[,c("Var1","Freq")],by.x="CellVar",by.y="Var1",all.x = T)
 return(raw)
 }
+
+
+
+#' Produce KS test results, input is the redeem object
+#' from redeemR object, 
+#' 
+#' @param redeemR  a redeemR object 
+#' @export
+make_ks_test_df <- function(redeemR){
+print("Make sure redeemR@raw.fragment.uniqV exist, produced by redeemR@raw.fragment.uniqV <- add_raw_fragment(redeemR)")
+  redeemR@raw.fragment.uniqV %>%
+  nest(data = c(-variant)) %>%
+    mutate(D_stat=purrr::map(data, ~(ks.test(.x$rel_position, "punif",0,1))),
+           tidied = purrr::map(D_stat, broom::tidy)) %>%
+    mutate(n = map_dbl(data, nrow)) %>%
+    tidyr::unnest(tidied) %>%
+    dplyr::select(variant, statistic, p.value, n)
+}
+
+
+#' add_hypermutable
+#' This function annotates the redeem@V.fitered with hypermutable mutations_v2 (using 3 young donor and 2 aged donors) 
+#' @param redeemR 
+#' @param hypercut The cutoff the define the hypermutable mutations
+#' @param lmhc.cut1 Also annotate with the "LMHC", lmhc.cut1 cutoff by number of cells sharing a mutation
+#' @param lmhc.cut2 Also annotate with the "LMHC", lmhc.cut2 cutoff by mean count
+#' @export
+add_hypermutable <- function(redeem, hypercut=0.005, lmhc.cut1=40, lmhc.cut2=1.3, l= 583, r= 16190){
+    data(CellPCT.update)
+    hypermutable<-get_hype_v2(cut=0.005)
+    redeem@V.fitered <- redeem@V.fitered %>% .[order(.$CellN,decreasing=T),] %>% mutate(label= ifelse(Variants %in% hypermutable, "hyper",""), label2=ifelse(CellN > lmhc.cut1 & PositiveMean_cts < lmhc.cut2,"LMHC","")) %>% mutate(changes= add_changes(Variants)) %>% mutate(types=add_types(changes))
+    poss <- as.numeric(sub("(\\d+)_([A-Z])_([A-Z])","\\1", redeem@V.fitered$Variants)) 
+    redeem@V.fitered$Dloop <- ifelse(poss <= l | poss >= r, "D-loop", "")
+    return(redeem)
+}
+
+#' get_hype_v2
+#' This function annotates the redeem@V.fitered with hypermutable mutations_v2 (using 3 young donor and 2 aged donors) 
+#' 
+#' @param redeemR  a redeemR object 
+#' @export
+get_hype_v2<- function(cut=0.01){
+    Hypermutatble<- subset(CellPCT.update, (PCT.D4BM >cut | PCT.D4HPC>cut | PCT.D4HSC >cut) & (PCT.D9BM > cut | PCT.D9HPC > 
+        cut | PCT.D9HSC > cut) & (PCT.D1BM > cut | PCT.D1HPC > 
+        cut) & (Old1_BM > cut | Old1_HSPC> cut) & (Old2_BM > cut | Old2_HSPC> cut))$Variants
+    return(Hypermutatble)
+}
+
+

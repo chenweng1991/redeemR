@@ -823,3 +823,96 @@ Getpallet2<-function(wN,topn,highlen,lowcolor="white")
 	x
 }
 
+## Internal function to convert the variant names, implemented by convert_variant
+convert_variant_1 <- function(input_string) {
+  if (grepl("^Variants[0-9]+[A-Za-z]{2}$", input_string)) {
+    # Convert from "Variants10000GA" to "10000_G_A"
+    number <- gsub("Variants([0-9]+)[A-Za-z]{2}$", "\\1", input_string)
+    letters <- gsub("^Variants[0-9]+([A-Za-z]{2})$", "\\1", input_string)
+    output_string <- paste0(number, "_", substr(letters, 1, 1), "_", substr(letters, 2, 2))
+  } else if (grepl("^[0-9]+_[A-Za-z]_[A-Za-z]$", input_string)) {
+    # Convert from "10000_G_A" to "Variants10000GA"
+    parts <- strsplit(input_string, "_")[[1]]
+    output_string <- paste0("Variants", parts[1], parts[2], parts[3])
+  } else {
+    stop("Input string format is not recognized.")
+  }
+  return(output_string)
+}
+
+#' convert_variant
+#'
+#' @param x this is a vector of variant names, either way for example from '10000_G_A' to/from 'Variants10000GA'
+#' @return a vector of strings 
+#' @export
+convert_variant <- function(x){
+    res<-sapply(x,convert_variant_1)
+    return(as.character(res))
+}
+
+#' add_changes
+#'
+#' @param variant given a variant, output the changes 
+#' @return changes
+#' @export
+add_changes <-function(variant){
+    changes<-sub("^\\d+_", "",variant)
+    return(changes)
+}
+
+#' add_types
+#'
+#' @param changes given a changes, output the type (transition or transversion)
+#' @return changes
+#' @export
+add_types <- function(changes){
+    types<- ifelse(changes %in% c("C_T","G_A","T_C","A_G"),"transition","transversion")
+    return(types)
+}
+
+#' Annotate_base_change
+#' 
+#' @param  input redeem object,  it takes V.fitered, add the nucleotide change, 
+#' @return redeem object with the V.fitered slot modified
+Annotate_base_change <- function(redeem){
+    redeem@V.fitered<- redeem@V.fitered %>% mutate(changes=add_changes(Variants)) %>% mutate(types=add_types(changes))
+    return(redeem)
+}
+
+
+#' Define a custom theme function
+#' 
+#' @param  axis_title_size
+#' @param  axis_text_size
+#' @export
+theme_cw1 <- function(axis_title_size = 20, axis_text_size = 15) {
+    theme_classic()+theme(
+    axis.title = element_text(size = axis_title_size,color="black"),  # Set axis title size
+    axis.text = element_text(size = axis_text_size,color="black")     # Set axis text size
+  )
+}
+
+#' Define a custom theme function
+#' 
+#' @param  axis_title_size
+#' @param  axis_text_size
+#' @export
+theme_cw2 <- function(axis_title_size = 20, axis_text_size = 15) {
+    theme_classic()+theme(
+    axis.title = element_text(size = axis_title_size,color="black"),  # Set axis title size
+    axis.text = element_text(size = axis_text_size,color="black")     # Set axis text size
+  )
+}
+#' CountOverlap_Adj
+#' function to count the connectedness (adjacency matrix), or the number of cells sharing more than n variants with the given cell
+#' @param  M
+#' @param  n 
+#' @export
+CountOverlap_Adj<-function(M,n=0){
+    require(Matrix)
+    # Total <- Matrix::rowSums(M)
+    a <- M %*% Matrix::t(M)
+    a[a<=n]<-0
+    a[a>n]<-1
+    return(a)
+}
