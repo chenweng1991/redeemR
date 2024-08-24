@@ -29,10 +29,16 @@ devtools::install_github("chenweng1991/redeemR")
 library(redeemR)
 ```
 
+## Update
+- 2024-8-24 We provide an additional filtering option in the ReDeeM-R package. This approach effectively eliminates the position biases, leads to a mutational signature
+indistinguishable from bona fide mitochondrial mutations, and removes excess low molecule high connectedness mutations with high sensitivity. Please see Document Use filter-2 below
+
+
 ## Documentation 
 - [Getting started](./vignettes/Get_Started.ipynb)
 - [Use filter-2](./vignettes/redeem_filter2.ipynb)
 - [ReDeeM paper analysis reproducibility](https://github.com/chenweng1991/redeem_reproducibility)
+- [Extended ReDeeM robustness analysis](https://github.com/chenweng1991/redeem_robustness_reproducibility)
 
 ## Citation
 Please check out our study of human hematopoiesis using ReDeeM [Deciphering cell states and genealogies of human hematopoiesis](https://doi.org/10.1038/s41586-024-07066-z)
