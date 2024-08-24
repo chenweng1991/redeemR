@@ -30,7 +30,8 @@ library(redeemR)
 ```
 
 ## Documentation 
-- [Getting started](./Get_Started.ipynb)
+- [Getting started](./vignettes/Get_Started.ipynb)
+- [Use filter-2](./vignettes/redeem_filter2.ipynb)
 - [ReDeeM paper analysis reproducibility](https://github.com/chenweng1991/redeem_reproducibility)
 
 ## Citation
