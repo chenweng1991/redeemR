@@ -37,6 +37,7 @@ indistinguishable from bona fide mitochondrial mutations, and removes excess low
 ## Documentation 
 - [Getting started](./vignettes/Get_Started.ipynb)
 - [Use filter-2](./vignettes/redeem_filter2.ipynb)
+- [WIKI: redeem filtering principles and strategies](https://github.com/chenweng1991/redeemR/wiki/ReDeeM-filtering-strategies)
 - [ReDeeM paper analysis reproducibility](https://github.com/chenweng1991/redeem_reproducibility)
 - [Extended ReDeeM robustness analysis](https://github.com/chenweng1991/redeem_robustness_reproducibility)
 
