@@ -15,6 +15,12 @@ DepthSummary<-function(path,CellSubset=NA,only_Total=T){
     message("By default only total depth is summarized")
     message("deprecated")
     QualifiedTotalCts<-read.table(paste(path,"/QualifiedTotalCts",sep=""))
+    print("using testing MP version..")   
+    QualifiedTotalCts$V3 <- as.numeric(as.character(QualifiedTotalCts$V3))
+    QualifiedTotalCts$V4 <- as.numeric(as.character(QualifiedTotalCts$V4))
+    QualifiedTotalCts$V5 <- as.numeric(as.character(QualifiedTotalCts$V5))
+    QualifiedTotalCts$V6 <- as.numeric(as.character(QualifiedTotalCts$V6))
+
     if(!is.na(CellSubset)){
       print("Will subset cells...")
       print(paste(length(unique(QualifiedTotalCts$V1)),"Cells in QualifiedTotalCts"))
