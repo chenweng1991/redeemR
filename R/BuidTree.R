@@ -949,7 +949,7 @@ return(ob)
 #' @param fdr fdr cutoff, default is 0.05
 #' @export
 clean_redeem <-function(ob,fdr=0.05){
-    ob@V.fitered <- subset(ob@V.fitered,qvalues<=0.05)
+    ob@V.fitered <- subset(ob@V.fitered,qvalues<=fdr)
     ob@GTsummary.filtered<-subset(ob@GTsummary.filtered, Variants %in% ob@V.fitered$Variants)
     ob<-Make_matrix(ob,onlyhetero=T)
     ob@UniqueV <- ob@V.fitered$Variants
