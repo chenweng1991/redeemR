@@ -978,11 +978,13 @@ clean_redeem_removehot <-function(ob,hotcall= c("310_T_C","9979_G_A","3109_T_C")
 #' @param mitotracing mitotracing object
 #' @return redeemR class
 #' @export
-convert_mitotracing_redeemR<-function(mitotracing,addAssignedVariant=T){
+convert_mitotracing_redeemR<-function(mitotracing,addAssignedVariant=T, V.fitered=F){
 ob<-new("redeemR")
 ob@GTsummary.filtered<-mitotracing@GTsummary.filtered
 ob@CellMeta<-mitotracing@CellMeta
-ob@V.fitered<-mitotracing@V.fitered.list[[1]]
+if (V.fitered){
+    ob@V.fitered<-mitotracing@V.fitered.list[[1]]
+}
 ob@HomoVariants<-""
 ob@UniqueV<-mitotracing@UniqueV
 ob@Cts.Mtx<-mitotracing@Cts.Mtx
