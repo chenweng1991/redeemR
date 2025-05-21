@@ -148,7 +148,7 @@ if(Processed){
 #' @examples WD<-"/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Donor01_CD34_1_Multiomekit/MTenrichCombine/Enrich/CW_mgatk/final"
 #' DN1CD34_1.VariantsGTSummary<-CW_mgatk.read(WD,Processed =T)
 #' @export
-redeemR.read.trim<-function(path,thr="S",Processed=F,rdsname="/VariantsGTSummary.RDS",edge_trim=4){
+redeemR.read.trim<-function(path,thr="S",Processed=F,rdsname="./VariantsGTSummary.RDS",edge_trim=4){
 if(Processed){
     VariantsGTSummary<-readRDS(paste(path,rdsname,sep=""))
 }else{
@@ -185,7 +185,7 @@ if(Processed){
     attr(VariantsGTSummary,"depth")<-DepthSummary(path)
     attr(VariantsGTSummary,"path")<-path
     attr(VariantsGTSummary,"edge_trim")<-edge_trim
-    saveRDS(VariantsGTSummary,paste(path,rdsname,sep=""))
+    saveRDS(VariantsGTSummary,paste(rdsname,sep=""))
     return(VariantsGTSummary)
 }
 }
