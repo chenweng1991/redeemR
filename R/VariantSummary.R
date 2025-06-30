@@ -185,7 +185,7 @@ if(Processed){
     attr(VariantsGTSummary,"depth")<-DepthSummary(path)
     attr(VariantsGTSummary,"path")<-path
     attr(VariantsGTSummary,"edge_trim")<-edge_trim
-    saveRDS(VariantsGTSummary,paste(rdsname,sep=""))
+    saveRDS(VariantsGTSummary,rdsname)
     return(VariantsGTSummary)
 }
 }

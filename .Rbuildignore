@@ -1,3 +1,4 @@
 ^renv$
 ^renv\.lock$
 ^data-raw$
+^example_data/

@@ -8,7 +8,7 @@ redeemR.read.trim(
   path,
   thr = "S",
   Processed = F,
-  rdsname = "/VariantsGTSummary.RDS",
+  rdsname = "./VariantsGTSummary.RDS",
   edge_trim = 4
 )
 }
