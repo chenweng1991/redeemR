@@ -823,62 +823,6 @@ Getpallet2<-function(wN,topn,highlen,lowcolor="white")
 	x
 }
 
-## Internal function to convert the variant names, implemented by convert_variant
-convert_variant_1 <- function(input_string) {
-  if (grepl("^Variants[0-9]+[A-Za-z]{2}$", input_string)) {
-    # Convert from "Variants10000GA" to "10000_G_A"
-    number <- gsub("Variants([0-9]+)[A-Za-z]{2}$", "\\1", input_string)
-    letters <- gsub("^Variants[0-9]+([A-Za-z]{2})$", "\\1", input_string)
-    output_string <- paste0(number, "_", substr(letters, 1, 1), "_", substr(letters, 2, 2))
-  } else if (grepl("^[0-9]+_[A-Za-z]_[A-Za-z]$", input_string)) {
-    # Convert from "10000_G_A" to "Variants10000GA"
-    parts <- strsplit(input_string, "_")[[1]]
-    output_string <- paste0("Variants", parts[1], parts[2], parts[3])
-  } else {
-    stop("Input string format is not recognized.")
-  }
-  return(output_string)
-}
-
-#' convert_variant
-#'
-#' @param x this is a vector of variant names, either way for example from '10000_G_A' to/from 'Variants10000GA'
-#' @return a vector of strings 
-#' @export
-convert_variant <- function(x){
-    res<-sapply(x,convert_variant_1)
-    return(as.character(res))
-}
-
-#' add_changes
-#'
-#' @param variant given a variant, output the changes 
-#' @return changes
-#' @export
-add_changes <-function(variant){
-    changes<-sub("^\\d+_", "",variant)
-    return(changes)
-}
-
-#' add_types
-#'
-#' @param changes given a changes, output the type (transition or transversion)
-#' @return changes
-#' @export
-add_types <- function(changes){
-    types<- ifelse(changes %in% c("C_T","G_A","T_C","A_G"),"transition","transversion")
-    return(types)
-}
-
-#' Annotate_base_change
-#' 
-#' @param  input redeem object,  it takes V.fitered, add the nucleotide change, 
-#' @return redeem object with the V.fitered slot modified
-Annotate_base_change <- function(redeem){
-    redeem@V.fitered<- redeem@V.fitered %>% mutate(changes=add_changes(Variants)) %>% mutate(types=add_types(changes))
-    return(redeem)
-}
-
 
 #' Define a custom theme function
 #' 
