@@ -140,48 +140,35 @@ clean_redeem_removehot <-function(ob,hotcall= c("310_T_C","9979_G_A","3109_T_C")
 Add_DepthMatrix_filter2 <- function(object, QualifiedTotalCts = NULL) {
     # 1. load the table if needed
     if (is.null(QualifiedTotalCts)) {
-        QualifiedTotalCts<-read.table(paste(object@attr$path,"/QualifiedTotalCts",sep=""))
+        QualifiedTotalCts<-fread(paste(object@attr$path,"/QualifiedTotalCts",sep=""))
     }
     colnames(QualifiedTotalCts)<-c("Cell","Pos","T","LS","S","VS")
     message("[Step 1] QualifiedTotalCts loaded with columns: ", paste(colnames(QualifiedTotalCts), collapse = ", "))
     
-    # 2. build variant→pos dictionary
-    Dic<-gsub("Variants","",colnames(object@Cts.Mtx.bi)) %>% substr(.,1,nchar(.)-2) %>% as.integer %>% data.frame(Variants=colnames(object@Cts.Mtx.bi),Pos=.)
-    message("[Step 2] Dic built with ", nrow(Dic), " entries")
+    message("[Step 2] Build DepthMatrix")
+    GTsummary.filtered = object@GTsummary.filtered %>% 
+        select(Variants, Freq, depth, Cell)
 
-    # 3. subset QualifiedTotalCts for cells and all positions for variants
-    QualifiedTotalCts.subset<-subset(QualifiedTotalCts,Cell %in% row.names(object@Cts.Mtx.bi)) %>% merge(.,Dic,by="Pos") %>% .[,c("Cell","Variants",object@para["Threhold"])]
-    QualifiedTotalCts.subset_Var1 <- QualifiedTotalCts.subset %>% 
-            mutate(Var1=paste(Cell, convert_variant(Variants),sep="_"))        
-    message("[Step 3] Subset contains ", nrow(QualifiedTotalCts.subset), " rows")
+    GTsummary.filtered.complete.adj = GTsummary.filtered %>%
+        tidyr::separate(Variants, c('Pos', 'Ref', 'Alt'), sep = '_', remove = FALSE) %>%
+        mutate(Pos = as.integer(Pos)) %>%
+        tidyr::complete(
+            Cell, 
+            tidyr::nesting(Variants, Pos, Ref, Alt),
+            fill = list('Freq' = 0)
+        ) %>%
+        left_join(QualifiedTotalCts, by = join_by(Cell, Pos)) %>%
+        mutate(depth = ifelse(is.na(depth), S, depth))
 
-    # 4. Split into gt vs zero 
-    ## -->  _gt is the ones match GTsummary;  _zero are the depth for rest of cell-variant that are zero
-    QualifiedTotalCts.subset_Var1_gt   <- QualifiedTotalCts.subset_Var1 %>% filter(Var1 %in% object@GTsummary.filtered$Var1)
-    QualifiedTotalCts.subset_Var1_zero <- QualifiedTotalCts.subset_Var1 %>% filter(!Var1 %in% object@GTsummary.filtered$Var1)
-    message("[Step 5] gt rows: ", nrow(QualifiedTotalCts.subset_Var1_gt),
-          "; zero rows: ", nrow(QualifiedTotalCts.subset_Var1_zero))
+    # convert to matrix format
+    DepthMatrix<-reshape2::dcast(GTsummary.filtered.complete.adj,Cell~Variants, value.var = 'depth') %>% 
+        tibble::column_to_rownames("Cell") %>% as.matrix
+    
+    # change back the names
+    colnames(DepthMatrix) = colnames(DepthMatrix) %>% str_remove_all('_') %>% paste0('Variants', .)
 
-    # 5. Adjust the depth for the ones that changed
-    QualifiedTotalCts.subset_Var1_gt_constant<- QualifiedTotalCts.subset_Var1_gt %>% left_join(object@GTsummary.filtered[,c("Var1","depth")], by="Var1") %>%
-    filter(S == depth)
-    QualifiedTotalCts.subset_Var1_gt_adjust_depth<- QualifiedTotalCts.subset_Var1_gt %>% left_join(object@GTsummary.filtered[,c("Var1","depth")], by="Var1") %>%
-    filter(S != depth) %>% mutate(S=depth)
-    message("[Step 6] constant depth rows: ", nrow(QualifiedTotalCts.subset_Var1_gt_constant),
-          "; adjusted depth rows: ", nrow(QualifiedTotalCts.subset_Var1_gt_adjust_depth))
-
-    # 6. Adjust the depth for the ones that changed
-    ## Put together the QualifiedTotalCts.subset_filter2_adjusted
-    QualifiedTotalCts.subset_filter2_adjusted <- rbind(QualifiedTotalCts.subset_Var1_zero[,1:3],
-          QualifiedTotalCts.subset_Var1_gt_constant[,1:3],
-          QualifiedTotalCts.subset_Var1_gt_adjust_depth[,1:3])
-    message("[Step 7] Final subset has ", nrow(QualifiedTotalCts.subset_filter2_adjusted), " rows")
-
-    ##8. Prepare the Dpethmatrix
-    message("[Step 8] Casting to DepthMatrix")
-    DepthMatrix<-dcast(QualifiedTotalCts.subset_filter2_adjusted,Cell~Variants) %>% tibble::column_to_rownames("Cell") %>% as.matrix
     if (all(dim(object@Cts.Mtx.bi)==dim(DepthMatrix))){
-        message("[Step 9] Assigning DepthMatrix to object@Ctx.Mtx.depth.filter2")
+        message("[Step 3] Assigning DepthMatrix to object@Ctx.Mtx.depth.filter2")
         object@Ctx.Mtx.depth<-DepthMatrix[row.names(object@Cts.Mtx.bi),colnames(object@Cts.Mtx.bi)]
     }else{
         print(dim(object@Cts.Mtx.bi))

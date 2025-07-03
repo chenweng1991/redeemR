@@ -54,34 +54,34 @@ convert_variant <- function(x){
 }
 
 
-#’ Convert a RedeemR variant & depth matrix into long format for downstream analysis
-#’
-#’ This function filters a variant count matrix (`mat_var`) to include only cells in the provided
-#’ whitelist and variants observed in at least two cells, applies the same filtering to the corresponding
-#’ depth matrix (`mat_depth`), and then melts both into a single long-format `data.table`.  The output
-#’ contains one row per cell–variant pair with its count (`a`) and depth (`d`).
-#’ 
+#' Convert a redeemR variant & depth matrix into long format for downstream analysis
+#'
+#' This function filters a variant count matrix (`mat_var`) to include only cells in the provided
+#' whitelist and variants observed in at least two cells, applies the same filtering to the corresponding
+#' depth matrix (`mat_depth`), and then melts both into a single long-format `data.table`.  The output
+#' contains one row per cell–variant pair with its count (`a`) and depth (`d`).
+#' 
 #' Included in redeemR-2.0  2025-07-01
-#’ @param sample Character; an identifier for this dataset (printed to the console).
-#’ @param mat_var A numeric matrix of variant UMI counts (cells × variants).
-#’ @param mat_depth A numeric matrix of total depth (same dimensions and row/column names as `mat_var`).
-#’ @param cell_whitelist A character vector of cell barcodes to retain (rows of `mat_var`/`mat_depth`).
-#’
-#’ @return A `data.table` with columns:
-#’   - `cell`: cell barcode  
-#’   - `variant`: variant identifier  
-#’   - `a`: UMI count (filtered)  
-#’   - `d`: corresponding depth  
-#’
-#’ @details  
-#’ 1. Retains only rows in `mat_var` whose rownames appear in `cell_whitelist`.  
-#’ 2. Drops variants observed in fewer than two cells.  
-#’ 3. Ensures both matrices share the same dimensions before melting.  
-#’ 4. Returns a combined long table for joint count/depth analysis.  
-#’
-#’ @import data.table
-#’ @importFrom glue glue
-#’ @export
+#' @param sample Character; an identifier for this dataset (printed to the console).
+#' @param mat_var A numeric matrix of variant UMI counts (cells × variants).
+#' @param mat_depth A numeric matrix of total depth (same dimensions and row/column names as `mat_var`).
+#' @param cell_whitelist A character vector of cell barcodes to retain (rows of `mat_var`/`mat_depth`).
+#'
+#' @return A `data.table` with columns:
+#'   - `cell`: cell barcode  
+#'   - `variant`: variant identifier  
+#'   - `a`: UMI count (filtered)  
+#'   - `d`: corresponding depth  
+#'
+#' @details  
+#' 1. Retains only rows in `mat_var` whose rownames appear in `cell_whitelist`.  
+#' 2. Drops variants observed in fewer than two cells.  
+#' 3. Ensures both matrices share the same dimensions before melting.  
+#' 4. Returns a combined long table for joint count/depth analysis.  
+#'
+#' @import data.table
+#' @importFrom glue glue
+#' @export
 convert_redeem_matrix_long <- function(sample="",mat_var, mat_depth, cell_whitelist){
     library(data.table)
     print(glue("{sample}=========="))
