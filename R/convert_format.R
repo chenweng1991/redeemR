@@ -54,47 +54,51 @@ convert_variant <- function(x){
 }
 
 
-#’ Convert a RedeemR variant & depth matrix into long format for downstream analysis
-#’
-#’ This function filters a variant count matrix (`mat_var`) to include only cells in the provided
-#’ whitelist and variants observed in at least two cells, applies the same filtering to the corresponding
-#’ depth matrix (`mat_depth`), and then melts both into a single long-format `data.table`.  The output
-#’ contains one row per cell–variant pair with its count (`a`) and depth (`d`).
-#’ 
+#' Convert a redeemR variant & depth matrix into long format for downstream analysis
+#'
+#' This function filters a variant count matrix (`mat_var`) to include only cells in the provided
+#' whitelist and variants observed in at least two cells, applies the same filtering to the corresponding
+#' depth matrix (`mat_depth`), and then melts both into a single long-format `data.table`.  The output
+#' contains one row per cell–variant pair with its count (`a`) and depth (`d`).
+#' 
 #' Included in redeemR-2.0  2025-07-01
-#’ @param sample Character; an identifier for this dataset (printed to the console).
-#’ @param mat_var A numeric matrix of variant UMI counts (cells × variants).
-#’ @param mat_depth A numeric matrix of total depth (same dimensions and row/column names as `mat_var`).
-#’ @param cell_whitelist A character vector of cell barcodes to retain (rows of `mat_var`/`mat_depth`).
-#’
-#’ @return A `data.table` with columns:
-#’   - `cell`: cell barcode  
-#’   - `variant`: variant identifier  
-#’   - `a`: UMI count (filtered)  
-#’   - `d`: corresponding depth  
-#’
-#’ @details  
-#’ 1. Retains only rows in `mat_var` whose rownames appear in `cell_whitelist`.  
-#’ 2. Drops variants observed in fewer than two cells.  
-#’ 3. Ensures both matrices share the same dimensions before melting.  
-#’ 4. Returns a combined long table for joint count/depth analysis.  
-#’
-#’ @import data.table
-#’ @importFrom glue glue
-#’ @export
-convert_redeem_matrix_long <- function(sample="",mat_var, mat_depth, cell_whitelist){
+#' @param sample Character; an identifier for this dataset (printed to the console).
+#' @param mat_var A numeric matrix of variant UMI counts (cells × variants).
+#' @param mat_depth A numeric matrix of total depth (same dimensions and row/column names as `mat_var`).
+#' @param cell_whitelist A character vector of cell barcodes to retain (rows of `mat_var`/`mat_depth`).
+#'
+#' @return A `data.table` with columns:
+#'   - `cell`: cell barcode  
+#'   - `variant`: variant identifier  
+#'   - `a`: UMI count (filtered)  
+#'   - `d`: corresponding depth  
+#'
+#' @details  
+#' 1. Retains only rows in `mat_var` whose rownames appear in `cell_whitelist`.  
+#' 2. Drops variants observed in fewer than two cells.  
+#' 3. Ensures both matrices share the same dimensions before melting.  
+#' 4. Returns a combined long table for joint count/depth analysis.  
+#'
+#' @import data.table
+#' @importFrom glue glue
+#' @export
+convert_redeem_matrix_long <- function(mat_var, mat_depth, cell_whitelist = NULL, sample = NULL){
     library(data.table)
     print(glue("{sample}=========="))
     # Start filtering
     print(glue("{length(row.names(mat_var))} total cells in this redeem dataset"))
-    print(glue("{sum(row.names(mat_var) %in% cell_whitelist)} are HSCs in the HSC whitelist"))
-    mat_var_filtered<-mat_var[row.names(mat_var) %in% cell_whitelist,]
-    mat_var_filtered <- mat_var_filtered[,colSums(mat_var_filtered)>=2]
-    mat_var_filtered <- mat_var_filtered[rowSums(mat_var_filtered)>0,]
+    # print(glue("{sum(row.names(mat_var) %in% cell_whitelist)} are HSCs in the HSC whitelist"))
+    if (is.null(cell_whitelist)) {
+      mat_var_filtered = mat_var
+    } else {
+      mat_var_filtered<-mat_var[row.names(mat_var) %in% cell_whitelist,]
+    }
+    mat_var_filtered <- mat_var_filtered[,Matrix::colSums(mat_var_filtered)>=2]
+    mat_var_filtered <- mat_var_filtered[Matrix::rowSums(mat_var_filtered)>0,]
     # Keep the same rows and columns for depth mat
     mat_depth_filtered<-mat_depth[row.names(mat_var_filtered),colnames(mat_var_filtered)]
-    print(glue("The minimum variant has at least {min(colSums(mat_var_filtered))} cells sharing it;
-    the minimum ecll has at least {min(rowSums(mat_var_filtered))} variants"))
+    print(glue("The minimum variant has at least {min(Matrix::colSums(mat_var_filtered))} cells sharing it;
+    the minimum ecll has at least {min(Matrix::rowSums(mat_var_filtered))} variants"))
     print(glue("Finally, after filtering, {nrow(mat_var_filtered)} cells, {ncol(mat_var_filtered)} variants"))    
 
     # Convert sparse matrix to dense matrix - var and depth
