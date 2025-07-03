@@ -82,19 +82,23 @@ convert_variant <- function(x){
 #' @import data.table
 #' @importFrom glue glue
 #' @export
-convert_redeem_matrix_long <- function(sample="",mat_var, mat_depth, cell_whitelist){
+convert_redeem_matrix_long <- function(sample="",mat_var, mat_depth, cell_whitelist = NULL){
     library(data.table)
     print(glue("{sample}=========="))
     # Start filtering
     print(glue("{length(row.names(mat_var))} total cells in this redeem dataset"))
-    print(glue("{sum(row.names(mat_var) %in% cell_whitelist)} are HSCs in the HSC whitelist"))
-    mat_var_filtered<-mat_var[row.names(mat_var) %in% cell_whitelist,]
-    mat_var_filtered <- mat_var_filtered[,colSums(mat_var_filtered)>=2]
-    mat_var_filtered <- mat_var_filtered[rowSums(mat_var_filtered)>0,]
+    # print(glue("{sum(row.names(mat_var) %in% cell_whitelist)} are HSCs in the HSC whitelist"))
+    if (is.null(cell_whitelist)) {
+      mat_var_filtered = mat_var
+    } else {
+      mat_var_filtered<-mat_var[row.names(mat_var) %in% cell_whitelist,]
+    }
+    mat_var_filtered <- mat_var_filtered[,Matrix::colSums(mat_var_filtered)>=2]
+    mat_var_filtered <- mat_var_filtered[Matrix::rowSums(mat_var_filtered)>0,]
     # Keep the same rows and columns for depth mat
     mat_depth_filtered<-mat_depth[row.names(mat_var_filtered),colnames(mat_var_filtered)]
-    print(glue("The minimum variant has at least {min(colSums(mat_var_filtered))} cells sharing it;
-    the minimum ecll has at least {min(rowSums(mat_var_filtered))} variants"))
+    print(glue("The minimum variant has at least {min(Matrix::colSums(mat_var_filtered))} cells sharing it;
+    the minimum ecll has at least {min(Matrix::rowSums(mat_var_filtered))} variants"))
     print(glue("Finally, after filtering, {nrow(mat_var_filtered)} cells, {ncol(mat_var_filtered)} variants"))    
 
     # Convert sparse matrix to dense matrix - var and depth
