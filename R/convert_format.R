@@ -82,7 +82,7 @@ convert_variant <- function(x){
 #' @import data.table
 #' @importFrom glue glue
 #' @export
-convert_redeem_matrix_long <- function(sample="",mat_var, mat_depth, cell_whitelist = NULL){
+convert_redeem_matrix_long <- function(mat_var, mat_depth, cell_whitelist = NULL, sample = NULL){
     library(data.table)
     print(glue("{sample}=========="))
     # Start filtering
