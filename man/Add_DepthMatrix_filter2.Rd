@@ -2,10 +2,26 @@
 % Please edit documentation in R/filter2.R
 \name{Add_DepthMatrix_filter2}
 \alias{Add_DepthMatrix_filter2}
-\title{Add Filter-2–adjusted depth matrix to a redeemR object}
+\title{Add_DepthMatrix_filter2
+Add Filter-2–adjusted depth matrix to a redeemR object}
 \usage{
 Add_DepthMatrix_filter2(object, QualifiedTotalCts = NULL)
 }
+\arguments{
+\item{object}{A \code{redeemR} object}
+
+\item{QualifiedTotalCts}{Optional data.frame of the same format as the
+“QualifiedTotalCts” file. If \code{NULL}, it will be read from
+\code{file.path(object@attr$path, "QualifiedTotalCts")}.}
+}
+\value{
+The input \code{redeemR} object, with
+\code{object@Ctx.Mtx.depth.filter2} populated.
+}
 \description{
-Add Filter-2–adjusted depth matrix to a redeemR object
+This function reads the “QualifiedTotalCts” matrix from disk (if not already supplied),
+applies the Filter-2 adjustment—subtracting counts for UMIs removed by edge trimming
+(zeros and unaffected entries remain unchanged)—then reshapes the result into a matrix
+matching the dimensions of \code{object@Cts.Mtx.bi} and stores it in
+\code{object@Cts.Mtx.depth.filter2}.
 }

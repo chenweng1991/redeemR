@@ -121,22 +121,22 @@ clean_redeem_removehot <-function(ob,hotcall= c("310_T_C","3109_T_C")){
 }
 
 
-#’ Add_DepthMatrix_filter2
+#' Add_DepthMatrix_filter2
 #' Add Filter-2–adjusted depth matrix to a redeemR object
-#’
-#’ This function reads the “QualifiedTotalCts” matrix from disk (if not already supplied),
-#’ applies the Filter-2 adjustment—subtracting counts for UMIs removed by edge trimming
-#’ (zeros and unaffected entries remain unchanged)—then reshapes the result into a matrix
-#’ matching the dimensions of `object@Cts.Mtx.bi` and stores it in
-#’ `object@Cts.Mtx.depth.filter2`.
-#’
-#’ @param object A \code{redeemR} object
-#’ @param QualifiedTotalCts Optional data.frame of the same format as the
-#’   “QualifiedTotalCts” file. If \code{NULL}, it will be read from
-#’   \code{file.path(object@attr$path, "QualifiedTotalCts")}.
-#’ @return The input \code{redeemR} object, with
-#’   \code{object@Ctx.Mtx.depth.filter2} populated.
-#’ @export
+#'
+#' This function reads the “QualifiedTotalCts” matrix from disk (if not already supplied),
+#' applies the Filter-2 adjustment—subtracting counts for UMIs removed by edge trimming
+#' (zeros and unaffected entries remain unchanged)—then reshapes the result into a matrix
+#' matching the dimensions of `object@Cts.Mtx.bi` and stores it in
+#' `object@Cts.Mtx.depth.filter2`.
+#'
+#' @param object A \code{redeemR} object
+#' @param QualifiedTotalCts Optional data.frame of the same format as the
+#'   “QualifiedTotalCts” file. If \code{NULL}, it will be read from
+#'   \code{file.path(object@attr$path, "QualifiedTotalCts")}.
+#' @return The input \code{redeemR} object, with
+#'   \code{object@Ctx.Mtx.depth.filter2} populated.
+#' @export
 Add_DepthMatrix_filter2 <- function(object, QualifiedTotalCts = NULL) {
     # 1. load the table if needed
     if (is.null(QualifiedTotalCts)) {
