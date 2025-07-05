@@ -572,3 +572,41 @@ get_hype_v2<- function(cut=0.01){
 }
 
 
+#' Create variant summary table from count matrix
+#'
+#' @description
+#' Summarizes a variant-by-cell count matrix to produce per-variant metrics.
+#'
+#' @details
+#' Calculates for each variant (column of \code{mtx}):
+#' \itemize{
+#'   \item{\code{cellN}}{Number of cells with count > 0.}
+#'   \item{\code{max_count}}{Maximum count observed across cells.}
+#'   \item{\code{mean_count}}{Mean of non-zero counts.}
+#'   \item{\code{ct1_cellN}}{Number of cells with count == 1.}
+#'   \item{\code{ct2_cellN}}{Number of cells with count == 2.}
+#'   \item{\code{ct3plus_cellN}}{Number of cells with count > 2.}
+#'   \item{\code{pct_ct2plus}}{Fraction of cells with count >= 2.}
+#'   \item{\code{cellNPCT}}{Fraction of cells with count > 0 relative to total cells.}
+#' }
+#'
+#' @param mtx Numeric matrix with variants as columns and cells as rows.
+#'
+#' @return A data.frame with one row per variant, including the metrics above and a 
+#'         column \code{Variants} with variant identifiers (column names of \code{mtx}).
+#'
+#' @importFrom tibble rownames_to_column
+#' @importFrom dplyr mutate
+#' @export
+make_V.fitered_from_mtx<- function(mtx){
+    mtx_summarystat<-data.frame(CellN=apply(mtx, 2, function(x){sum(x>0)}),
+    max_count=apply(mtx, 2, max),
+    mean_count=apply(mtx, 2, function(x){mean(x[x>0])}),
+    ct1_cellN=apply(mtx, 2, function(x){length(x[x==1])}),
+    ct2_cellN=apply(mtx, 2, function(x){length(x[x==2])}),
+    ct3plus_cellN=apply(mtx, 2, function(x){length(x[x>2])})                  
+    ) %>% 
+    tibble::rownames_to_column("Variants") %>%
+    mutate(Variants = convert_variant(Variants), pct_ct2plus=(ct2_cellN+ct3plus_cellN)/CellN) %>% mutate(cellNPCT=CellN/nrow(mtx))
+    return(mtx_summarystat)
+}

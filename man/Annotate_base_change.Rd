@@ -2,16 +2,25 @@
 % Please edit documentation in R/variant_annotation.R
 \name{Annotate_base_change}
 \alias{Annotate_base_change}
-\title{Annotate_base_change}
+\title{Annotate variant annotation with base-change and type}
 \usage{
-Annotate_base_change(redeem)
+Annotate_base_change(variant_annotation)
 }
 \arguments{
-\item{input}{redeem object,  it takes V.fitered, add the nucleotide change,}
+\item{variant_annotation}{A data.frame or tibble containing a column
+named \code{Variants} ("\if{html}{\out{<pos>}}\emph{\if{html}{\out{<ref>}}}\if{html}{\out{<alt>}}").}
 }
 \value{
-redeem object with the V.fitered slot modified
+The input \code{variant_annotation} with added \code{changes} and \code{types} columns.
 }
 \description{
-Annotate_base_change
+Adds two new columns to a variant annotation table:
+\enumerate{
+\item \code{changes}: the nucleotide substitution (e.g. "C_T").
+\item \code{types}: whether the substitution is a transition or transversion.
+}
+}
+\examples{
+df <- data.frame(Variants = c("100_C_T", "200_A_C"))
+Annotate_base_change(df)
 }

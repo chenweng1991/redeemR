@@ -26,6 +26,96 @@ ob@AssignedVariant <- mitotracing@AssignedVariant
 return(ob)    
 }
 
+
+
+#' Function to translate the RNA barcode into ATAC barcode and add a column
+#'
+#' This function allows you to input the metadata with row name as cell barcode
+#' @param meta  a dataframe with the row names as the RNA cell barcode usually with the post -1
+#' @param bclength The cell barcode length, default is 16
+#' @param from A vector of the postfix,  usually is c(1,2,3,...), it depends on how many samples are aggregated in Cellranger RNA part
+#' @param to A vector of the postfix, those cooresponds to the postfix added in redeemR, in general, if it matches, then simply c(1,2,3,...), 
+#' but in case not match, here provides a way to transform into scredeemR order
+#' @return meta a dataframe
+#' @examples
+#' Translate_RNA2ATAC(meta)
+#' @export
+Translate_RNA2ATAC<-function(meta=bmmc.filtered@meta.data,PostFix=T,bclength=16,from=c(1,2,3),to=c(1,2,3)){
+data(ATACWhite)
+data(RNAWhite)
+L<-nchar(row.names(meta))
+post<-substr(row.names(meta),bclength+2,L)
+post<-post %>% plyr::mapvalues(.,from=from,to=to)
+NakeName<-substr(row.names(meta),1,bclength)
+Dic2<-ATACWhite$V1
+names(Dic2)<-as.character(RNAWhite$V1)
+if(PostFix){
+	meta$ATACName<-paste(Dic2[NakeName],post,sep="_")
+}else{
+	meta$ATACName<-Dic2[NakeName]
+}
+return(meta)
+}
+
+#' Translate_simple_RNA2ATAC 
+#'
+#' This function allows you to input the RNA name to translate to ATAC name 
+#' @param name  RNA name, as the RNA cell barcode usually with the post -1
+#' @param bclength The cell barcode length, default is 16
+#' @param from A vector of the postfix,  usually is c(1,2,3,...), it depends on how many samples are aggregated in Cellranger RNA part
+#' @param to A vector of the postfix, those cooresponds to the postfix added in redeemR, in general, if it matches, then simply c(1,2,3,...), 
+#' but in case not match, here provides a way to transform into redeemR order
+#' @return ATAC name
+#' Translate_RNA2ATAC(`a vector of RNA names`)
+#' @export
+Translate_simple_RNA2ATAC<-function(name,PostFix=T,bclength=16,from=c(1,2,3),to=c(1,2,3)){
+data(ATACWhite)
+data(RNAWhite)
+L<-nchar(name)
+post<-substr(name,bclength+2,L)
+post<-post %>% plyr::mapvalues(.,from=from,to=to)
+NakeName<-substr(name,1,bclength)
+Dic2<-ATACWhite$V1
+names(Dic2)<-as.character(RNAWhite$V1)
+if(PostFix){
+	name<-paste(Dic2[NakeName],post,sep="_")
+}else{
+	name<-Dic2[NakeName]
+}
+return(name)
+}
+
+#' Translate_simple_ATAC2RNA 
+#'
+#' This function allows you to input the ATAC name to translate to RNA name 
+#' @param name  RNA name, as the RNA cell barcode usually with the post -1
+#' @param bclength The cell barcode length, default is 16
+#' @param from A vector of the postfix,  usually is c(1,2,3,...), it depends on how many samples are aggregated in Cellranger RNA part
+#' @param to A vector of the postfix, those cooresponds to the postfix added in redeemR, in general, if it matches, then simply c(1,2,3,...), 
+#' but in case not match, here provides a way to transform into redeemR order
+#' @return RNA name
+#' Translate_RNA2ATAC(`a vector of RNA names`)
+#' @export
+Translate_simple_ATAC2RNA<-function(name,PostFix=T,bclength=16,from=c(1,2,3),to=c(1,2,3)){
+data(ATACWhite)
+data(RNAWhite)
+L<-nchar(name)
+post<-substr(name,bclength+2,L)
+post<-post %>% plyr::mapvalues(.,from=from,to=to)
+NakeName<-substr(name,1,bclength)
+Dic2<-RNAWhite$V1
+names(Dic2)<-as.character(ATACWhite$V1)
+if(PostFix){
+	name<-paste(Dic2[NakeName],post,sep="-")
+}else{
+	name<-Dic2[NakeName]
+}
+return(name)
+}
+
+
+
+
 ## Internal function to convert the variant names, implemented by convert_variant
 convert_variant_1 <- function(input_string) {
   if (grepl("^Variants[0-9]+[A-Za-z]{2}$", input_string)) {
@@ -82,20 +172,26 @@ convert_variant <- function(x){
 #’ @import data.table
 #’ @importFrom glue glue
 #’ @export
-convert_redeem_matrix_long <- function(sample="",mat_var, mat_depth, cell_whitelist){
+convert_redeem_matrix_long <- function(sample="",mat_var, mat_depth, cell_whitelist= NULL) {
     library(data.table)
     print(glue("{sample}=========="))
     # Start filtering
-    print(glue("{length(row.names(mat_var))} total cells in this redeem dataset"))
-    print(glue("{sum(row.names(mat_var) %in% cell_whitelist)} are HSCs in the HSC whitelist"))
-    mat_var_filtered<-mat_var[row.names(mat_var) %in% cell_whitelist,]
+    message(glue("{length(row.names(mat_var))} total cells in this redeem dataset"))
+
+    if (is.null(cell_whitelist)) {
+        message("No whitehlist provided, keeping all cells")
+        mat_var_filtered<-mat_var
+    }else{
+        message(glue("{sum(row.names(mat_var) %in% cell_whitelist)} are in HSC whitelist"))
+        mat_var_filtered<-mat_var[row.names(mat_var) %in% cell_whitelist,]
+    }
     mat_var_filtered <- mat_var_filtered[,colSums(mat_var_filtered)>=2]
     mat_var_filtered <- mat_var_filtered[rowSums(mat_var_filtered)>0,]
     # Keep the same rows and columns for depth mat
     mat_depth_filtered<-mat_depth[row.names(mat_var_filtered),colnames(mat_var_filtered)]
-    print(glue("The minimum variant has at least {min(colSums(mat_var_filtered))} cells sharing it;
-    the minimum ecll has at least {min(rowSums(mat_var_filtered))} variants"))
-    print(glue("Finally, after filtering, {nrow(mat_var_filtered)} cells, {ncol(mat_var_filtered)} variants"))    
+    message(glue("The minimum variant has at least {min(colSums(mat_var_filtered))} cells sharing it;
+    the minimum cell has at least {min(rowSums(mat_var_filtered))} variants"))
+    message(glue("Finally, after filtering, {nrow(mat_var_filtered)} cells, {ncol(mat_var_filtered)} variants"))    
 
     # Convert sparse matrix to dense matrix - var and depth
     dense_mat_var <- as.matrix(mat_var_filtered)
@@ -108,8 +204,9 @@ convert_redeem_matrix_long <- function(sample="",mat_var, mat_depth, cell_whitel
     dt_depth <- as.data.table(as.table(dense_mat_depth))
     setnames(dt_depth, c("cell", "variant", "d"))
     # Combine variant counts and depth
-    print(glue("The variant has {nrow(dt_var)}; The depth has {nrow(dt_depth)}. They should be the same.\n"))
+    message(glue("The variant has {nrow(dt_var)} rows; The depth has {nrow(dt_depth)} rows. They should be the same.\n"))
 
     dt_var_depth<-cbind(dt_var,d=dt_depth$d)
     return(dt_var_depth)
 }
+

@@ -1,0 +1,6 @@
+## 2025-07-02 Download data needed for variant annotation
+wget https://www.mitomap.org/freq_variants.txt
+## download the markder_finder from https://www.mitomap.org/cgi-bin/marker_finder?data=1&freqc=&freq=-2&rsrs=0&hg=&what=2
+## Download mitochondrial diseases database
+https://www.mitomap.org/foswiki/bin/view/MITOMAP/MutationsCodingControl
+

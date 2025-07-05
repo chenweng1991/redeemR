@@ -2,16 +2,20 @@
 % Please edit documentation in R/variant_annotation.R
 \name{add_types}
 \alias{add_types}
-\title{add_types}
+\title{Classify nucleotide change as transition or transversion}
 \usage{
 add_types(changes)
 }
 \arguments{
-\item{changes}{given a changes, output the type (transition or transversion)}
+\item{changes}{Character vector of nucleotide changes ("\if{html}{\out{<ref>}}_\if{html}{\out{<alt>}}").}
 }
 \value{
-changes
+Character vector with values "transition" or "transversion".
 }
 \description{
-add_types
+Determines whether each nucleotide change is a transition (purine-to-purine
+or pyrimidine-to-pyrimidine) or a transversion (purine-to-pyrimidine or vice versa).
+}
+\examples{
+add_types(c("C_T", "A_C"))  # returns c("transition", "transversion")
 }

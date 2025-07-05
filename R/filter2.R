@@ -112,7 +112,7 @@ clean_redeem <-function(ob,fdr=0.05){
 #' @param ob redeem object
 #' @param hotcall fdr cutoff, default is 0.05
 #' @export
-clean_redeem_removehot <-function(ob,hotcall= c("310_T_C","9979_G_A","3109_T_C")){
+clean_redeem_removehot <-function(ob,hotcall= c("310_T_C","3109_T_C")){
     ob@V.fitered <- subset(ob@V.fitered,!Variants %in% hotcall)
     ob@GTsummary.filtered<-subset(ob@GTsummary.filtered, !Variants %in% hotcall)
     ob<-Make_matrix(ob,onlyhetero=T)

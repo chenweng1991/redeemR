@@ -4,7 +4,12 @@
 \alias{convert_redeem_matrix_long}
 \title{Included in redeemR-2.0  2025-07-01}
 \usage{
-convert_redeem_matrix_long(sample = "", mat_var, mat_depth, cell_whitelist)
+convert_redeem_matrix_long(
+  sample = "",
+  mat_var,
+  mat_depth,
+  cell_whitelist = NULL
+)
 }
 \description{
 Included in redeemR-2.0  2025-07-01

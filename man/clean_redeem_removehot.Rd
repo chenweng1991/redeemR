@@ -4,7 +4,7 @@
 \alias{clean_redeem_removehot}
 \title{clean_redeem_removehotcall}
 \usage{
-clean_redeem_removehot(ob, hotcall = c("310_T_C", "9979_G_A", "3109_T_C"))
+clean_redeem_removehot(ob, hotcall = c("310_T_C", "3109_T_C"))
 }
 \arguments{
 \item{ob}{redeem object}

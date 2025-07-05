@@ -98,3 +98,40 @@ merge(.,Freq.old2_BM, all=T) %>% merge(.,Freq.old2_HSPC, all=T)
 CellPCT.update[is.na(CellPCT.update)]<-0
 
 usethis::use_data(CellPCT.update,overwrite = TRUE)
+
+
+## 2025-07-02 variant annotation
+# Mitomap frequency data
+library(openxlsx)
+mitomap_freq <- read.xlsx("marker_finder.xlsx",
+                startRow = 7,
+                colNames = TRUE)
+mitomap_freq$Overall.Variant.Frequency.in.Sequence.Set   <- as.numeric(sub("%", "", mitomap_freq$Overall.Variant.Frequency.in.Sequence.Set))
+mitomap_freq$Frequency.in.Lineage.L      <- as.numeric(sub("%", "", mitomap_freq$Frequency.in.Lineage.L))
+mitomap_freq$Frequency.in.Lineage.M      <- as.numeric(sub("%", "", mitomap_freq$Frequency.in.Lineage.M))
+mitomap_freq$Frequency.in.Lineage.N      <- as.numeric(sub("%", "", mitomap_freq$Frequency.in.Lineage.N))
+mitomap_freq<- mitomap_freq %>% mutate(ID = paste(Position, rCRS.nt, Variant.nt,sep = "_"))
+names(mitomap_freq)[12] <- "RSRS50"
+
+# Mitomap haplogroup markers
+haplogroup_markers <- read.table("freq_variants.txt", header = T)
+haplogroup_markers <- haplogroup_markers %>% mutate(ID = paste(tpos, tnt, qnt, sep = "_"))
+
+# mitochondrial diseases
+mito_diseases <- read.csv("MutationsCodingControl_MITOMAP.csv", header = T)
+mito_diseases$ID <- paste(mito_diseases$Position,sub("-","_", mito_diseases$NucleotideChange), sep = "_")
+
+# homopolymer bed
+mito_homopolymer <- read.table("/lab/solexa_weissman/cweng/Projects/Collaborator/Sankaran_lineage_tracing/ReDeeM2.0/01_mitoblacklist_script/mt_homopolymers_4bp.bed", header = F)
+
+usethis::use_data(mitomap_freq,overwrite = TRUE)
+usethis::use_data(haplogroup_markers,overwrite = TRUE)
+usethis::use_data(mito_diseases,overwrite = TRUE)
+usethis::use_data(mito_homopolymer,overwrite = TRUE)
+
+# 2025-07-04 
+file.copy(
+  from      = "/lab/solexa_weissman/cweng/Projects/MitoTracing_Velocity/SecondaryAnalysis/Revision20230904/Reviewer5_data/GRCH38_MT_bioMRT_output_refcds.rda",
+  to        = "../data/GRCH38_MT_bioMRT_output_refcds.rda",
+  overwrite = TRUE    # overwrite if it already exists
+)

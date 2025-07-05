@@ -2,16 +2,20 @@
 % Please edit documentation in R/variant_annotation.R
 \name{add_changes}
 \alias{add_changes}
-\title{add_changes}
+\title{Extract nucleotide change from variant string}
 \usage{
 add_changes(variant)
 }
 \arguments{
-\item{variant}{given a variant, output the changes}
+\item{variant}{Character vector of variant strings ("\if{html}{\out{<pos>}}\emph{\if{html}{\out{<ref>}}}\if{html}{\out{<alt>}}").}
 }
 \value{
-changes
+Character vector of nucleotide changes ("\if{html}{\out{<ref>}}_\if{html}{\out{<alt>}}").
 }
 \description{
-add_changes
+Given a variant in the format "\if{html}{\out{<pos>}}\emph{\if{html}{\out{<ref>}}}\if{html}{\out{<alt>}}", returns the substring representing
+the reference-to-alternate change (e.g. "A_T").
+}
+\examples{
+add_changes("150_A_G")  # returns "A_G"
 }
